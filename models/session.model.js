@@ -1,27 +1,31 @@
 const { db, DataTypes } = require("../config/database");
 
-const Course = db.define(
-  "Course",
+const Session = db.define(
+  "Session",
   {
     id: {
       type: DataTypes.INTEGER,
-      primaryKey: true,
       autoIncrement: true,
+      primaryKey: true,
     },
-    name: {
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    ipAddress: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    image: {
+    deviceInfo: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    type: {
-      type: DataTypes.STRING,
-      allowNull: false,
+    createdAt: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
     },
   },
   { timestamps: false }
 );
 
-module.exports = Course;
+module.exports = Session;
