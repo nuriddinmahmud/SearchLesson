@@ -2,11 +2,9 @@ const express = require('express')
 const {connect} = require("./config/database")
 const app = express(); app.use(express.json())
 connect()
+const mainRouter = require("./routes/index")
 
-app.get("/", (req, res) => {
-    res.send("Hello World")
-})
-
+app.use("/api", mainRouter)
 
 
 
