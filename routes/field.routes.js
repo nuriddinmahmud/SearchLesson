@@ -1,9 +1,9 @@
 const { Router } = require("express");
 const FieldRouter = Router();
 const {
-  create,
   getAll,
   getOne,
+  post,
   update,
   remove,
 } = require("../controllers/field.controller");
@@ -14,7 +14,7 @@ FieldRouter.get("/", getAll);
 
 FieldRouter.get("/:id", getOne);
 
-FieldRouter.post("/", verifyToken, checkRole(["Admin", "Ceo"]), create);
+FieldRouter.post("/", verifyToken, checkRole(["Admin", "Ceo"]), post);
 
 FieldRouter.patch("/:id", checkRole(["Admin", "Ceo"]), update);
 

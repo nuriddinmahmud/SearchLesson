@@ -6,8 +6,8 @@ const {
   sendOtpPhone,
   verifyOtpPhone,
   login,
-  findAll,
-  findOne,
+  getAll,
+  getOne,
   update,
   remove,
   myInfo,
@@ -42,13 +42,13 @@ UserRouter.get("/myCentres", verifyToken, myEducationalCentres);
 
 UserRouter.get("/myInfo", verifyToken, myInfo);
 
-UserRouter.get("/", verifyToken, checkRole(["Admin", "Ceo", "User"]), findAll);
+UserRouter.get("/", verifyToken, checkRole(["Admin", "Ceo", "User"]), getAll);
 
 UserRouter.get(
   "/:id",
   verifyToken,
   checkRole(["Admin", "User", "Ceo"]),
-  findOne
+  getOne
 );
 
 UserRouter.patch("/:id", verifyToken, selfPolice(["Admin"]), update);

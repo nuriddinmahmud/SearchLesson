@@ -1,9 +1,9 @@
 const { Router } = require("express");
 const CourseRouter = Router();
 const {
-  create,
-  findAll,
-  findOne,
+  getAll,
+  getOne,
+  post,
   remove,
   update,
 } = require("../controllers/course.controller");
@@ -11,11 +11,11 @@ const verifyToken = require("../middlewares/verifyToken");
 const checkRole = require("../middlewares/checkRole");
 const selfPolice = require("../middlewares/selfPolice");
 
-CourseRouter.get("/", findAll);
+CourseRouter.get("/", getAll);
 
-CourseRouter.post("/", verifyToken, selfPolice(["Admin"]), create);
+CourseRouter.get("/:id", getOne);
 
-CourseRouter.get("/:id", findOne);
+CourseRouter.post("/", verifyToken, selfPolice(["Admin"]), post);
 
 CourseRouter.patch("/:id", checkRole(["Admin"]), update);
 
