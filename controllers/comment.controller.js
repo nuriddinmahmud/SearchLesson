@@ -1,4 +1,6 @@
 const Comment = require("../models/comment.model");
+const User= require("../models/user.model");
+const EducationalCenter = require("../models/educationalCenter.model");
 const {
   commentValidation,
   commentUpdateValidation,
@@ -29,6 +31,9 @@ const getAll = async (req, res) => {
       limit,
       offset,
       order,
+      include: [
+        { model: User, attributes: ["id", "name"] },
+        { model: EducationalCenter }],
     });
 
     if (!data.rows.length) {
