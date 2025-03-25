@@ -1,17 +1,7 @@
-const {Router}  = require("express")
-const app = Router()
+const { Router } = require("express");
+const collabFieldRouter = Router();
+const { post } = require("../controllers/collabField.controller");
 
-const { getOne, getAll, post, update, remove} = require("../controllers/collabField.controller")
+collabFieldRouter.post("/", post(req, res));
 
-
-app.get("/", getAll)
-app.get("/:id", getOne)
-app.post("/", post)
-app.patch("/:id", update)
-app.delete("/:id", remove)
-
-
-
-
-module.exports = app
-
+module.exports = collabFieldRouter;

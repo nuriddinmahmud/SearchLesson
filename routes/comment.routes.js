@@ -1,17 +1,22 @@
-const {Router}  = require("express")
-const app = Router()
+const { Router } = require("express");
+const CommentRouter = Router();
+const {
+  getAll,
+  getOne,
+  post,
+  update,
+  remove,
+} = require("../controllers/comment.controller");
+const verifyToken = require("../middlewares/verifyToken");
 
-const { getOne, getAll, post, update, remove} = require("../controllers/comment.controller")
+CommentRouter.get("/", getAll);
 
+CommentRouter.get("/:id", getOne);
 
-app.get("/", getAll)
-app.get("/:id", getOne)
-app.post("/", post)
-app.patch("/:id", update)
-app.delete("/:id", remove)
+CommentRouter.post("/", verifyToken, post);
 
+CommentRouter.patch("/:id", verifyToken, update);
 
+CommentRouter.delete("/:id", verifyToken, remove);
 
-
-module.exports = app
-
+module.exports = CommentRouter;

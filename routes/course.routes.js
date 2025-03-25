@@ -1,22 +1,24 @@
-const {Router}  = require("express")
-const app = Router()
+const { Router } = require("express");
+const CourseRouter = Router();
+const {
+  getAll,
+  getOne,
+  post,
+  remove,
+  update,
+} = require("../controllers/course.controller");
+const verifyToken = require("../middlewares/verifyToken");
+const checkRole = require("../middlewares/checkRole");
+const selfPolice = require("../middlewares/selfPolice");
 
-const { getOne, getAll, post, update, remove} = require("../controllers/course.controller")
-const { func } = require("joi")
+CourseRouter.get("/", getAll);
 
-function skipMiddlewareFunction(req,res,next) {
-    console.log("skipMiddlewareFunction")
-    next()
-}
+CourseRouter.get("/:id", getOne);
 
-app.get("/",skipMiddlewareFunction, getAll)
-app.get("/:id",skipMiddlewareFunction, getOne)
-app.post("/",skipMiddlewareFunction, post)
-app.patch("/:id",skipMiddlewareFunction, update)
-app.delete("/:id",skipMiddlewareFunction, remove)
+CourseRouter.post("/", verifyToken, selfPolice(["Admin"]), post);
 
+CourseRouter.patch("/:id", checkRole(["Admin"]), update);
 
+CourseRouter.delete("/:id", checkRole(["Admin"]), remove);
 
-
-module.exports = app
-
+module.exports = CourseRouter;
