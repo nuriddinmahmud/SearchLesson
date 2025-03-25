@@ -4,11 +4,11 @@ const app = Router()
 const { getOne, getAll, post, update, remove} = require("../controllers/collabField.controller")
 
 
-app.get("/", getAll(req,res))
-app.get("/:id", getOne(req,res))
-app.post("/", post(req,res))
-app.patch("/:id", update(req,res))
-app.delete("/:id", remove(req,res))
+app.get("/", getAll)
+app.get("/:id", getOne)
+app.post("/", post)
+app.patch("/:id", update)
+app.delete("/:id", remove)
 
 
 

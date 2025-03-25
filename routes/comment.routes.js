@@ -4,9 +4,7 @@ const app = Router()
 const { getOne, getAll, post, update, remove} = require("../controllers/comment.controller")
 
 
-app.get("/", (req,res)=>{
-    res.send("Welcome")
-})
+app.get("/", getAll)
 app.get("/:id", getOne)
 app.post("/", post)
 app.patch("/:id", update)

@@ -1,6 +1,6 @@
 const { db, DataTypes } = require("../config/database");
 const User = require("./user.model");
-const EducationCenter = require("./educationCenter.model");
+const EducationCenter = require("./educationalCenter.model");
 
 const Comment = db.define("Comment", {
   id: {

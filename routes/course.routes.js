@@ -2,13 +2,18 @@ const {Router}  = require("express")
 const app = Router()
 
 const { getOne, getAll, post, update, remove} = require("../controllers/course.controller")
+const { func } = require("joi")
 
+function skipMiddlewareFunction(req,res,next) {
+    console.log("skipMiddlewareFunction")
+    next()
+}
 
-app.get("/", getAll(req,res))
-app.get("/:id", getOne(req,res))
-app.post("/", post(req,res))
-app.patch("/:id", update(req,res))
-app.delete("/:id", remove(req,res))
+app.get("/",skipMiddlewareFunction, getAll)
+app.get("/:id",skipMiddlewareFunction, getOne)
+app.post("/",skipMiddlewareFunction, post)
+app.patch("/:id",skipMiddlewareFunction, update)
+app.delete("/:id",skipMiddlewareFunction, remove)
 
 
 

@@ -9,11 +9,11 @@ const collabFieldRoute = require("./collabField.routes")
 
 
 
-app.use("/comment", commentRoute)
-app.use("/like", likeRoute)
-app.use("/course", courseRoute)
-app.use("/reception", receptionRoute)
-app.use("/collabField", collabFieldRoute)
+mainRouter.use("/comment", commentRoute)
+mainRouter.use("/like", likeRoute)
+mainRouter.use("/course", courseRoute)
+mainRouter.use("/reception", receptionRoute)
+mainRouter.use("/collabField", collabFieldRoute)
 
 
 module.exports = mainRouter;
