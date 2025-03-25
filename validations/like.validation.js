@@ -1,4 +1,4 @@
-import Joi from "joi";
+const Joi = require("joi");
 
 function likesValidation(data) {
   const likesSchema = Joi.object({
@@ -14,4 +14,4 @@ function likesUpdateValidation(data) {
   return likesSchema.validate(data, { abortEarly: true });
 }
 
-export { likesUpdateValidation, likesValidation };
+module.exports = { likesUpdateValidation, likesValidation };

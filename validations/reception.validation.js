@@ -1,4 +1,4 @@
-import Joi from "joi";
+const Joi = require("joi");
 
 function receptionValidation(data) {
   const receptionSchema = Joi.object({
@@ -18,4 +18,4 @@ function receptionValidationUpdate(data) {
   return receptionSchema.validate(data, { abortEarly: true });
 }
 
-export { receptionValidation, receptionValidationUpdate };
+module.exports = { receptionValidation, receptionValidationUpdate };

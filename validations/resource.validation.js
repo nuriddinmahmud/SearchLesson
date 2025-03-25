@@ -1,4 +1,4 @@
-import Joi from "joi";
+const Joi = require("joi");
 
 function resourceValidation(data) {
   const resourceSchema = Joi.object({
@@ -36,4 +36,4 @@ function resourceValidationUpdate(data) {
   return resourceSchema.validate(data, { abortEarly: true });
 }
 
-export { resourceValidation, resourceValidationUpdate };
+module.exports = { resourceValidation, resourceValidationUpdate };

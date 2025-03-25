@@ -1,4 +1,4 @@
-import Joi from "joi";
+const Joi = require("joi");
 
 function commentValidation(data) {
   const commentSchema = Joi.object({
@@ -25,4 +25,4 @@ function commentValidationUpdate(data) {
   return commentSchema.validate(data, { abortEarly: true });
 }
 
-export { commentValidation, commentValidationUpdate };
+module.exports = { commentValidation, commentValidationUpdate };

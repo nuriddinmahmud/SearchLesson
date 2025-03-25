@@ -1,4 +1,4 @@
-import Joi from "joi";
+const Joi = require("joi");
 
 function coursesValidation(data) {
   const coursesSchema = Joi.object({
@@ -28,4 +28,4 @@ function coursesValidationUpdate(data) {
   return coursesSchema.validate(data, { abortEarly: true });
 }
 
-export { coursesValidation, coursesValidationUpdate };
+module.exports = { coursesValidation, coursesValidationUpdate };

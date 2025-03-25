@@ -1,4 +1,4 @@
-import Joi from "joi";
+const Joi = require("joi");
 
 function userValidation(data) {
   const User = Joi.object({
@@ -54,4 +54,4 @@ function userValidationUpdate(data) {
   return User.validate(data, { abortEarly: true });
 }
 
-export { userValidation, userValidationUpdate };
+module.exports = { userValidation, userValidationUpdate };

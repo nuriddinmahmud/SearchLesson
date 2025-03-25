@@ -1,4 +1,4 @@
-import Joi from "joi";
+const Joi = require("joi");
 
 function fieldValidation(data) {
   const fieldSchema = Joi.object({
@@ -23,4 +23,4 @@ function fieldValidationUpdate(data) {
   return fieldSchema.validate(data, { abortEarly: true });
 }
 
-export { fieldValidation, fieldValidationUpdate };
+module.exports = { fieldValidation, fieldValidationUpdate };

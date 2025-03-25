@@ -1,4 +1,4 @@
-import Joi from "joi";
+const Joi = require("joi");
 
 function educationCenterValidation(data) {
   const educationCenterSchema = Joi.object({
@@ -112,4 +112,4 @@ function educationCenterValidationUpdat(data) {
   return educationCenterSchema.validate(data, { abortEarly: true });
 }
 
-export { educationCenterValidation, educationCenterValidationUpdat };
+module.exports = { educationCenterValidation, educationCenterValidationUpdat };

@@ -1,4 +1,4 @@
-import Joi from "joi";
+const Joi = require("joi");
 
 function regionValidation(data) {
   const regionSchema = Joi.object({
@@ -52,4 +52,4 @@ function regionUpdateValidation(data) {
   return regionSchema.validate(data, { abortEarly: true });
 }
 
-export { regionUpdateValidation, regionValidation };
+module.exports = { regionUpdateValidation, regionValidation };
