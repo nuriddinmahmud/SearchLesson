@@ -1,7 +1,7 @@
 const Like = require("../models/like.model");
 const User = require("../models/user.model");
+const EducationalCenter = require("../models/educationalCenter.model");
 const { likeValidation } = require("../validations/like.validation");
-
 
 const getAll = async (req, res) => {
   try {
@@ -20,7 +20,8 @@ const getAll = async (req, res) => {
       order = [[sortBy, validSortOrder]];
     }
 
-    const data = await Like.findAndCountAll({include: User}, {
+    const data = await Like.findAndCountAll({
+      include: [User, EducationalCenter],
       where: whereClause,
       limit,
       offset,

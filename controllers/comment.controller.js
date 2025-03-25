@@ -1,4 +1,6 @@
 const Comment = require("../models/comment.model");
+const User = require("../models/user.model");
+const EducationalCenter = require("../models/educationalCenter.model");
 const {
   commentValidation,
   commentUpdateValidation,
@@ -25,6 +27,7 @@ const getAll = async (req, res) => {
     }
 
     const data = await Comment.findAndCountAll({
+      include: [User, EducationalCenter],
       where: whereClause,
       limit,
       offset,
