@@ -1,23 +1,26 @@
-const Joi = require("joi");
+import Joi from "joi";
 
-async function fieldValidation(data) {
-  const schema = Joi.object({
-    name: Joi.string().min(2).max(255).required(),
-    image: Joi.string().uri().required(),
-    courseID: Joi.number().min(1).required(),
+function fieldValidation(data) {
+  const fieldSchema = Joi.object({
+    name: Joi.string()
+      .min(2)
+      .pattern(/^[a-zA-Z]+$/)
+      .required(),
+    image: Joi.string().required(),
+    courseID: Joi.number().positive(),
   });
-
-  return schema.validate(data, { abortEarly: false });
+  return fieldSchema.validate(data, { abortEarly: true });
 }
 
-async function fieldUpdateValidation(data) {
-  const schema = Joi.object({
-    name: Joi.string().min(2).max(255).optional(),
-    image: Joi.string().uri().optional(),
-    courseID: Joi.number().min(1).optional(),
+function fieldValidationUpdate(data) {
+  const fieldSchema = Joi.object({
+    name: Joi.string()
+      .min(2)
+      .pattern(/^[a-zA-Z]+$/),
+    image: Joi.string(),
+    courseID: Joi.number().positive(),
   });
-
-  return schema.validate(data, { abortEarly: false });
+  return fieldSchema.validate(data, { abortEarly: true });
 }
 
-module.exports = { fieldValidation, fieldUpdateValidation };
+export { fieldValidation, fieldValidationUpdate };

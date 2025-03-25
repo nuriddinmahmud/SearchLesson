@@ -1,25 +1,28 @@
-const Joi = require("joi");
+import Joi from "joi";
 
-async function commentValidation(data) {
-  const schema = Joi.object({
-    description: Joi.string().min(3).max(1000).required(),
-    star: Joi.number().integer().min(1).max(5).optional(),
-    userId: Joi.number().min(1).required(),
-    educationCenterId: Joi.number().min(1).required(),
+function commentValidation(data) {
+  const commentSchema = Joi.object({
+    description: Joi.string()
+      .min(2)
+      .pattern(/^[a-zA-Z]+$/)
+      .required(),
+    star: Joi.number().positive().required(),
+    createdAt: Joi.date().optional(),
+    educationalCentreID: Joi.number().positive().required(),
   });
-
-  return schema.validate(data, { abortEarly: false });
+  return commentSchema.validate(data, { abortEarly: true });
 }
 
-async function commentUpdateValidation(data) {
-  const schema = Joi.object({
-    description: Joi.string().min(3).max(1000).optional(),
-    star: Joi.number().integer().min(1).max(5).optional(),
-    userId: Joi.number().min(1).optional(),
-    educationCenterId: Joi.number().min(1).optional(),
+function commentValidationUpdate(data) {
+  const commentSchema = Joi.object({
+    description: Joi.string()
+      .min(2)
+      .pattern(/^[a-zA-Z]+$/),
+    star: Joi.number().positive(),
+    createdAt: Joi.date(),
+    educationalCentreID: Joi.number().positive(),
   });
-
-  return schema.validate(data, { abortEarly: false });
+  return commentSchema.validate(data, { abortEarly: true });
 }
 
-module.exports = { commentValidation, commentUpdateValidation };
+export { commentValidation, commentValidationUpdate };

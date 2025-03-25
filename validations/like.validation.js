@@ -1,21 +1,17 @@
-const Joi = require("joi");
+import Joi from "joi";
 
-async function likeValidation(data) {
-  const schema = Joi.object({
-    userId: Joi.number().min(1).required(),
-    educationCenterId: Joi.number().min(1).required(),
+function likesValidation(data) {
+  const likesSchema = Joi.object({
+    educationalCentreID: Joi.number().positive().required(),
   });
-
-  return schema.validate(data, { abortEarly: false });
+  return likesSchema.validate(data, { abortEarly: true });
 }
 
-async function likeUpdateValidation(data) {
-  const schema = Joi.object({
-    userId: Joi.number().min(1).optional(),
-    educationCenterId: Joi.number().min(1).optional(),
+function likesUpdateValidation(data) {
+  const likesSchema = Joi.object({
+    educationalCentreID: Joi.number().positive(),
   });
-
-  return schema.validate(data, { abortEarly: false });
+  return likesSchema.validate(data, { abortEarly: true });
 }
 
-module.exports = { likeValidation, likeUpdateValidation };
+export { likesUpdateValidation, likesValidation };

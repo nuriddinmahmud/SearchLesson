@@ -1,25 +1,21 @@
-const Joi = require("joi");
+import Joi from "joi";
 
-async function receptionValidation(data) {
-  const schema = Joi.object({
-    fieldId: Joi.number().min(1).required(),
-    branchId: Joi.number().min(1).required(),
-    userId: Joi.number().min(1).required(),
-    educationCenterId: Joi.number().min(1).required(),
+function receptionValidation(data) {
+  const receptionSchema = Joi.object({
+    fieldID: Joi.number().positive().required(),
+    branchID: Joi.number().positive().required(),
+    educationalCentreID: Joi.number().positive().required(),
   });
-
-  return schema.validate(data, { abortEarly: false });
+  return receptionSchema.validate(data, { abortEarly: true });
 }
 
-async function receptionUpdateValidation(data) {
-  const schema = Joi.object({
-    fieldId: Joi.number().min(1).optional(),
-    branchId: Joi.number().min(1).optional(),
-    userId: Joi.number().min(1).optional(),
-    educationCenterId: Joi.number().min(1).optional(),
+function receptionValidationUpdate(data) {
+  const receptionSchema = Joi.object({
+    fieldID: Joi.number().positive(),
+    branchID: Joi.number().positive(),
+    educationalCentreID: Joi.number().positive(),
   });
-
-  return schema.validate(data, { abortEarly: false });
+  return receptionSchema.validate(data, { abortEarly: true });
 }
 
-module.exports = { receptionValidation, receptionUpdateValidation };
+export { receptionValidation, receptionValidationUpdate };

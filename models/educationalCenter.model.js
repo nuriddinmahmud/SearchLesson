@@ -1,51 +1,60 @@
-import { DataTypes } from "sequelize";
-import sequelize from "../config/database.js";
-import Region from "./regions.model.js";
-import Users from "./users.model.js";
+const { DataTypes, db } = require("sequelize");
+const Region = require("./region.model.js");
+const Users = require("./user.model.js");
 
-const EducationCenter = sequelize.define("EducationCenter", {
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-
-  image: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-
-  address: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-
-  star:{
-    type: DataTypes.FLOAT,
-    allowNull: false,
-  },
-
-  userID: {
-    type: DataTypes.INTEGER,
-    references: {
-      model: Users,
-      key: "id",
+const EducationCenter = db.define(
+  "EducationCenter",
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
     },
-    allowNull: false,
-  },
 
-  regionID: {
-    type: DataTypes.INTEGER,
-    references: {
-      model: Region,
-      key: "id",
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
-    allowNull: false,
-  },
 
-  phone: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-}, {timestamps: true});
+    image: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
 
-export default EducationCenter;
+    address: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+
+    star: {
+      type: DataTypes.FLOAT,
+      allowNull: false,
+    },
+
+    phone: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+
+    userID: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: Users,
+        key: "id",
+      },
+      allowNull: false,
+    },
+
+    regionID: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: Region,
+        key: "id",
+      },
+      allowNull: false,
+    },
+  },
+  { timestamps: true }
+);
+
+module.exports = EducationCenter;

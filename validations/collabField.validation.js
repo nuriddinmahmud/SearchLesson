@@ -1,12 +1,11 @@
-const Joi = require("joi");
+import Joi from "joi";
 
-async function collabFieldValidation(data) {
-  const schema = Joi.object({
-    fieldId: Joi.number().min(1).required(),
-    educationCenterId: Joi.number().min(1).required(),
+function collabFieldValidation(data) {
+  const collabFieldSchema = Joi.object({
+    fieldID: Joi.number().positive().required(),
+    educationalCentreID: Joi.number().positive().required(),
   });
-
-  return schema.validate(data, { abortEarly: false });
+  return collabFieldSchema.validate(data, {abortEarly: true});
 }
 
-module.exports = { collabFieldValidation };
+export default collabFieldValidation;

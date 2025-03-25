@@ -1,33 +1,55 @@
 const Joi = require("joi");
 
-async function branchValidation(data) {
-  const schema = Joi.object({
-    name: Joi.string().min(3).max(255).required(),
-    phone: Joi.string()
-      .pattern(/^\+?\d{7,15}$/)
+function branchesValidation(data) {
+  const branchesSchema = Joi.object({
+    name: Joi.string()
+      .min(2)
+      .max(15)
+      .pattern(/^[a-zA-Z]+$/)
       .required(),
-    address: Joi.string().min(5).max(500).required(),
-    image: Joi.string().uri().required(),
-    regionID: Joi.number().min(1).required(),
-    centreID: Joi.number().min(1).required(),
-  });
-
-  return schema.validate(data, { abortEarly: false });
-}
-
-async function branchUpdateValidation(data) {
-  const schema = Joi.object({
-    name: Joi.string().min(3).max(255).optional(),
+    image: Joi.string().required(),
     phone: Joi.string()
-      .pattern(/^\+?\d{7,15}$/)
-      .optional(),
-    address: Joi.string().min(5).max(500).optional(),
-    image: Joi.string().uri().optional(),
-    regionID: Joi.number().min(1).optional(),
-    centreID: Joi.number().min(1).optional(),
+      .pattern(/^\+998\d{9}$/)
+      .required(),
+    address: Joi.string()
+      .custom((value, helpers) => {
+        if (/\s|['.-]+$/.test(value)) {
+          if (!/^[a-zA-Z' .-]+$/.test(value)) {
+            return helpers.error("string.invalidFormat");
+          }
+        } else {
+          if (!/^[a-zA-Z]+$/.test(value)) {
+            return helpers.error("string.invalidFormat");
+          }
+        }
+        return value;
+      })
+      .required()
+      .messages({
+        "string.invalidFormat":
+          "Invalid address format, Only letters, spaces, and ['.-] are allowd.",
+      }),
+    regionID: Joi.number().positive().required(),
+    centreID: Joi.number().positive().required(),
   });
 
-  return schema.validate(data, { abortEarly: false });
+  return branchesSchema.validate(data, { abortEarly: true });
 }
 
-module.exports = { branchValidation, branchUpdateValidation };
+function branchesValidationUpdate(data) {
+  const branchesSchema = Joi.object({
+    name: Joi.string()
+      .min(2)
+      .max(15)
+      .pattern(/^[a-zA-Z]+$/),
+    image: Joi.string(),
+    phone: Joi.string().pattern(/^\+998\d{9}$/),
+    address: Joi.string().pattern(/^[a-zA-Z]+$/),
+    regionID: Joi.number().positive(),
+    centreID: Joi.number().positive(),
+  });
+
+  return branchesSchema.validate(data, { abortEarly: true });
+}
+
+export { branchesValidation, branchesValidationUpdate };
