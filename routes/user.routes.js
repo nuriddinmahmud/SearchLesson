@@ -3,17 +3,17 @@ const UserRouter = Router();
 const {
   register,
   verifyOtp,
-  login,
-  findAll,
-  update,
-  remove,
-  promoteToAdmin,
-  findOne,
-  myEducationalCentres,
-  myInfo,
-  getNewAccessToken,
   sendOtpPhone,
   verifyOtpPhone,
+  login,
+  findAll,
+  findOne,
+  update,
+  remove,
+  myInfo,
+  myEducationalCentres,
+  getNewAccessToken,
+  promoteToAdmin,
 } = require("../controllers/user.controller");
 const verifyToken = require("../middlewares/verifyToken");
 const checkRole = require("../middlewares/checkRole");
