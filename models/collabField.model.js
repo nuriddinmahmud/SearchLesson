@@ -1,6 +1,6 @@
 const { db, DataTypes } = require("../config/database");
 const Field = require("./field.model");
-const EducationCenter = require("./educationCenter.model");
+const EducationCenter = require("./educationalCenter.model");
 
 const collabField = db.define(
   "collabField",

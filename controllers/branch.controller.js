@@ -1,6 +1,6 @@
 const Branch = require("../models/branch.model");
 const Region = require("../models/region.model");
-const EducationalCenter = require("../models/educationCenter.model.js");
+const EducationalCenter = require("../models/educationalCenter.model.js");
 const { Op } = require("sequelize");
 
 const {
@@ -33,7 +33,7 @@ const getAll = async (req, res) => {
       where: whereClause,
       include: [
         { model: Region, attributes: ["id", "name"] },
-        { model: EducationalCenter }
+        { model: EducationalCenter },
       ],
       limit: pageSize,
       offset: (pageNumber - 1) * pageSize,

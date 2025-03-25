@@ -49,6 +49,9 @@ const getAll = async (req, res) => {
 const getOne = async (req, res) => {
   try {
     const data = await Course.findByPk(req.params.id);
+    if (!data) {
+      return res.status(404).send("Cource not found!");
+    }
     res.send(data);
   } catch (error) {
     res.send(error.mesage);
@@ -78,7 +81,7 @@ const update = async (req, res) => {
   try {
     const data = await Course.findByPk(req.params.id);
     if (!data) {
-      res.send({ message: "Course not found" });
+      res.send({ message: "Course not found!" });
       return;
     }
     const { error } = courseUpdateValidation(req.body);

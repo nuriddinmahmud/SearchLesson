@@ -1,10 +1,12 @@
 const Reception = require("../models/reception.model");
+const Field = require("../models/field.model#");
+const User = require("../models/user.model");
+const Branch = require("../models/branch.model");
+
 const {
   receptionValidation,
   receptionUpdateValidation,
 } = require("../validations/reception.validation");
-
-const { Op } = require("sequelize");
 
 const getAll = async (req, res) => {
   try {
@@ -27,6 +29,7 @@ const getAll = async (req, res) => {
     }
 
     const data = await Reception.findAndCountAll({
+      include: [{ model: Field }, { model: User }, { model: Branch }],
       where: whereClause,
       limit,
       offset,

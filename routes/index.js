@@ -1,4 +1,6 @@
 const { Router } = require("express");
+const mainRouter = Router();
+
 // const EducationalCenterRouter = require("./educationalCemter.routes.js");
 // const ResourceCategoryRouter = require("./resourceCategory.routes.js");
 const CommentRouter = require("./comment.routes.js");
@@ -11,9 +13,6 @@ const CourseRoute = require("./course.routes.js");
 const ReceptionRoute = require("./reception.routes.js");
 const ResourceRoute = require("./resource.routes.js");
 const CollabFieldRoute = require("./collabField.routes.js");
-// const UploadImageRoute = require("./upload-image.routes.js");
-
-const mainRouter = Router();
 
 // mainRouter.use("/educationalcentre", EducationalCenterRouter);
 // mainRouter.use("/resourceCategory", ResourceCategoryRouter);

@@ -18,7 +18,7 @@ const getAll = async (req, res) => {
     const pageSize = limit ? parseInt(limit) : 10;
     const pageNumber = page ? parseInt(page) : 1;
 
-    let order = [["id", "ASC"]]; 
+    let order = [["id", "ASC"]];
     if (sortBy) {
       const validSortOrder = sortOrder === "asc" ? "ASC" : "DESC";
       order = [[sortBy, validSortOrder]];
