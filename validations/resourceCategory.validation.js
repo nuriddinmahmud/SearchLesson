@@ -1,24 +1,27 @@
 const Joi = require("joi");
 
-async function resourceCategoryValidation(data) {
-  const schema = Joi.object({
-    name: Joi.string().min(3).max(255).required(),
-    image: Joi.string().uri().required(),
+function resourceCategoryValidation(data) {
+  const resourceSchema = Joi.object({
+    name: Joi.string()
+      .min(2)
+      .pattern(/^[a-zA-Z]+$/)
+      .required(),
+    image: Joi.string().required(),
   });
-
-  return schema.validate(data, { abortEarly: false });
+  return resourceSchema.validate(data, { abortEarly: true });
 }
 
-async function resourceCategoryUpdateValidation(data) {
-  const schema = Joi.object({
-    name: Joi.string().min(3).max(255).optional(),
-    image: Joi.string().uri().optional(),
+function resourceCategoryValidationUpdate(data) {
+  const resourceSchema = Joi.object({
+    name: Joi.string()
+      .min(2)
+      .pattern(/^[a-zA-Z]+$/),
+    image: Joi.string(),
   });
-
-  return schema.validate(data, { abortEarly: false });
+  return resourceSchema.validate(data, { abortEarly: true });
 }
 
 module.exports = {
   resourceCategoryValidation,
-  resourceCategoryUpdateValidation,
+  resourceCategoryValidationUpdate,
 };
