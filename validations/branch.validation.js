@@ -1,6 +1,6 @@
 const Joi = require("joi");
 
-function branchesValidation(data) {
+function branchValidation(data) {
   const branchesSchema = Joi.object({
     name: Joi.string()
       .min(2)
@@ -36,7 +36,7 @@ function branchesValidation(data) {
   return branchesSchema.validate(data, { abortEarly: true });
 }
 
-function branchesValidationUpdate(data) {
+function branchValidationUpdate(data) {
   const branchesSchema = Joi.object({
     name: Joi.string()
       .min(2)
@@ -52,4 +52,4 @@ function branchesValidationUpdate(data) {
   return branchesSchema.validate(data, { abortEarly: true });
 }
 
-export { branchesValidation, branchesValidationUpdate };
+module.exports = { branchValidation, branchValidationUpdate };

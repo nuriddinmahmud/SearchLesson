@@ -1,17 +1,17 @@
 const Joi = require("joi");
 
-function likesValidation(data) {
+function likeValidation(data) {
   const likesSchema = Joi.object({
     educationalCentreID: Joi.number().positive().required(),
   });
   return likesSchema.validate(data, { abortEarly: true });
 }
 
-function likesUpdateValidation(data) {
+function likeUpdateValidation(data) {
   const likesSchema = Joi.object({
     educationalCentreID: Joi.number().positive(),
   });
   return likesSchema.validate(data, { abortEarly: true });
 }
 
-module.exports = { likesUpdateValidation, likesValidation };
+module.exports = { likeUpdateValidation, likeValidation };

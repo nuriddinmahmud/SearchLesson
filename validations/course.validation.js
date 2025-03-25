@@ -1,6 +1,6 @@
 const Joi = require("joi");
 
-function coursesValidation(data) {
+function courseValidation(data) {
   const coursesSchema = Joi.object({
     name: Joi.string()
       .min(2)
@@ -15,7 +15,7 @@ function coursesValidation(data) {
   return coursesSchema.validate(data, { abortEarly: true });
 }
 
-function coursesValidationUpdate(data) {
+function courseValidationUpdate(data) {
   const coursesSchema = Joi.object({
     name: Joi.string()
       .min(2)
@@ -28,4 +28,4 @@ function coursesValidationUpdate(data) {
   return coursesSchema.validate(data, { abortEarly: true });
 }
 
-module.exports = { coursesValidation, coursesValidationUpdate };
+module.exports = { courseValidation, courseValidationUpdate };
