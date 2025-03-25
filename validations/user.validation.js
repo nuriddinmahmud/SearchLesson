@@ -42,7 +42,7 @@ function userValidationUpdate(data) {
       .min(13)
       .pattern(/^\+998\d{9}$/)
       .optional(),
-    yearOfBirth: Joi.number().integer().min(1900).max(2021).optional(),
+    yearOfBirth: Joi.number().integer().min(1900).max(2100).optional(),
     password: Joi.string()
       .min(8)
       .pattern(new RegExp("^[a-zA-Z0-9]{3, 30}$"))
