@@ -6,11 +6,14 @@ const {
   post,
   update,
   remove,
+  myCourses
 } = require("../controllers/reception.controller");
 const verifyToken = require("../middlewares/verifyToken");
 const checkRole = require("../middlewares/checkRole");
 
 ReceptionRouter.get("/", getAll);
+
+ReceptionRouter.get("/", verifyToken, myCourses);
 
 ReceptionRouter.get("/:id", getOne);
 

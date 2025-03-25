@@ -6,10 +6,12 @@ const {
   post,
   update,
   remove,
+  myComments
 } = require("../controllers/comment.controller");
 const verifyToken = require("../middlewares/verifyToken");
 
 CommentRouter.get("/", getAll);
+CommentRouter.get("/my-comments",verifyToken, myComments);
 
 CommentRouter.get("/:id", getOne);
 

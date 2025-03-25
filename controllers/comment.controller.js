@@ -5,6 +5,53 @@ const {commentValidation, commentUpdateValidation} = require("../validations/com
 
 const getAll = async(req,res) =>{
     try {
+        if(req.query.take && req.query.from){
+            const {take, from} = req.query
+            const data = await Comment.findAll({limit: take, offset: from})
+            res.send(data)
+            return;
+        }
+        if(req.query.star){
+            const {star} = req.query
+            const data = await Comment.findAll({where: {star}})
+            if(!data){
+                res.send({message: `No Comment found with star ${req.query.star}`})
+                return;
+            }
+            res.send(data)
+            return;
+        }
+        if(req.query.educationCenterId){
+            const data = await Comment.findAll({where: {educationCenterId: req.query.educationCenterId}})
+            if(!data){
+                res.send({message: `No Comment found with educationCenterId ${req.query.educationCenterId}`})
+                return;
+            }
+            res.send(data)
+            return;
+        }
+        if(req.query.userId){
+            const data = await Comment.findAll({where: {userId: req.query.userId}})
+            if(!data){
+                res.send({message: `No Comment found with userId ${req.query.userId}`})
+                return;
+            }
+            res.send(data)
+            return;
+        }
+        const data = await Comment.findAll({where: {userId: req.userId}})
+        if(!data){
+            res.send({message: "comments not found"})
+            return;
+        }
+        res.send(data)
+    } catch (error) {
+        res.send(error.mesage)
+    }
+}
+
+const myComments = async(req,res) =>{
+    try {
         const data = await Comment.findAll()
         res.send(data)
     } catch (error) {
@@ -63,9 +110,9 @@ const update = async(req,res) =>{
 
 const remove = async(req,res) =>{
     try {
-        const data = await Course.findByPk(req.params.id)
+        const data = await Comment.findByPk(req.params.id)
         if(!data){
-            res.send({message: "Course not found"})
+            res.send({message: "Comment not found"})
             return;
         }
         await data.destroy()
@@ -80,5 +127,6 @@ module.exports = {
     getOne,
     post,
     update,
-    remove
+    remove,
+    myComments
 }

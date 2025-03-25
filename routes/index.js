@@ -1,8 +1,8 @@
 const { Router } = require("express");
-const EducationalCenterRouter = require("./educationalCenter.routes.js");
+const EducationalCenterRouter = require("./educationalCemter.routes.js");
 const ResourceCategoryRouter = require("./resourceCategory.routes.js");
 const CommentRouter = require("./comment.routes.js");
-const BranchRouter = require("./branche.routes.js");
+const BranchRouter = require("./branch.routes.js");
 const RegionRouter = require("./region.routes.js");
 const LikesRouter = require("./like.routes.js");
 const FieldRouter = require("./field.routes.js");

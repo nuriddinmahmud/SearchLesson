@@ -5,6 +5,31 @@ const {courseValidation, courseUpdateValidation} = require("../validations/cours
 
 const getAll = async(req,res) =>{
     try {
+        if(req.query.take && req.query.from){
+            const {take, from} = req.query
+            const data = await Course.findAll({limit: take, offset: from})
+            res.send(data)
+            return;
+        }
+        if(req.query.name){
+            const {name} = req.query
+            const data = await Course.findAll({where: {name}})
+            if(!data){
+                res.send({message: `No course found with name ${req.query.name}`})
+                return;
+            }
+            res.send(data)
+            return;
+        }
+        if(req.query.type){
+            const data = await Course.findAll({where: {type: req.query.type}})
+            if(!data){
+                res.send({message: `No course found with type ${req.query.type}`})
+                return;
+            }
+            res.send(data)
+            return;
+        }
         const data = await Course.findAll()
         res.send(data)
     } catch (error) {

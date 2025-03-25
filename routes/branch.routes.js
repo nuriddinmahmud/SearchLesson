@@ -8,7 +8,7 @@ const {
   remove,
 } = require("../controllers/branch.controller");
 const verifyToken = require("../middlewares/verifyToken");
-const checkRole = require("../middlewares/checkRole");
+const checkRole = require("../middlewares/rolePolice");
 const selfPolice = require("../middlewares/selfPolice");
 
 BranchRouter.get("/", getAll);

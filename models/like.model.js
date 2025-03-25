@@ -1,4 +1,4 @@
-const { db, DataTypes } = require("../config/db");
+const { db, DataTypes } = require("../config/database");
 const User = require("./user.model");
 const EducationCenter = require("./educationCenter.model");
 

@@ -1,9 +1,9 @@
-import { DataTypes } from "sequelize";
+import { db, DataTypes } from "../config/database.js";
 import sequelize from "../config/database.js";
-import Region from "./regions.model.js";
-import Users from "./users.model.js";
+import Region from "./region.model.js";
+import Users from "./user.model.js";
 
-const EducationCenter = sequelize.define("EducationCenter", {
+const EducationCenter = db.define("EducationCenter", {
   name: {
     type: DataTypes.STRING,
     allowNull: false,
