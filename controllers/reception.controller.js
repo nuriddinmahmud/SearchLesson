@@ -1,5 +1,5 @@
 const Reception = require("../models/reception.model")
-const {receptionValidation, receptionUpdateValidation} = require("../validations/reception.validation")
+const {receptionValidation} = require("../validations/reception.validation")
 
 
 

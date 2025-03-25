@@ -8,7 +8,7 @@ const {
   remove,
 } = require("../controllers/region.controller");
 const verifyToken = require("../middlewares/verifyToken");
-const checkRole = require("../middlewares/checkRole");
+const checkRole = require("../middlewares/rolePolice");
 
 RegionRouter.get("/", getAll);
 

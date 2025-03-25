@@ -8,7 +8,7 @@ const {
   remove,
 } = require("../controllers/branch.controller");
 const verifyToken = require("../middlewares/verifyToken");
-const checkRole = require("../middlewares/rolePolice");
+const rolePolice = require("../middlewares/rolePolice");
 const selfPolice = require("../middlewares/selfPolice");
 
 BranchRouter.get("/", getAll);
@@ -17,8 +17,8 @@ BranchRouter.get("/:id", getOne);
 
 BranchRouter.post("/", verifyToken, selfPolice(["Admin", "Ceo"]), post);
 
-BranchRouter.patch("/:id", verifyToken, checkRole(["Admin"]), update);
+BranchRouter.patch("/:id", verifyToken, rolePolice(["Admin"]), update);
 
-BranchRouter.delete("/:id", verifyToken, checkRole(["Admin"]), remove);
+BranchRouter.delete("/:id", verifyToken, rolePolice(["Admin"]), remove);
 
 module.exports = BranchRouter;

@@ -8,10 +8,10 @@ const {
   update,
 } = require("../controllers/course.controller");
 const verifyToken = require("../middlewares/verifyToken");
-const checkRole = require("../middlewares/checkRole");
+const checkRole = require("../middlewares/rolePolice");
 const selfPolice = require("../middlewares/selfPolice");
 
-CourseRouter.get("/", getAll);
+CourseRouter.get("/", verifyToken, getAll);
 
 CourseRouter.get("/:id", getOne);
 
