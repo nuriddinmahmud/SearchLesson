@@ -10,7 +10,6 @@ const EducationCenter = db.define(
       autoIncrement: true,
       primaryKey: true,
     },
-
     name: {
       type: DataTypes.STRING,
       allowNull: false,

@@ -1,5 +1,5 @@
 const { db, DataTypes } = require("../config/database");
-const Category = require("./resourceCategory.model");
+const ResourceCategory = require("./resourceCategory.model"); // Model nomi to'g'ri bo'lishi kerak
 const User = require("./user.model");
 
 const Resource = db.define(
@@ -30,7 +30,7 @@ const Resource = db.define(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: Category,
+        model: ResourceCategory, // Oldingi 'Category' emas, balki 'ResourceCategory' bo'lishi kerak
         key: "id",
       },
       onUpdate: "CASCADE",

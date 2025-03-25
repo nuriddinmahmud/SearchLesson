@@ -1,5 +1,5 @@
 const Reception = require("../models/reception.model");
-const Field = require("../models/field.model#");
+const Field = require("../models/field.model");
 const User = require("../models/user.model");
 const Branch = require("../models/branch.model");
 
