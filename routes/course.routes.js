@@ -1,17 +1,24 @@
-const {Router}  = require("express")
-const app = Router()
+const { Router } = require("express");
+const CourseRouter = Router();
+const {
+  getAll,
+  getOne,
+  post,
+  remove,
+  update,
+} = require("../controllers/course.controller");
+const verifyToken = require("../middlewares/verifyToken");
+const checkRole = require("../middlewares/checkRole");
+const selfPolice = require("../middlewares/selfPolice");
 
-const { getOne, getAll, post, update, remove} = require("../controllers/course.controller")
+CourseRouter.get("/", getAll);
 
+CourseRouter.get("/:id", getOne);
 
-app.get("/", getAll(req,res))
-app.get("/:id", getOne(req,res))
-app.post("/", post(req,res))
-app.patch("/:id", update(req,res))
-app.delete("/:id", remove(req,res))
+CourseRouter.post("/", verifyToken, selfPolice(["Admin"]), post);
 
+CourseRouter.patch("/:id", checkRole(["Admin"]), update);
 
+CourseRouter.delete("/:id", checkRole(["Admin"]), remove);
 
-
-module.exports = app
-
+module.exports = CourseRouter;

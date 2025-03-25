@@ -1,17 +1,19 @@
-const {Router}  = require("express")
-const app = Router()
+const { Router } = require("express");
+const LikesRouter = Router();
+const {
+  getAll,
+  getOne,
+  post,
+  remove,
+} = require("../controllers/like.controller");
+const verifyToken = require("../middlewares/verifyToken");
 
-const { getOne, getAll, post, update, remove} = require("../controllers/like.controller")
+LikesRouter.get("/", getAll);
 
+LikesRouter.get("/:id", getOne);
 
-app.get("/", getAll(req,res))
-app.get("/:id", getOne(req,res))
-app.post("/", post(req,res))
-app.patch("/:id", update(req,res))
-app.delete("/:id", remove(req,res))
+LikesRouter.post("/", verifyToken, post);
 
+LikesRouter.delete("/:id", verifyToken, remove);
 
-
-
-module.exports = app
-
+module.exports = LikesRouter;
