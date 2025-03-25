@@ -1,5 +1,5 @@
 const { db, DataTypes } = require("../config/database");
-const Category = require("./category.model");
+const Category = require("./resourceCategory.model");
 const User = require("./user.model");
 
 const Resource = db.define(

@@ -1,11 +1,19 @@
 const { Sequelize, DataTypes } = require("sequelize");
 
 const db = new Sequelize({
+<<<<<<< HEAD
   dialect: "mysql",
   host: "localhost",
   username: "root",
   password: "12345678",
   database: "db",
+=======
+  dialect: "mysql", 
+  host: "localhost",  
+  username: "root",   
+  password: "12345678",   
+  database: "db",  
+>>>>>>> 9b06d7e0d15c85f27552123d4e170e681577d75f
 });
 
 async function connect() {

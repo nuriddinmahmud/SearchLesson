@@ -1,6 +1,6 @@
 const { db, DataTypes } = require("../config/database");
 const Region = require("./region.model");
-const EducationalCenter = require("./educationalCenter.model");
+const EducationalCenter = require("./educationCenter.model");
 
 const Branch = db.define("Branch", {
   id: {

@@ -8,7 +8,7 @@ const {
   remove,
 } = require("../controllers/field.controller");
 const verifyToken = require("../middlewares/verifyToken");
-const checkRole = require("../middlewares/checkRole");
+const checkRole = require("../middlewares/rolePolice");
 
 FieldRouter.get("/", getAll);
 

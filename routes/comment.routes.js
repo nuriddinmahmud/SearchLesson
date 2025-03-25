@@ -10,10 +10,10 @@ const {
 } = require("../controllers/comment.controller");
 const verifyToken = require("../middlewares/verifyToken");
 
-CommentRouter.get("/", getAll);
+CommentRouter.get("/",verifyToken, getAll);
 CommentRouter.get("/my-comments",verifyToken, myComments);
 
-CommentRouter.get("/:id", getOne);
+CommentRouter.get("/:id",verifyToken, getOne);
 
 CommentRouter.post("/", verifyToken, post);
 

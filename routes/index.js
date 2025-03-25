@@ -11,7 +11,7 @@ const CourseRoute = require("./course.routes.js");
 const ReceptionRoute = require("./reception.routes.js");
 const ResourceRoute = require("./resource.routes.js");
 const CollabFieldRoute = require("./collabField.routes.js");
-const UploadImageRoute = require("./upload-image.routes.js");
+// const UploadImageRoute = require("./upload-image.routes.js");
 
 const mainRouter = Router();
 

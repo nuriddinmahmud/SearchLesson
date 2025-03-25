@@ -9,7 +9,7 @@ const {
   myCourses
 } = require("../controllers/reception.controller");
 const verifyToken = require("../middlewares/verifyToken");
-const checkRole = require("../middlewares/checkRole");
+const checkRole = require("../middlewares/rolePolice");
 
 ReceptionRouter.get("/", getAll);
 
