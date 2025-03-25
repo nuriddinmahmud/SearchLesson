@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-const { DataTypes, db } = require("sequelize");
-=======
 const { DataTypes, db } = require("../config/database");
->>>>>>> 9b06d7e0d15c85f27552123d4e170e681577d75f
 
 const User = db.define(
   "User",

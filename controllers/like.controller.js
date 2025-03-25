@@ -1,7 +1,7 @@
 const Like = require("../models/like.model");
+const User = require("../models/user.model");
 const { likeValidation } = require("../validations/like.validation");
 
-const { Op } = require("sequelize");
 
 const getAll = async (req, res) => {
   try {
@@ -20,7 +20,7 @@ const getAll = async (req, res) => {
       order = [[sortBy, validSortOrder]];
     }
 
-    const data = await Like.findAndCountAll({
+    const data = await Like.findAndCountAll({include: User}, {
       where: whereClause,
       limit,
       offset,

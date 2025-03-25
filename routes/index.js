@@ -1,32 +1,29 @@
-const { Router } = require("express");
-const EducationalCenterRouter = require("./educationalCemter.routes.js");
-const ResourceCategoryRouter = require("./resourceCategory.routes.js");
-const CommentRouter = require("./comment.routes.js");
-const BranchRouter = require("./branch.routes.js");
-const RegionRouter = require("./region.routes.js");
-const LikesRouter = require("./like.routes.js");
-const FieldRouter = require("./field.routes.js");
-const UserRouter = require("./user.routes.js");
+const router = require("express").Router();
+
+const EducationalCenterRoute = require("./educationalCemter.routes.js");
+const ResourceCategoryRoute = require("./resourceCategory.routes.js");
+const CommentRoute = require("./comment.routes.js");
+const BranchRoute = require("./branch.routes.js");
+const RegionRoute = require("./region.routes.js");
+const LikesRoute = require("./like.routes.js");
+const FieldRoute = require("./field.routes.js");
+const UserRoute = require("./user.routes.js");
 const CourseRoute = require("./course.routes.js");
 const ReceptionRoute = require("./reception.routes.js");
 const ResourceRoute = require("./resource.routes.js");
 const CollabFieldRoute = require("./collabField.routes.js");
-// const UploadImageRoute = require("./upload-image.routes.js");
 
-const mainRouter = Router();
+router.use("/educationalcentre", EducationalCenterRoute);
+router.use("/resourceCategory", ResourceCategoryRoute);
+router.use("/comment", CommentRoute);
+router.use("/region", RegionRoute);
+router.use("/branche", BranchRoute);
+router.use("/field", FieldRoute);
+router.use("/like", LikesRoute);
+router.use("/user", UserRoute);
+router.use("/course", CourseRoute);
+router.use("/reception", ReceptionRoute);
+router.use("/resource", ResourceRoute);
+router.use("/collabField", CollabFieldRoute);
 
-mainRouter.use("/educationalcentre", EducationalCenterRouter);
-mainRouter.use("/resourceCategory", ResourceCategoryRouter);
-mainRouter.use("/comment", CommentRouter);
-mainRouter.use("/region", RegionRouter);
-mainRouter.use("/branche", BranchRouter);
-mainRouter.use("/field", FieldRouter);
-mainRouter.use("/like", LikesRouter);
-mainRouter.use("/user", UserRouter);
-mainRouter.use("/course", CourseRoute);
-mainRouter.use("/reception", ReceptionRoute);
-mainRouter.use("/resource", ResourceRoute);
-mainRouter.use("/collabField", CollabFieldRoute);
-mainRouter.use("/upload-image", UploadImageRoute);
-
-module.exports = mainRouter;
+module.exports = router;
