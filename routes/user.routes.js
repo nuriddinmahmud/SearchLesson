@@ -261,48 +261,53 @@ UsersRouter.patch("/promoteToAdmin/:id", promoteToAdmin);
  * @swagger
  * /api/user:
  *   get:
+ *     summary: Get all users with filters, sorting, and pagination
  *     tags: [Users]
  *     security:
  *       - BearerAuth: []
  *     parameters:
- *       - name: page
- *         in: query
- *         description: Page number (pagination)
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: Search by full name or email
+ *       - in: query
+ *         name: role
+ *         schema:
+ *           type: string
+ *           enum: [Admin, User, Ceo, SuperAdmin]
+ *         description: Filter by user role
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *           enum: [Active, Inactive]
+ *         description: Filter by user status
+ *       - in: query
+ *         name: page
  *         schema:
  *           type: integer
- *       - name: limit
- *         in: query
- *         description: Number of users per page
+ *         description: Page number for pagination
+ *       - in: query
+ *         name: limit
  *         schema:
  *           type: integer
- *       - name: sort
- *         in: query
- *         description: Field to sort by (e.g., "fullName", "email", "createdAt")
+ *         description: Number of results per page
+ *       - in: query
+ *         name: sortBy
  *         schema:
  *           type: string
- *       - name: order
- *         in: query
- *         description: Sort order (ASC or DESC)
+ *           enum: [fullName, email, createdAt]
+ *         description: Field to sort by (e.g., fullName, email, createdAt)
+ *       - in: query
+ *         name: sortOrder
  *         schema:
  *           type: string
- *       - name: status
- *         in: query
- *         description: Filter by user status (Active or Inactive)
- *         schema:
- *           type: string
- *       - name: role
- *         in: query
- *         description: Filter by user role (Admin, User, Ceo, SuperAdmin)
- *         schema:
- *           type: string
- *       - name: search
- *         in: query
- *         description: Search by name or email
- *         schema:
- *           type: string
+ *           enum: [asc, desc]
+ *         description: Sorting order (asc or desc)
  *     responses:
  *       200:
- *         description: List of users
+ *         description: A list of users with pagination
  *         content:
  *           application/json:
  *             schema:
@@ -310,19 +315,16 @@ UsersRouter.patch("/promoteToAdmin/:id", promoteToAdmin);
  *               properties:
  *                 total:
  *                   type: integer
- *                   description: Total users count
  *                 page:
  *                   type: integer
- *                   description: Current page number
- *                 totalPages:
+ *                 limit:
  *                   type: integer
- *                   description: Total number of pages
  *                 data:
  *                   type: array
  *                   items:
  *                     $ref: '#/components/schemas/User'
  *       403:
- *         description: Unauthorized user type
+ *         description: Unauthorized access
  *       500:
  *         description: Internal server error
  */

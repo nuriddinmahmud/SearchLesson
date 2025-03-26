@@ -27,20 +27,31 @@ const selfPolice = require("../middlewares/selfPolice");
  *       - bearerAuth: []
  *     parameters:
  *       - in: query
- *         name: take
- *         schema:
- *           type: integer
- *         description: Number of courses to return
- *       - in: query
- *         name: from
- *         schema:
- *           type: integer
- *         description: Number of courses to skip
- *       - in: query
- *         name: name
+ *         name: search
  *         schema:
  *           type: string
- *         description: Filter by course name
+ *         description: Search by course name
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         description: Page number for pagination
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         description: Number of results per page
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *         description: Field to sort by
+ *       - in: query
+ *         name: sortOrder
+ *         schema:
+ *           type: string
+ *           enum: [asc, desc]
+ *         description: Sort order (asc or desc)
  *       - in: query
  *         name: type
  *         schema:
@@ -48,7 +59,9 @@ const selfPolice = require("../middlewares/selfPolice");
  *         description: Filter by course type
  *     responses:
  *       200:
- *         description: A list of courses
+ *         description: List of courses
+ *       400:
+ *         description: Bad request
  *       404:
  *         description: No courses found
  */

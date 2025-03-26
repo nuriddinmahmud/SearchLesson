@@ -40,11 +40,31 @@ const verifyToken = require("../middlewares/verifyToken");
  *         schema:
  *           type: integer
  *         description: Filter by user ID
+ *       - in: query
+ *         name: postId
+ *         schema:
+ *           type: integer
+ *         description: Filter by post ID
  *     responses:
  *       200:
  *         description: A list of likes
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 total:
+ *                   type: integer
+ *                 take:
+ *                   type: integer
+ *                 from:
+ *                   type: integer
+ *                 data:
+ *                   type: array
  *       404:
  *         description: No likes found
+ *       500:
+ *         description: Internal server error
  */
 LikesRouter.get("/", getAll);
 
