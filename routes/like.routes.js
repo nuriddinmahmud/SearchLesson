@@ -96,7 +96,7 @@ LikesRouter.get("/:id", getOne);
  *     summary: Get liked items of authenticated user
  *     tags: [Likes]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     responses:
  *       200:
  *         description: List of liked items
@@ -112,7 +112,7 @@ LikesRouter.get("/liked", verifyToken, liked);
  *     summary: Create a new like
  *     tags: [Likes]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -139,7 +139,7 @@ LikesRouter.post("/", verifyToken, post);
  *     summary: Delete a like by ID
  *     tags: [Likes]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id

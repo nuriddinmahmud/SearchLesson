@@ -14,7 +14,7 @@ const selfPolice = require("../middlewares/selfPolice");
 /**
  * @swagger
  * tags:
- *   name: Branch
+ *   name: Branches
  *   description: Branch management
  */
 
@@ -23,7 +23,7 @@ const selfPolice = require("../middlewares/selfPolice");
  * /api/branch:
  *   get:
  *     summary: Get all branches
- *     tags: [Branch]
+ *     tags: [Branches]
  *     parameters:
  *       - in: query
  *         name: search
@@ -69,7 +69,7 @@ BranchRouter.get("/", getAll);
  * /api/branch/{id}:
  *   get:
  *     summary: Get a single branch by ID
- *     tags: [Branch]
+ *     tags: [Branches]
  *     parameters:
  *       - in: path
  *         name: id
@@ -90,9 +90,9 @@ BranchRouter.get("/:id", getOne);
  * /api/branch:
  *   post:
  *     summary: Create a new branch
- *     tags: [Branch]
+ *     tags: [Branches]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -132,9 +132,9 @@ BranchRouter.post("/", verifyToken, selfPolice(["Admin", "Ceo"]), post);
  * /api/branch/{id}:
  *   patch:
  *     summary: Update branch details
- *     tags: [Branch]
+ *     tags: [Branches]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -182,9 +182,9 @@ BranchRouter.patch("/:id", verifyToken, rolePolice(["Admin"]), update);
  * /api/branch/{id}:
  *   delete:
  *     summary: Delete a branch
- *     tags: [Branch]
+ *     tags: [Branches]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id

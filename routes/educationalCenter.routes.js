@@ -14,7 +14,7 @@ const checkRole = require("../middlewares/rolePolice");
 /**
  * @swagger
  * tags:
- *   - name: EducationalCenter
+ *   - name: Educational Centers
  *     description: Education Center management
  */
 /**
@@ -22,7 +22,7 @@ const checkRole = require("../middlewares/rolePolice");
  * /api/educationalCenter:
  *   get:
  *     summary: Get all educational centers
- *     tags: [EducationalCenter]
+ *     tags: [Educational Centers]
  *     parameters:
  *       - in: query
  *         name: search
@@ -78,7 +78,7 @@ CenterRouter.get("/", getAll);
  * /api/educationalCenter/{id}:
  *   get:
  *     summary: Get an education center by ID
- *     tags: [EducationalCenter]
+ *     tags: [Educational Centers]
  *     parameters:
  *       - in: path
  *         name: id
@@ -105,7 +105,7 @@ CenterRouter.get("/:id", getOne);
  * /api/educationalCenter:
  *   post:
  *     summary: Create a new education center
- *     tags: [EducationalCenter]
+ *     tags: [Educational Centers]
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -153,7 +153,7 @@ CenterRouter.post("/", verifyToken, checkRole(["Admin", "Ceo"]), create);
  * /api/educationalCenter/{id}:
  *   patch:
  *     summary: Update an education center
- *     tags: [EducationalCenter]
+ *     tags: [Educational Centers]
  *     security:
  *       - BearerAuth: []
  *     parameters:
@@ -201,7 +201,7 @@ CenterRouter.patch("/:id", verifyToken, checkRole(["Admin", "Ceo"]), update);
  * /api/educationalCenter/{id}:
  *   delete:
  *     summary: Delete an education center
- *     tags: [EducationalCenter]
+ *     tags: [Educational Centers]
  *     security:
  *       - BearerAuth: []
  *     parameters:

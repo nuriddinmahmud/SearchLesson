@@ -35,7 +35,7 @@ const swaggerSpec = swaggerJsDoc({
     },
     security: [
       {
-        bearerAuth: [],
+        BearerAuth: [],
       },
     ],
   },

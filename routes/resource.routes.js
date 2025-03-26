@@ -149,7 +149,7 @@ ResourceRouter.get("/:id", getOne);
  *     summary: Create a new resource
  *     tags: [Resources]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -175,7 +175,7 @@ ResourceRouter.post("/", verifyToken, post);
  *     summary: Update a resource
  *     tags: [Resources]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -213,7 +213,7 @@ ResourceRouter.patch(
  *     summary: Delete a resource
  *     tags: [Resources]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id

@@ -24,7 +24,7 @@ const selfPolice = require("../middlewares/selfPolice");
  *     summary: Get all courses
  *     tags: [Courses]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     parameters:
  *       - in: query
  *         name: search
@@ -95,7 +95,7 @@ CourseRouter.get("/:id", getOne);
  *     summary: Create a new course
  *     tags: [Courses]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -124,7 +124,7 @@ CourseRouter.post("/", verifyToken, selfPolice(["Admin"]), post);
  *     summary: Update a course
  *     tags: [Courses]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -162,7 +162,7 @@ CourseRouter.patch("/:id", checkRole(["Admin"]), update);
  *     summary: Delete a course
  *     tags: [Courses]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id

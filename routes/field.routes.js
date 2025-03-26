@@ -13,7 +13,7 @@ const checkRole = require("../middlewares/rolePolice");
 /**
  * @swagger
  * tags:
- *   name: Field
+ *   name: Fields
  *   description: Field management
  */
 
@@ -22,7 +22,7 @@ const checkRole = require("../middlewares/rolePolice");
  * /api/field:
  *   get:
  *     summary: Get all fields
- *     tags: [Field]
+ *     tags: [Fields]
  *     parameters:
  *       - in: query
  *         name: search
@@ -57,7 +57,7 @@ FieldRouter.get("/", getAll);
  * /api/field/{id}:
  *   get:
  *     summary: Get a single field by ID
- *     tags: [Field]
+ *     tags: [Fields]
  *     parameters:
  *       - in: path
  *         name: id
@@ -78,9 +78,9 @@ FieldRouter.get("/:id", getOne);
  * /api/field:
  *   post:
  *     summary: Create a new field
- *     tags: [Field]
+ *     tags: [Fields]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -111,9 +111,9 @@ FieldRouter.post("/", verifyToken, checkRole(["Admin", "Ceo"]), post);
  * /api/field/{id}:
  *   patch:
  *     summary: Update field details
- *     tags: [Field]
+ *     tags: [Fields]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -152,9 +152,9 @@ FieldRouter.patch("/:id", verifyToken, checkRole(["Admin", "Ceo"]), update);
  * /api/field/{id}:
  *   delete:
  *     summary: Delete a field
- *     tags: [Field]
+ *     tags: [Fields]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id

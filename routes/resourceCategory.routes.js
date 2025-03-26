@@ -75,7 +75,7 @@ ResourceCategoryRouter.get("/:id", getOne);
  *     summary: Create a new resource category
  *     tags: [Resource Categories]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -106,7 +106,7 @@ ResourceCategoryRouter.post("/", verifyToken, selfPolice(["Admin"]), post);
  *     summary: Update a resource category
  *     tags: [Resource Categories]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -151,7 +151,7 @@ ResourceCategoryRouter.patch(
  *     summary: Delete a resource category
  *     tags: [Resource Categories]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id

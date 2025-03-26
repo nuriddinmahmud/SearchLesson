@@ -16,9 +16,7 @@ const verifyToken = require("../middlewares/verifyToken");
  *   get:
  *     summary: Get all comments
  *     description: "Retrieve all comments with filtering and sorting options."
- *     security:
- *       - bearerAuth: []
- *     tags: [Comment]
+ *     tags: [Comments]
  *     parameters:
  *       - name: take
  *         in: query
@@ -77,9 +75,7 @@ CommentRouter.get("/", getAll);
  * /api/comment/{id}:
  *   get:
  *     summary: Berilgan `id` ga ega izohni olish
- *     security:
- *       - bearerAuth: []
- *     tags: [Comment]
+ *     tags: [Comments]
  *     parameters:
  *       - name: id
  *         in: path
@@ -100,8 +96,8 @@ CommentRouter.get("/:id", getOne);
  *   get:
  *     summary: Foydalanuvchining shaxsiy izohlarini olish
  *     security:
- *       - bearerAuth: []
- *     tags: [Comment]
+ *       - BearerAuth: []
+ *     tags: [Comments]
  *     responses:
  *       200:
  *         description: Foydalanuvchiga tegishli kommentlar
@@ -121,8 +117,8 @@ CommentRouter.get("/my-comments", verifyToken, myComments);
  *     summary: Yangi izoh qo‘shish
  *     description: "Foydalanuvchi tomonidan yangi izoh qo‘shish"
  *     security:
- *       - bearerAuth: []
- *     tags: [Comment]
+ *       - BearerAuth: []
+ *     tags: [Comments]
  *     requestBody:
  *       required: true
  *       content:
@@ -160,8 +156,8 @@ CommentRouter.post("/", verifyToken, post);
  *   patch:
  *     summary: Izohni yangilash
  *     security:
- *       - bearerAuth: []
- *     tags: [Comment]
+ *       - BearerAuth: []
+ *     tags: [Comments]
  *     parameters:
  *       - name: id
  *         in: path
@@ -199,8 +195,8 @@ CommentRouter.patch("/:id", verifyToken, update);
  *   delete:
  *     summary: Izohni o‘chirish
  *     security:
- *       - bearerAuth: []
- *     tags: [Comment]
+ *       - BearerAuth: []
+ *     tags: [Comments]
  *     parameters:
  *       - name: id
  *         in: path

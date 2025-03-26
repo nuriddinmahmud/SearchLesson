@@ -14,16 +14,15 @@ const checkRole = require("../middlewares/rolePolice");
 /**
  * @swagger
  * tags:
- *   name: Reception
+ *   name: Receptions
  *   description: Reception management
  */
-
 /**
  * @swagger
  * /api/reception:
  *   get:
  *     summary: Get all receptions
- *     tags: [Reception]
+ *     tags: [Receptions]
  *     parameters:
  *       - in: query
  *         name: take
@@ -67,7 +66,6 @@ const checkRole = require("../middlewares/rolePolice");
  *       404:
  *         description: No receptions found
  */
-
 ReceptionRouter.get("/", getAll);
 
 /**
@@ -75,7 +73,7 @@ ReceptionRouter.get("/", getAll);
  * /api/reception/{id}:
  *   get:
  *     summary: Get reception by ID
- *     tags: [Reception]
+ *     tags: [Receptions]
  *     parameters:
  *       - in: path
  *         name: id
@@ -95,9 +93,9 @@ ReceptionRouter.get("/:id", getOne);
  * /api/reception/my:
  *   get:
  *     summary: Get my courses
- *     tags: [Reception]
+ *     tags: [Receptions]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     responses:
  *       200:
  *         description: List of user courses
@@ -111,9 +109,9 @@ ReceptionRouter.get("/my", verifyToken, myCourses);
  * /api/reception:
  *   post:
  *     summary: Register for a course
- *     tags: [Reception]
+ *     tags: [Receptions]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -149,9 +147,9 @@ ReceptionRouter.post("/", verifyToken, post);
  * /api/reception/{id}:
  *   patch:
  *     summary: Update reception details
- *     tags: [Reception]
+ *     tags: [Receptions]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -171,9 +169,9 @@ ReceptionRouter.patch("/:id", verifyToken, checkRole(["Admin", "Ceo"]), update);
  * /api/reception/{id}:
  *   delete:
  *     summary: Delete a reception
- *     tags: [Reception]
+ *     tags: [Receptions]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
