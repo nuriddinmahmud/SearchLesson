@@ -14,61 +14,61 @@ const verifyToken = require("../middlewares/verifyToken");
  * @swagger
  * /api/comment:
  *   get:
- *     summary: Barcha izohlarni olish
- *     description: "Barcha izohlarni olish, filtr va saralash parametrlarini qo‘llab-quvvatlaydi."
+ *     summary: Get all comments
+ *     description: "Retrieve all comments with filtering and sorting options."
  *     security:
  *       - bearerAuth: []
  *     tags: [Comment]
  *     parameters:
  *       - name: take
  *         in: query
- *         description: Nechta element olish kerak
+ *         description: Number of comments to retrieve
  *         required: false
  *         schema:
  *           type: integer
  *       - name: from
  *         in: query
- *         description: Qaysi elementdan boshlab olish kerak
+ *         description: Starting point for retrieval
  *         required: false
  *         schema:
  *           type: integer
  *       - name: star
  *         in: query
- *         description: Faqat ma’lum yulduz bahosiga ega izohlarni olish
+ *         description: Filter comments by rating (stars)
  *         required: false
  *         schema:
  *           type: integer
  *       - name: educationCenterId
  *         in: query
- *         description: Ma’lum ta’lim markaziga tegishli izohlarni olish
+ *         description: Filter comments by education center ID
  *         required: false
  *         schema:
  *           type: integer
  *       - name: userId
  *         in: query
- *         description: Ma’lum foydalanuvchiga tegishli izohlarni olish
+ *         description: Filter comments by user ID
  *         required: false
  *         schema:
  *           type: integer
  *       - name: sortBy
  *         in: query
- *         description: Qaysi maydon bo‘yicha saralash
+ *         description: Field to sort by
  *         required: false
  *         schema:
  *           type: string
  *       - name: sortOrder
  *         in: query
- *         description: Saralash tartibi ("asc" yoki "desc")
+ *         description: Sorting order ("asc" or "desc")
  *         required: false
  *         schema:
  *           type: string
  *     responses:
  *       200:
- *         description: Muvaffaqiyatli natija
+ *         description: Successful response
  *       401:
- *         description: Ruxsat yo‘q (token noto‘g‘ri yoki mavjud emas)
+ *         description: Unauthorized (invalid or missing token)
  *       500:
- *         description: Server xatosi
+ *         description: Server error
  */
 CommentRouter.get("/", verifyToken, getAll);
 

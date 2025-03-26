@@ -122,7 +122,7 @@ async function Course() {
     // await db.sync({ force: true });
     app.listen(PORT, () =>
       console.log(
-        `Server started on port ${PORT}, follow the path "http://localhost:7000/api-docs"`
+        `Server started on port ${PORT} ✅ , follow the path "http://localhost:7000/api-docs 🗿 "`
       )
     );
   } catch (error) {

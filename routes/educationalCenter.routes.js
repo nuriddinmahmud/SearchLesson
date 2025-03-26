@@ -14,21 +14,21 @@ const checkRole = require("../middlewares/rolePolice");
 /**
  * @swagger
  * tags:
- *   - name: EducationCenter
+ *   - name: EducationalCenter
  *     description: Education Center management
  */
 /**
  * @swagger
  * /api/educationalCenter:
  *   get:
- *     summary: Get all education centers
- *     tags: [EducationCenter]
+ *     summary: Get all educational centers
+ *     tags: [EducationalCenter]
  *     parameters:
  *       - in: query
  *         name: search
  *         schema:
  *           type: string
- *         description: Search by education center name
+ *         description: Search by educational center name
  *       - in: query
  *         name: sortBy
  *         schema:
@@ -52,7 +52,7 @@ const checkRole = require("../middlewares/rolePolice");
  *         description: Number of results per page
  *     responses:
  *       200:
- *         description: List of education centers
+ *         description: List of educational centers
  *         content:
  *           application/json:
  *             schema:
@@ -67,7 +67,7 @@ const checkRole = require("../middlewares/rolePolice");
  *                 data:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/EducationCenter'
+ *                     $ref: '#/components/schemas/EducationalCenter'
  *       500:
  *         description: Internal server error
  */
@@ -78,7 +78,7 @@ CenterRouter.get("/", getAll);
  * /api/educationalCenter/{id}:
  *   get:
  *     summary: Get an education center by ID
- *     tags: [EducationCenter]
+ *     tags: [EducationalCenter]
  *     parameters:
  *       - in: path
  *         name: id
@@ -92,7 +92,7 @@ CenterRouter.get("/", getAll);
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/EducationCenter'
+ *               $ref: '#/components/schemas/EducationalCenter'
  *       404:
  *         description: Education center not found
  *       500:
@@ -105,7 +105,7 @@ CenterRouter.get("/:id", getOne);
  * /api/educationalCenter:
  *   post:
  *     summary: Create a new education center
- *     tags: [EducationCenter]
+ *     tags: [EducationalCenter]
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -140,7 +140,7 @@ CenterRouter.get("/:id", getOne);
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/EducationCenter'
+ *               $ref: '#/components/schemas/EducationalCenter'
  *       403:
  *         description: Not permitted
  *       500:
@@ -153,7 +153,7 @@ CenterRouter.post("/", verifyToken, checkRole(["Admin", "Ceo"]), create);
  * /api/educationalCenter/{id}:
  *   patch:
  *     summary: Update an education center
- *     tags: [EducationCenter]
+ *     tags: [EducationalCenter]
  *     security:
  *       - BearerAuth: []
  *     parameters:
@@ -186,7 +186,7 @@ CenterRouter.post("/", verifyToken, checkRole(["Admin", "Ceo"]), create);
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/EducationCenter'
+ *               $ref: '#/components/schemas/EducationalCenter'
  *       403:
  *         description: Not permitted
  *       404:
@@ -201,7 +201,7 @@ CenterRouter.patch("/:id", verifyToken, checkRole(["Admin", "Ceo"]), update);
  * /api/educationalCenter/{id}:
  *   delete:
  *     summary: Delete an education center
- *     tags: [EducationCenter]
+ *     tags: [EducationalCenter]
  *     security:
  *       - BearerAuth: []
  *     parameters:
@@ -227,7 +227,7 @@ CenterRouter.delete("/:id", verifyToken, checkRole(["Admin", "Ceo"]), remove);
  * @swagger
  * components:
  *   schemas:
- *     EducationCenter:
+ *    EducationalCenter:
  *       type: object
  *       properties:
  *         id:
