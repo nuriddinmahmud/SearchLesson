@@ -10,10 +10,10 @@ const {
   create,
   update,
   remove,
-} = require("../controllers/educationCenter.controller");
+} = require("../controllers/educationalCenter.controller");
 
 const verifyToken = require("../middlewares/verifyToken");
-const checkRole = require("../middlewares/checkRole");
+const checkRole = require("../middlewares/rolePolice");
 
 CenterRouter.get("/", getAll);
 CenterRouter.get("/paginated", getPaginatedEducationalCentres);

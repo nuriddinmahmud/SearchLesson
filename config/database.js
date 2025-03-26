@@ -1,17 +1,20 @@
 const { Sequelize, DataTypes } = require("sequelize");
+const dotenv = require("dotenv");
+dotenv.config();
 
-<<<<<<< HEAD
-const db = new Sequelize({
-  dialect: "mysql", 
-  host: "localhost",  
-  username: "root",   
-  password: "1234",   
-  database: "mock",  
-});
-=======
-const db = new Sequelize("db", "root", "12345678", {
-  host: "localhost",
-  dialect: "mysql",})
->>>>>>> ddf8b46dccd4dea8361d7f3bc8987b0f30b61266
+const db = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
+  {
+    host: process.env.DB_HOST,
+    dialect: "mysql",
+    logging: false,
+  }
+);
 
-module.exports = { db, DataTypes, Sequelize };
+module.exports = {
+  db,
+  DataTypes,
+  Sequelize,
+};
