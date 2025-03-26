@@ -51,7 +51,7 @@ const selfPolice = require("../middlewares/selfPolice");
  *   name: Resources
  *   description: Resource management API
  *
- * /api/resources:
+ * /api/resource:
  *   get:
  *     summary: Get all resources with filters, sorting, and pagination
  *     tags: [Resources]
@@ -119,7 +119,7 @@ ResourceRouter.get("/", getAll);
 
 /**
  * @swagger
- * /api/resources/{id}:
+ * /api/resource/{id}:
  *   get:
  *     summary: Get a single resource by ID
  *     tags: [Resources]
@@ -144,7 +144,7 @@ ResourceRouter.get("/:id", getOne);
 
 /**
  * @swagger
- * /api/resources:
+ * /api/resource:
  *   post:
  *     summary: Create a new resource
  *     tags: [Resources]
@@ -170,7 +170,7 @@ ResourceRouter.post("/", verifyToken, post);
 
 /**
  * @swagger
- * /api/resources/{id}:
+ * /api/resource/{id}:
  *   patch:
  *     summary: Update a resource
  *     tags: [Resources]
@@ -208,7 +208,7 @@ ResourceRouter.patch(
 
 /**
  * @swagger
- * /api/resources/{id}:
+ * /api/resource/{id}:
  *   delete:
  *     summary: Delete a resource
  *     tags: [Resources]

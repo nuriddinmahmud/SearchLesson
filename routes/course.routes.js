@@ -65,7 +65,7 @@ const selfPolice = require("../middlewares/selfPolice");
  *       404:
  *         description: No courses found
  */
-CourseRouter.get("/", verifyToken, getAll);
+CourseRouter.get("/", getAll);
 
 /**
  * @swagger

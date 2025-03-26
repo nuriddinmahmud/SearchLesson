@@ -11,6 +11,7 @@ const {
   getNewAccessToken,
   sendOtpPhone,
   verifyOtpPhone,
+  myEducationalCenters,
 } = require("../controllers/user.controller.js");
 const verifyToken = require("../middlewares/verifyToken.js");
 const selfPolice = require("../middlewares/selfPolice.js");
@@ -256,6 +257,126 @@ UsersRouter.post("/get-access-token", getNewAccessToken);
  *         description: Internal server error
  */
 UsersRouter.patch("/promoteToAdmin/:id", promoteToAdmin);
+
+/**
+ * @swagger
+ * /api/user/myCentres:
+ *   get:
+ *     summary: Get educational centers of the logged-in user
+ *     description: Returns a list of educational centers belonging to the authenticated CEO.
+ *     tags:
+ *      - Users
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved educational centers.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 1
+ *                       name:
+ *                         type: string
+ *                         example: "Tech Academy"
+ *                       image:
+ *                         type: string
+ *                         format: uri
+ *                         example: "https://example.com/image.jpg"
+ *                       address:
+ *                         type: string
+ *                         example: "123 Main St, City"
+ *                       phone:
+ *                         type: string
+ *                         example: "+998901234567"
+ *                       createdAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: "2024-03-01T12:00:00.000Z"
+ *                       updatedAt:
+ *                         type: string
+ *                         format: date-time
+ *                         example: "2024-03-10T15:30:00.000Z"
+ *                       User:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: integer
+ *                             example: 5
+ *                           firstName:
+ *                             type: string
+ *                             example: "John"
+ *                           lastName:
+ *                             type: string
+ *                             example: "Doe"
+ *                           email:
+ *                             type: string
+ *                             format: email
+ *                             example: "john@example.com"
+ *                           phone:
+ *                             type: string
+ *                             example: "+998901234567"
+ *                           role:
+ *                             type: string
+ *                             example: "Ceo"
+ *                           status:
+ *                             type: string
+ *                             example: "Active"
+ *                           createdAt:
+ *                             type: string
+ *                             format: date-time
+ *                             example: "2024-01-01T10:00:00.000Z"
+ *                           updatedAt:
+ *                             type: string
+ *                             format: date-time
+ *                             example: "2024-02-01T11:00:00.000Z"
+ *                       Regions:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: integer
+ *                             example: 3
+ *                           name:
+ *                             type: string
+ *                             example: "Tashkent"
+ *                           createdAt:
+ *                             type: string
+ *                             format: date-time
+ *                             example: "2023-12-15T09:00:00.000Z"
+ *                           updatedAt:
+ *                             type: string
+ *                             format: date-time
+ *                             example: "2024-01-05T10:30:00.000Z"
+ *       403:
+ *         description: Unauthorized user type
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Unauthorization User type ❗"
+ *       400:
+ *         description: Bad request or unexpected error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error_message:
+ *                   type: string
+ *                   example: "An unexpected error occurred"
+ */
+UsersRouter.get("/myCentres", verifyToken, myEducationalCenters);
 
 /**
  * @swagger

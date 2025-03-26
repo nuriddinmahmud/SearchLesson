@@ -72,22 +72,6 @@ ReceptionRouter.get("/", getAll);
 
 /**
  * @swagger
- * /api/reception/my:
- *   get:
- *     summary: Get my courses
- *     tags: [Reception]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: List of user courses
- *       404:
- *         description: No courses found
- */
-ReceptionRouter.get("/my", verifyToken, myCourses);
-
-/**
- * @swagger
  * /api/reception/{id}:
  *   get:
  *     summary: Get reception by ID
@@ -105,6 +89,22 @@ ReceptionRouter.get("/my", verifyToken, myCourses);
  *         description: Reception not found
  */
 ReceptionRouter.get("/:id", getOne);
+
+/**
+ * @swagger
+ * /api/reception/my:
+ *   get:
+ *     summary: Get my courses
+ *     tags: [Reception]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of user courses
+ *       404:
+ *         description: No courses found
+ */
+ReceptionRouter.get("/my", verifyToken, myCourses);
 
 /**
  * @swagger

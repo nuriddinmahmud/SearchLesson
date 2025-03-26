@@ -6,19 +6,25 @@ const accessKey = process.env.ACCESS_KEY || "accessKey";
 
 function verifyToken(req, res, next) {
   try {
-    let token = req.header("Authorization")?.split(" ")[1];
+    let authHeader = req.header("Authorization");
+    console.log(authHeader);
+    
 
-    if (!token) {
-      return res.status(401).send({ message: "Token not found ❗" });
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res
+        .status(401)
+        .json({ message: "Unauthorized ❌ (Token not found or invalid)" });
     }
 
-    let accessSecret = accessKey;
-    let data = jwt.decode(token, accessSecret);
-    req.user = data;
-    req.userId = data.id
-    next();
+    let token = authHeader.split(" ")[1];
+
+    jwt.verify(token, accessKey, (err, decoded) => {
+      req.user = decoded;
+      req.userId = decoded.id;
+      next();
+    });
   } catch (error) {
-    res.status(400).send({ error_message: error.message });
+    res.status(500).json({ error_message: error.message });
   }
 }
 

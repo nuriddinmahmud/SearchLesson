@@ -70,7 +70,7 @@ const verifyToken = require("../middlewares/verifyToken");
  *       500:
  *         description: Server error
  */
-CommentRouter.get("/", verifyToken, getAll);
+CommentRouter.get("/", getAll);
 
 /**
  * @swagger
@@ -92,7 +92,7 @@ CommentRouter.get("/", verifyToken, getAll);
  *       404:
  *         description: Izoh topilmadi
  */
-CommentRouter.get("/:id", verifyToken, getOne);
+CommentRouter.get("/:id", getOne);
 
 /**
  * @swagger
