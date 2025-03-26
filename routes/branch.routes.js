@@ -8,17 +8,196 @@ const {
   remove,
 } = require("../controllers/branch.controller");
 const verifyToken = require("../middlewares/verifyToken");
-const checkRole = require("../middlewares/checkRole");
+const rolePolice = require("../middlewares/rolePolice");
 const selfPolice = require("../middlewares/selfPolice");
 
+/**
+ * @swagger
+ * tags:
+ *   name: Branch
+ *   description: Branch management
+ */
+
+/**
+ * @swagger
+ * /api/branch:
+ *   get:
+ *     summary: Get all branches
+ *     tags: [Branch]
+ *     parameters:
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: Search by branch name
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         description: Page number for pagination
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         description: Number of results per page
+ *       - in: query
+ *         name: regionID
+ *         schema:
+ *           type: integer
+ *         description: Filter by region ID
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *         description: Field to sort by
+ *       - in: query
+ *         name: sortOrder
+ *         schema:
+ *           type: string
+ *           enum: [asc, desc]
+ *         description: Sort order (asc or desc)
+ *     responses:
+ *       200:
+ *         description: List of branches
+ *       400:
+ *         description: Bad request
+ */
 BranchRouter.get("/", getAll);
 
+/**
+ * @swagger
+ * /api/branch/{id}:
+ *   get:
+ *     summary: Get a single branch by ID
+ *     tags: [Branch]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Branch ID
+ *     responses:
+ *       200:
+ *         description: Branch data
+ *       404:
+ *         description: Branch not found
+ */
 BranchRouter.get("/:id", getOne);
 
+/**
+ * @swagger
+ * /api/branch:
+ *   post:
+ *     summary: Create a new branch
+ *     tags: [Branch]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [name, phone, address, image, regionID, centreID]
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: Branch name
+ *               phone:
+ *                 type: string
+ *                 description: Contact phone number
+ *               address:
+ *                 type: string
+ *                 description: Branch address
+ *               image:
+ *                 type: string
+ *                 description: Image URL of the branch
+ *               regionID:
+ *                 type: integer
+ *                 description: Region ID
+ *               centreID:
+ *                 type: integer
+ *                 description: Education center ID
+ *     responses:
+ *       201:
+ *         description: Successfully created
+ *       400:
+ *         description: Validation error
+ */
 BranchRouter.post("/", verifyToken, selfPolice(["Admin", "Ceo"]), post);
 
-BranchRouter.patch("/:id", verifyToken, checkRole(["Admin"]), update);
+/**
+ * @swagger
+ * /api/branch/{id}:
+ *   patch:
+ *     summary: Update branch details
+ *     tags: [Branch]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Branch ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: Branch name
+ *               phone:
+ *                 type: string
+ *                 description: Contact phone number
+ *               address:
+ *                 type: string
+ *                 description: Branch address
+ *               image:
+ *                 type: string
+ *                 description: Image URL of the branch
+ *               regionID:
+ *                 type: integer
+ *                 description: Region ID
+ *               centreID:
+ *                 type: integer
+ *                 description: Education center ID
+ *     responses:
+ *       200:
+ *         description: Successfully updated
+ *       400:
+ *         description: Validation error
+ *       404:
+ *         description: Branch not found
+ */
+BranchRouter.patch("/:id", verifyToken, rolePolice(["Admin"]), update);
 
-BranchRouter.delete("/:id", verifyToken, checkRole(["Admin"]), remove);
+/**
+ * @swagger
+ * /api/branch/{id}:
+ *   delete:
+ *     summary: Delete a branch
+ *     tags: [Branch]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Branch ID
+ *     responses:
+ *       200:
+ *         description: Successfully deleted
+ *       404:
+ *         description: Branch not found
+ */
+BranchRouter.delete("/:id", verifyToken, rolePolice(["Admin"]), remove);
 
 module.exports = BranchRouter;

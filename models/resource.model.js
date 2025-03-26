@@ -1,5 +1,5 @@
 const { db, DataTypes } = require("../config/database");
-const Category = require("./category.model");
+const ResourceCategory = require("./resourceCategory.model"); 
 const User = require("./user.model");
 
 const Resource = db.define(
@@ -30,7 +30,7 @@ const Resource = db.define(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: Category,
+        model: ResourceCategory,
         key: "id",
       },
       onUpdate: "CASCADE",

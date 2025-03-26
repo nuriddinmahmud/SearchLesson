@@ -1,15 +1,13 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
-const Sequelize = require("sequelize");
-const mainRouter = require("./routes/main.routes.js");
+const mainRouter = require("./routes/index.js");
 const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
-const sequelize = require("./config/database.js");
+const {db} = require("./config/database.js");
 const multer = require("multer");
 const path = require("path");
 const app = express();
-
 dotenv.config();
 const PORT = process.env.PORT || 3006;
 
@@ -119,7 +117,7 @@ app.post("/upload", upload.single("image"), (req, res) => {
 
 async function Course() {
   try {
-    await sequelize.authenticate();
+    await db.authenticate();
     console.log("Connected to database successfully ✅");
     // await sequelize.sync({force: true});
     app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

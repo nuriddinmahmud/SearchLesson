@@ -1,23 +1,31 @@
 const Joi = require("joi");
 
-async function courseValidation(data) {
-  const schema = Joi.object({
-    name: Joi.string().min(2).max(255).required(),
-    image: Joi.string().uri().optional(),
-    type: Joi.string().min(2).max(100).required(),
+function courseValidation(data) {
+  const coursesSchema = Joi.object({
+    name: Joi.string()
+      .min(2)
+      .pattern(/^[a-zA-Z]+$/)
+      .required(),
+    image: Joi.string().required(),
+    type: Joi.string()
+      .pattern(/^[a-zA-Z]+$/)
+      .valid("Jobs", "Subjects")
+      .required(),
   });
-
-  return schema.validate(data, { abortEarly: false });
+  return coursesSchema.validate(data, { abortEarly: true });
 }
 
-async function courseUpdateValidation(data) {
-  const schema = Joi.object({
-    name: Joi.string().min(2).max(255).optional(),
-    image: Joi.string().uri().optional(),
-    type: Joi.string().min(2).max(100).optional(),
+function courseValidationUpdate(data) {
+  const coursesSchema = Joi.object({
+    name: Joi.string()
+      .min(2)
+      .pattern(/^[a-zA-Z]+$/),
+    image: Joi.string(),
+    type: Joi.string()
+      .pattern(/^[a-zA-Z]+$/)
+      .valid("Jobs", "Subjects"),
   });
-
-  return schema.validate(data, { abortEarly: false });
+  return coursesSchema.validate(data, { abortEarly: true });
 }
 
-module.exports = { courseValidation, courseUpdateValidation };
+module.exports = { courseValidation, courseValidationUpdate };

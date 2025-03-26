@@ -6,8 +6,7 @@ const accessKey = process.env.ACCESS_KEY || "accessKey";
 
 function verifyToken(req, res, next) {
   try {
-    let header = req.header("Authorization").split(" ");
-    let [_, token] = header;
+    let token = req.header("Authorization")?.split(" ")[1];
 
     if (!token) {
       return res.status(401).send({ message: "Token not found ❗" });
@@ -16,7 +15,7 @@ function verifyToken(req, res, next) {
     let accessSecret = accessKey;
     let data = jwt.decode(token, accessSecret);
     req.user = data;
-
+    req.userId = data.id
     next();
   } catch (error) {
     res.status(400).send({ error_message: error.message });

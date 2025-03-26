@@ -53,7 +53,10 @@ function educationCenterValidation(data) {
     star: Joi.number().positive().required(),
     userID: Joi.number().positive().required(),
   });
+<<<<<<< HEAD
 
+=======
+>>>>>>> ddf8b46dccd4dea8361d7f3bc8987b0f30b61266
   return educationCenterSchema.validate(data, { abortEarly: true });
 }
 
@@ -110,6 +113,7 @@ function educationCenterValidationUpdate(data) {
     star: Joi.number().positive().optional(),
     userID: Joi.number().positive().optional(),
   });
+<<<<<<< HEAD
 
   return educationCenterSchema.validate(data, { abortEarly: true });
 }
@@ -118,3 +122,9 @@ module.exports = {
   educationCenterValidation,
   educationCenterValidationUpdate,
 };
+=======
+  return educationCenterSchema.validate(data, { abortEarly: true });
+}
+
+module.exports = { educationCenterValidation, educationCenterValidationUpdat };
+>>>>>>> ddf8b46dccd4dea8361d7f3bc8987b0f30b61266

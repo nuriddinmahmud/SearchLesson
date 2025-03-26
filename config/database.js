@@ -1,5 +1,6 @@
 const { Sequelize, DataTypes } = require("sequelize");
 
+<<<<<<< HEAD
 const db = new Sequelize({
   dialect: "mysql", 
   host: "localhost",  
@@ -7,16 +8,10 @@ const db = new Sequelize({
   password: "1234",   
   database: "mock",  
 });
+=======
+const db = new Sequelize("db", "root", "12345678", {
+  host: "localhost",
+  dialect: "mysql",})
+>>>>>>> ddf8b46dccd4dea8361d7f3bc8987b0f30b61266
 
-async function connect() {
-  try {
-    await db.authenticate();
-    console.log("Connection has been established successfully!");
-    db.sync({ force: true });
-    console.log("Database synced!");
-  } catch (error) {
-    console.log("Unable to connect to the database:", error);
-  }
-}
-
-module.exports = { db, DataTypes, connect };
+module.exports = { db, DataTypes, Sequelize };

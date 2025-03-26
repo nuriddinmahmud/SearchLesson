@@ -1,8 +1,8 @@
-const { db, DataTypes } = require("../config/db");
+const { db, DataTypes } = require("../config/database");
 const User = require("./user.model");
-const EducationCenter = require("./educationCenter.model");
+const EducationCenter = require("./educationalCenter.model");
 const Field = require("./field.model");
-const Branch = require("./educationCenter.model");
+const Branch = require("./educationalCenter.model");
 
 const Reception = db.define(
   "Reception",
