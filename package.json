@@ -4,7 +4,7 @@
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
-    "dev": "nodemon main.js",
+    "start": "nodemon main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
