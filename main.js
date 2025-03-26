@@ -4,7 +4,7 @@ const cors = require("cors");
 const mainRouter = require("./routes/index.js");
 const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
-const {db} = require("./config/database.js");
+const { db } = require("./config/database.js");
 const multer = require("multer");
 const path = require("path");
 const app = express();
@@ -119,8 +119,12 @@ async function Course() {
   try {
     await db.authenticate();
     console.log("Connected to database successfully ✅");
-    // await db.sync({ force: true }); 
-    app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+    // await db.sync({ force: true });
+    app.listen(PORT, () =>
+      console.log(
+        `Server started on port ${PORT}, follow the path "http://localhost:7000/api-docs"`
+      )
+    );
   } catch (error) {
     console.log(error.message);
   }
