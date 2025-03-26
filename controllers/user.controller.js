@@ -1,9 +1,9 @@
-const Users = require("../models/users.model.js");
-const Regions = require("../models/regions.model.js");
+const User = require("../models/user.model.js");
+const Regions = require("../models/region.model.js");
 const {
-  usersValidation,
-  usersValidationUpdate,
-} = require("../validations/users.validation.js");
+  userValidation,
+  userValidationUpdate,
+} = require("../validations/user.validation.js");
 const nodemailer = require("nodemailer");
 const { totp } = require("otplib");
 const bcrypt = require("bcrypt");
@@ -11,7 +11,7 @@ const dotenv = require("dotenv");
 const jwt = require("jsonwebtoken");
 const { Op } = require("sequelize");
 const sendSms = require("../config/eskiz.js");
-const Session = require("../models/sessions.model.js");
+const Session = require("../models/session.model.js");
 
 dotenv.config();
 const TOTP_KEY = process.env.SECRET_KEY;
@@ -30,20 +30,20 @@ async function register(req, res) {
   try {
     const body = req.body;
 
-    let findUser = await Users.findOne({ where: { email: body.email } });
+    let findUser = await User.findOne({ where: { email: body.email } });
     if (findUser) {
       return res
         .status(405)
         .send({ message: "This account already exists ❗" });
     }
 
-    const { error, value } = usersValidation(body);
+    const { error, value } = userValidation(body);
     if (error) {
       return res.status(422).send({ message: error.details[0].message });
     }
 
     value.password = await bcrypt.hash(body.password, 10);
-    const registered = await Users.create(value);
+    const registered = await User.create(value);
 
     let otp = totp.generate(`${TOTP_KEY}${body.email}`);
     await transporter.sendMail({
@@ -65,7 +65,7 @@ async function register(req, res) {
 async function verifyOtp(req, res) {
   try {
     const { email, otp } = req.body;
-    const findUser = await Users.findOne({ where: { email } });
+    const findUser = await User.findOne({ where: { email } });
     if (!findUser) {
       return res.status(405).send({ message: "Email is incorrect ❗" });
     }
@@ -76,7 +76,7 @@ async function verifyOtp(req, res) {
     }
 
     if (findUser.status === "Inactive") {
-      await Users.update({ status: "Active" }, { where: { email } });
+      await User.update({ status: "Active" }, { where: { email } });
     }
 
     res
@@ -90,7 +90,7 @@ async function verifyOtp(req, res) {
 async function login(req, res) {
   let { password, email } = req.body;
   try {
-    let user = await Users.findOne({ where: { email } });
+    let user = await User.findOne({ where: { email } });
     if (!user) {
       return res.status(404).send("User not found!");
     }
@@ -146,7 +146,7 @@ async function promoteToAdmin(req, res) {
   try {
     const role = "Admin";
     let { id } = req.params;
-    await Users.update({ role }, { where: { id } });
+    await User.update({ role }, { where: { id } });
     res.status(200).send({ message: "Updated successfully" });
   } catch (error) {
     res.status(400).send({ error_message: error.message });
@@ -161,7 +161,7 @@ async function getNewAccessToken(req, res) {
       refreshToken,
       process.env.REFRESH_KEY || "refreshKey"
     );
-    const user = await Users.findByPk(data.id);
+    const user = await User.findByPk(data.id);
     if (!user) {
       return res.status(404).send({ message: "User not found ❗" });
     }
@@ -181,7 +181,7 @@ async function getNewAccessToken(req, res) {
 
 async function sendOtpPhone(req, res) {
   try {
-    const user = await Users.findOne({ where: { phone: req.body.phone } });
+    const user = await User.findOne({ where: { phone: req.body.phone } });
     if (!user) {
       res.status(404).send({ message: "User not found" });
       return;
@@ -195,7 +195,7 @@ async function sendOtpPhone(req, res) {
 
 async function verifyOtpPhone(req, res) {
   try {
-    const user = await Users.findOne({ where: { phone: req.body.phone } });
+    const user = await User.findOne({ where: { phone: req.body.phone } });
     if (!user) {
       res.status(404).send({ message: "User not found" });
       return;
@@ -222,7 +222,7 @@ async function verifyOtpPhone(req, res) {
 async function findAll(req, res) {
   try {
     if (["Admin"].includes(req.userRole)) {
-      let findAllUsers = await Users.findAll({
+      let findAllUser = await User.findAll({
         attributes: [
           "id",
           "fullName",
@@ -243,17 +243,17 @@ async function findAll(req, res) {
           },
         ],
       });
-      return res.status(200).send({ data: findAllUsers });
+      return res.status(200).send({ data: findAllUser });
     }
 
     if (role.includes("SuperAdmin")) {
       return res
         .status(403)
-        .send({ message: "SuperAdmin can only update users, not view all ❗" });
+        .send({ message: "SuperAdmin can only update User, not view all ❗" });
     }
 
-    if (role.includes("Users")) {
-      let findUser = await Users.findByPk(req.user.id, {
+    if (role.includes("User")) {
+      let findUser = await User.findByPk(req.user.id, {
         attributes: [
           "id",
           "fullName",
@@ -276,7 +276,7 @@ async function findAll(req, res) {
         ],
       });
       if (!findUser) {
-        return res.status(404).send({ message: "Users not found ❗" });
+        return res.status(404).send({ message: "User not found ❗" });
       }
       return res.status(200).send({ data: findUser });
     }
@@ -290,7 +290,7 @@ async function findAll(req, res) {
 async function findOne(req, res) {
   try {
     const { id } = req.params;
-    let user = await Users.findByPk(id, {
+    let user = await User.findByPk(id, {
       attributes: [
         "id",
         "fullName",
@@ -312,7 +312,7 @@ async function findOne(req, res) {
         },
       ],
     });
-    if (!user) return res.status(404).send({ message: "Users not found ❗" });
+    if (!user) return res.status(404).send({ message: "User not found ❗" });
     res.status(200).send({ data: user });
   } catch (error) {
     res.status(400).send({ error_message: error.message });
@@ -322,7 +322,7 @@ async function findOne(req, res) {
 async function update(req, res) {
   try {
     const { id } = req.params;
-    const { error, value } = usersValidationUpdate(req.body);
+    const { error, value } = userValidationUpdate(req.body);
     if (error)
       return res.status(422).send({ message: error.details[0].message });
     if (value.password) value.password = await bcrypt.hash(value.password, 10);
@@ -330,16 +330,16 @@ async function update(req, res) {
     if (!["SuperAdmin", "Admin"].includes(req.user.role)) {
       return res
         .status(403)
-        .send({ message: "Only SuperAdmin can update users ❗️" });
+        .send({ message: "Only SuperAdmin can update User ❗️" });
     }
-    let findUser = await Users.findByPk(id);
+    let findUser = await User.findByPk(id);
     if (!findUser) {
       return res.status(403).send({ message: "User not found" });
     }
     await findUser.update(req.body);
     res
       .status(200)
-      .send({ message: "Users updated successfully", data: findUser });
+      .send({ message: "User updated successfully", data: findUser });
   } catch (error) {
     res.status(400).send({ error_message: error.message });
   }
@@ -348,18 +348,18 @@ async function update(req, res) {
 async function remove(req, res) {
   try {
     const { id } = req.params;
-    let findUser = await Users.findByPk(id);
+    let findUser = await User.findByPk(id);
     if (!findUser)
-      return res.status(404).send({ message: "Users not found ❗️" });
+      return res.status(404).send({ message: "User not found ❗️" });
     if (findUser.role == "Admin") {
       return res.status(403).send({ message: "Nobody can destroy admin ❗️" });
     }
-    let deletedUser = await Users.destroy({
-      where: { id, role: { [Op.in]: ["Users"] } },
+    let deletedUser = await User.destroy({
+      where: { id, role: { [Op.in]: ["User"] } },
     });
     await findUser.destroy();
     if (!deletedUser)
-      return res.status(403).send({ message: "Only users can be deleted ❗️" });
+      return res.status(403).send({ message: "Only User can be deleted ❗️" });
   } catch (e) {
     res.status(400).send({ error_message: e.message });
   }

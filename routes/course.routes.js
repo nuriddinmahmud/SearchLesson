@@ -1,11 +1,11 @@
 const { Router } = require("express");
 const CourseRouter = Router();
 const {
-    getAll,
-    getOne,
-    post,
-    remove,
-    update,
+  getAll,
+  getOne,
+  post,
+  remove,
+  update,
 } = require("../controllers/course.controller");
 const verifyToken = require("../middlewares/verifyToken");
 const checkRole = require("../middlewares/rolePolice");
@@ -54,7 +54,6 @@ const selfPolice = require("../middlewares/selfPolice");
  */
 CourseRouter.get("/", verifyToken, getAll);
 
-
 /**
  * @swagger
  * /api/course/{id}:
@@ -74,9 +73,7 @@ CourseRouter.get("/", verifyToken, getAll);
  *       404:
  *         description: Course not found
  */
-
 CourseRouter.get("/:id", getOne);
-
 
 /**
  * @swagger
@@ -105,9 +102,7 @@ CourseRouter.get("/:id", getOne);
  *       400:
  *         description: Validation error
  */
-
 CourseRouter.post("/", verifyToken, selfPolice(["Admin"]), post);
-
 
 /**
  * @swagger
@@ -145,8 +140,8 @@ CourseRouter.post("/", verifyToken, selfPolice(["Admin"]), post);
  *       404:
  *         description: Course not found
  */
-
 CourseRouter.patch("/:id", checkRole(["Admin"]), update);
+
 /**
  * @swagger
  * /api/course/{id}:
@@ -168,14 +163,6 @@ CourseRouter.patch("/:id", checkRole(["Admin"]), update);
  *       404:
  *         description: Course not found
  */
-
 CourseRouter.delete("/:id", checkRole(["Admin"]), remove);
 
 module.exports = CourseRouter;
-
-
-
-
-
-
-

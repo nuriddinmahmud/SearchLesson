@@ -11,9 +11,9 @@ const {
   getNewAccessToken,
   sendOtpPhone,
   verifyOtpPhone,
-} = require("../controllers/users.controller.js");
-const verifyToken = require("../middleware/verifyToken.js");
-const selfPolice = require("../middleware/selfPolice.js");
+} = require("../controllers/user.controller.js");
+const verifyToken = require("../middlewares/verifyToken.js");
+const selfPolice = require("../middlewares/selfPolice.js");
 
 const UsersRouter = express.Router();
 

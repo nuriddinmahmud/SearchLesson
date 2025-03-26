@@ -12,13 +12,6 @@ const verifyToken = require("../middlewares/verifyToken");
 
 /**
  * @swagger
- * tags:
- *   name: Comments
- *   description: Izohlar bilan ishlash
- */
-
-/**
- * @swagger
  * /api/comment:
  *   get:
  *     summary: Barcha izohlarni olish
@@ -81,24 +74,6 @@ CommentRouter.get("/", verifyToken, getAll);
 
 /**
  * @swagger
- * /api/comment/my-comment:
- *   get:
- *     summary: Foydalanuvchining shaxsiy izohlarini olish
- *     security:
- *       - bearerAuth: []
- *     tags: [Comment]
- *     responses:
- *       200:
- *         description: Muvaffaqiyatli natija
- *       401:
- *         description: Ruxsat yo‘q
- *       500:
- *         description: Server xatosi
- */
-CommentRouter.get("/my-comments", verifyToken, myComments);
-
-/**
- * @swagger
  * /api/comment/{id}:
  *   get:
  *     summary: Berilgan `id` ga ega izohni olish
@@ -118,6 +93,24 @@ CommentRouter.get("/my-comments", verifyToken, myComments);
  *         description: Izoh topilmadi
  */
 CommentRouter.get("/:id", verifyToken, getOne);
+
+/**
+ * @swagger
+ * /api/comment/my-comment:
+ *   get:
+ *     summary: Foydalanuvchining shaxsiy izohlarini olish
+ *     security:
+ *       - bearerAuth: []
+ *     tags: [Comment]
+ *     responses:
+ *       200:
+ *         description: Muvaffaqiyatli natija
+ *       401:
+ *         description: Ruxsat yo‘q
+ *       500:
+ *         description: Server xatosi
+ */
+CommentRouter.get("/my-comments", verifyToken, myComments);
 
 /**
  * @swagger

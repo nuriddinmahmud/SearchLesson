@@ -58,6 +58,8 @@ Field.belongsTo(CollabField, { foreignKey: "collabFieldID" });
 CollabField.hasMany(EducationalCentre, { foreignKey: "educationalCentreID" });
 EducationalCentre.belongsTo(CollabField, { foreignKey: "educationalCentreID" });
 
+
+
 module.exports = {
   sequelize,
   User,

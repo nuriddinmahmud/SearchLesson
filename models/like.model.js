@@ -34,4 +34,10 @@ const Like = db.define(
   { timestamps: false }
 );
 
+Like.belongsTo(User, { foreignKey: "userID" });
+User.hasMany(Like, { foreignKey: "userID" });
+
+Like.belongsTo(EducationCenter, { foreignKey: "educationalCentreID" });
+EducationCenter.hasMany(Like, { foreignKey: "educationalCentreID" });
+
 module.exports = Like;
