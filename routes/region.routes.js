@@ -97,7 +97,7 @@ RegionRouter.get("/:id", getOne);
  *       400:
  *         description: Validation error
  */
-RegionRouter.post("/", verifyToken, checkRole(["Admin"]), post);
+RegionRouter.post("/",  post);
 
 /**
  * @swagger
