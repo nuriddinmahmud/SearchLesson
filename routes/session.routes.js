@@ -51,8 +51,6 @@ const SessionRouter = express.Router();
  *       500:
  *         description: Internal server error.
  */
-
-
 SessionRouter.get("/me", verifyToken, getUserSession);
 
 /**
@@ -82,8 +80,6 @@ SessionRouter.get("/me", verifyToken, getUserSession);
  *       500:
  *         description: Internal server error.
  */
-
-
 SessionRouter.delete("/delete", verifyToken, deleteUserSession);
 
 module.exports = SessionRouter;

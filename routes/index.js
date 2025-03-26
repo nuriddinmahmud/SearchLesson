@@ -1,7 +1,6 @@
 const { Router } = require("express");
 const mainRouter = Router();
 
-
 const EducationCenterRouter = require("./educationalCenter.routes.js");
 const UserRouter = require("./user.routes.js");
 const ResourceCategoryRouter = require("./resourceCategory.routes.js");
@@ -29,6 +28,5 @@ mainRouter.use("/course", CourseRoute);
 mainRouter.use("/reception", ReceptionRoute);
 mainRouter.use("/resources", ResourceRoute);
 mainRouter.use("/collabField", CollabFieldRoute);
-// mainRouter.use("/upload-image", UploadImageRoute);
 
 module.exports = mainRouter;

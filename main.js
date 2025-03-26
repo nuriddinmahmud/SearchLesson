@@ -119,7 +119,7 @@ async function Course() {
   try {
     await db.authenticate();
     console.log("Connected to database successfully ✅");
-    // await sequelize.sync({force: true});
+    await sequelize.sync({force: true});
     app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
   } catch (error) {
     console.log(error.message);

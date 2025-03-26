@@ -1,4 +1,5 @@
 const User = require("../models/user.model");
+const Session = require("../models/session.model");
 const {
   userValidation,
   userValidationUpdate,
@@ -17,7 +18,6 @@ dotenv.config();
 const TOTP_KEY = process.env.SECRET_KEY;
 const ACCESS_KEY = process.env.ACCESS_KEY || "accessKey";
 
-// OTP email transport
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -28,7 +28,6 @@ const transporter = nodemailer.createTransport({
 
 totp.options = { step: 1800, digits: 6 };
 
-// Delete old image file
 const deleteOldImage = (imgPath) => {
   if (imgPath) {
     const fullPath = path.join("uploads", imgPath);
@@ -38,7 +37,6 @@ const deleteOldImage = (imgPath) => {
   }
 };
 
-// Register
 async function register(req, res) {
   try {
     const { body } = req;
@@ -89,7 +87,6 @@ async function register(req, res) {
   }
 }
 
-// Verify OTP
 async function verifyOtp(req, res) {
   try {
     const { email, otp } = req.body;
@@ -121,14 +118,21 @@ async function verifyOtp(req, res) {
   }
 }
 
-// Login
 async function login(req, res) {
   try {
-    const { email, password } = req.body;
+    const { email, userName, password } = req.body;
 
-    const user = await User.findOne({ where: { email } });
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(422).json({ message: "Invalid email or password ❗" });
+    const user = await User.findOne({
+      where: email ? { email } : { userName },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found ❗" });
+    }
+
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+      return res.status(401).json({ message: "Invalid password ❗" });
     }
 
     if (user.status === "Inactive") {
@@ -138,18 +142,27 @@ async function login(req, res) {
     }
 
     const accessToken = jwt.sign(
-      {
-        id: user.id,
-        email: user.email,
-        role: user.role,
-      },
+      { id: user.id, email: user.email, role: user.role },
       ACCESS_KEY,
-      { expiresIn: "1h" }
+      { expiresIn: "15m" }
     );
+
+    const refreshToken = jwt.sign(
+      { id: user.id, role: user.role },
+      REFRESH_KEY,
+      { expiresIn: "7d" }
+    );
+
+    await Session.create({
+      userId: user.id,
+      ipAddress: req.ip,
+      deviceInfo: req.headers["user-agent"],
+    });
 
     res.status(200).json({
       message: "Logged in successfully ✅",
-      access_token: accessToken,
+      accessToken,
+      refreshToken,
     });
   } catch (error) {
     console.error("Login error:", error);
@@ -157,7 +170,6 @@ async function login(req, res) {
   }
 }
 
-// Promote user to Admin
 async function promoteToAdmin(req, res) {
   try {
     const { id } = req.params;
@@ -175,7 +187,6 @@ async function promoteToAdmin(req, res) {
   }
 }
 
-// Get all users
 async function findAll(req, res) {
   try {
     let { role, id } = req.user;
@@ -223,7 +234,6 @@ async function findAll(req, res) {
   }
 }
 
-// Get user by ID
 async function findOne(req, res) {
   try {
     const { id } = req.params;
@@ -255,7 +265,6 @@ async function findOne(req, res) {
   }
 }
 
-// Update user
 async function update(req, res) {
   try {
     const { id } = req.params;
@@ -305,7 +314,6 @@ async function update(req, res) {
   }
 }
 
-// Delete user
 async function remove(req, res) {
   try {
     const { id } = req.params;
