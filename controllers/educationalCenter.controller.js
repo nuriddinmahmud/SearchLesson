@@ -7,79 +7,73 @@ const {
   educationCenterValidation,
 } = require("../validations/educationalCenter.validation");
 
-async function getPaginatedEducationalCentres(req, res) {
-  try {
-    let { page = 1, limit = 10 } = req.query;
-    page = parseInt(page);
-    limit = parseInt(limit);
-    const offset = (page - 1) * limit;
-
-    const educationCenter = await EducationCenter.findAll({
-      offset,
-      limit,
-      attributes: [
-        "id", "name", "image", "address", "phone", "star",
-        "createdAt", "updatedAt",
-      ],
-      include: [
-        {
-          model: User,
-          attributes: ["id", "fullName", "email", "phone", "role", "avatar", "status"],
-        },
-        {
-          model: Region,
-          attributes: ["id", "name", "createdAt", "updatedAt"],
-        },
-        {
-          model: Branch,
-          attributes: ["id", "name", "image", "regionID", "centreID", "phone", "address"],
-        },
-      ],
-    });
-
-    res.status(200).json({ data: educationCenter });
-  } catch (error) {
-    console.error("Error fetching paginated education centers:", error);
-    res.status(500).json({ error: error.message });
-  }
-}
-
 async function getAll(req, res) {
   try {
-    const educationCenter = await EducationCenter.findAll({
+    const { search, sortBy, order, page, limit } = req.query;
+
+    const pageNumber = parseInt(page) || 1;
+    const pageSize = parseInt(limit) || 10;
+    const offset = (pageNumber - 1) * pageSize;
+
+    const whereCondition = {};
+    if (search) {
+      whereCondition.name = { [Op.like]: `%${search}%` };
+    }
+
+    const orderCondition = [[sortBy || "createdAt", order || "DESC"]];
+
+    const educationCenters = await EducationCenter.findAndCountAll({
+      where: whereCondition,
       attributes: [
-        "id", "name", "image", "address", "phone", "star",
-        "createdAt", "updatedAt",
+        "id",
+        "name",
+        "image",
+        "address",
+        "phone",
+        "star",
+        "createdAt",
+        "updatedAt",
       ],
       include: [
         {
           model: User,
           attributes: [
-            "id", "fullName", "email", "phone", "role", "avatar", "status",
-            "createdAt", "updatedAt"
+            "id",
+            "fullName",
+            "email",
+            "phone",
+            "role",
+            "avatar",
+            "status",
+            "createdAt",
+            "updatedAt",
           ],
         },
         {
           model: Region,
-          attributes: ["id", "name", "createdAt", "updatedAt"],
+          attributes: ["id", "name"],
         },
         {
           model: Branch,
-          attributes: [
-            "id", "name", "image", "regionID", "centreID",
-            "phone", "address", "createdAt", "updatedAt"
-          ],
         },
       ],
+      order: orderCondition,
+      limit: pageSize,
+      offset: offset,
     });
 
-    if (!educationCenter.length) {
+    if (!educationCenters.rows.length) {
       return res.status(200).json({ msg: "Empty" });
     }
 
-    res.status(200).json({ data: educationCenter });
+    res.status(200).json({
+      total: educationCenters.count,
+      page: pageNumber,
+      limit: pageSize,
+      data: educationCenters.rows,
+    });
   } catch (error) {
-    console.error("Error fetching all education centers:", error);
+    console.error("Error fetching education centers:", error);
     res.status(500).json({ error: error.message });
   }
 }
@@ -90,15 +84,28 @@ async function getOne(req, res) {
 
     const educationalCenter = await EducationCenter.findByPk(id, {
       attributes: [
-        "id", "name", "image", "address", "phone", "star",
-        "createdAt", "updatedAt"
+        "id",
+        "name",
+        "image",
+        "address",
+        "phone",
+        "star",
+        "createdAt",
+        "updatedAt",
       ],
       include: [
         {
           model: User,
           attributes: [
-            "id", "fullName", "email", "phone", "role", "avatar",
-            "status", "createdAt", "updatedAt"
+            "id",
+            "fullName",
+            "email",
+            "phone",
+            "role",
+            "avatar",
+            "status",
+            "createdAt",
+            "updatedAt",
           ],
         },
         {
@@ -108,8 +115,15 @@ async function getOne(req, res) {
         {
           model: Branch,
           attributes: [
-            "id", "name", "image", "regionID", "centreID",
-            "phone", "address", "createdAt", "updatedAt"
+            "id",
+            "name",
+            "image",
+            "regionID",
+            "centreID",
+            "phone",
+            "address",
+            "createdAt",
+            "updatedAt",
           ],
         },
       ],
@@ -138,7 +152,8 @@ async function create(req, res) {
 
     if (role !== "Ceo" && role !== "Admin") {
       return res.status(403).json({
-        message: "Not permitted. Only Ceo and Admin can create an Educational Center ❗",
+        message:
+          "Not permitted. Only Ceo and Admin can create an Educational Center ❗",
       });
     }
 
@@ -146,7 +161,9 @@ async function create(req, res) {
       return res.status(400).json({ message: "regionID is required ❗" });
     }
 
-    const regionExists = await Region.findOne({ where: { id: value.regionID } });
+    const regionExists = await Region.findOne({
+      where: { id: value.regionID },
+    });
     if (!regionExists) {
       return res.status(404).json({ message: "Region not found ❗" });
     }
@@ -176,20 +193,31 @@ async function update(req, res) {
 
     if (role !== "Admin" && role !== "Ceo") {
       return res.status(403).json({
-        message: "Not permitted. Only Ceo and Admin can update Educational Centre ❗",
+        message:
+          "Not permitted. Only Ceo and Admin can update Educational Centre ❗",
       });
     }
 
-    const [updateCount] = await EducationCenter.update(value, { where: { id } });
+    const [updateCount] = await EducationCenter.update(value, {
+      where: { id },
+    });
 
     if (!updateCount) {
-      return res.status(404).json({ message: "Educational Centre not found ❗" });
+      return res
+        .status(404)
+        .json({ message: "Educational Centre not found ❗" });
     }
 
     const updatedCentre = await EducationCenter.findByPk(id, {
       attributes: [
-        "id", "name", "image", "address", "phone", "star",
-        "createdAt", "updatedAt"
+        "id",
+        "name",
+        "image",
+        "address",
+        "phone",
+        "star",
+        "createdAt",
+        "updatedAt",
       ],
     });
 
@@ -210,14 +238,17 @@ async function remove(req, res) {
 
     if (role !== "Admin" && role !== "Ceo") {
       return res.status(403).json({
-        message: "Not permitted. Only Ceo and Admin can delete Educational Centre ❗",
+        message:
+          "Not permitted. Only Ceo and Admin can delete Educational Centre ❗",
       });
     }
 
     const deleteCount = await EducationCenter.destroy({ where: { id } });
 
     if (!deleteCount) {
-      return res.status(404).json({ message: "Educational Centre not found ❗" });
+      return res
+        .status(404)
+        .json({ message: "Educational Centre not found ❗" });
     }
 
     res.status(200).json({ message: "Successfully deleted ✅" });
@@ -227,99 +258,9 @@ async function remove(req, res) {
   }
 }
 
-async function getBySearch(req, res) {
-  try {
-    const query = req.query;
-    const newQuery = {};
-
-    Object.entries(query).forEach(([key, val]) => {
-      if (val) newQuery[key] = val;
-    });
-
-    const educationCenter = await EducationCenter.findAll({
-      where: newQuery,
-      include: [
-        {
-          model: User,
-          attributes: ["id", "fullName", "email", "phone", "role", "avatar", "status"],
-        },
-        {
-          model: Region,
-          attributes: ["id", "name", "createdAt", "updatedAt"],
-        },
-      ],
-    });
-
-    if (!educationCenter.length) {
-      return res.status(404).json({ message: "No matching educational centers found ❗" });
-    }
-
-    res.status(200).json({ data: educationCenter });
-  } catch (error) {
-    console.error("Error in getBySearch:", error);
-    res.status(500).json({ message: error.message });
-  }
-}
-
-async function sortByName(req, res) {
-  try {
-    let { name = "asc" } = req.query;
-    const sortOrder = ["asc", "desc"].includes(name.toLowerCase()) ? name.toLowerCase() : "asc";
-
-    const educationCenter = await EducationCenter.findAll({
-      order: [["name", sortOrder]],
-      include: [
-        {
-          model: User,
-          attributes: ["id", "fullName", "email", "phone", "role", "avatar", "status"],
-        },
-        {
-          model: Region,
-          attributes: ["id", "name", "createdAt", "updatedAt"],
-        },
-      ],
-    });
-
-    res.status(200).json({ data: educationCenter });
-  } catch (error) {
-    console.error("Error in sortByName:", error);
-    res.status(500).json({ message: error.message });
-  }
-}
-
-async function sortByAddress(req, res) {
-  try {
-    let { address = "asc" } = req.query;
-    const sortOrder = ["asc", "desc"].includes(address.toLowerCase()) ? address.toLowerCase() : "asc";
-
-    const educationCenter = await EducationCenter.findAll({
-      order: [["address", sortOrder]],
-      include: [
-        {
-          model: User,
-          attributes: ["id", "fullName", "email", "phone", "role", "avatar", "status"],
-        },
-        {
-          model: Region,
-          attributes: ["id", "name", "createdAt", "updatedAt"],
-        },
-      ],
-    });
-
-    res.status(200).json({ data: educationCenter });
-  } catch (error) {
-    console.error("Error in sortByAddress:", error);
-    res.status(500).json({ message: error.message });
-  }
-}
-
 module.exports = {
   getAll,
-  getBySearch,
   getOne,
-  getPaginatedEducationalCentres,
-  sortByAddress,
-  sortByName,
   create,
   update,
   remove,

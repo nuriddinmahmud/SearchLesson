@@ -1,22 +1,20 @@
-const User = require("../models/user.model");
-const Session = require("../models/session.model");
+const Users = require("../models/users.model.js");
+const Regions = require("../models/regions.model.js");
 const {
-  userValidation,
-  userValidationUpdate,
-} = require("../validations/user.validation");
+  usersValidation,
+  usersValidationUpdate,
+} = require("../validations/users.validation.js");
 const nodemailer = require("nodemailer");
 const { totp } = require("otplib");
 const bcrypt = require("bcrypt");
-const fs = require("fs");
-const path = require("path");
 const dotenv = require("dotenv");
 const jwt = require("jsonwebtoken");
 const { Op } = require("sequelize");
+const sendSms = require("../config/eskiz.js");
+const Session = require("../models/sessions.model.js");
 
 dotenv.config();
-
 const TOTP_KEY = process.env.SECRET_KEY;
-const ACCESS_KEY = process.env.ACCESS_KEY || "accessKey";
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -28,128 +26,88 @@ const transporter = nodemailer.createTransport({
 
 totp.options = { step: 1800, digits: 6 };
 
-const deleteOldImage = (imgPath) => {
-  if (imgPath) {
-    const fullPath = path.join("uploads", imgPath);
-    if (fs.existsSync(fullPath)) {
-      fs.unlinkSync(fullPath);
-    }
-  }
-};
-
 async function register(req, res) {
   try {
-    const { body } = req;
+    const body = req.body;
 
-    const existingUser = await User.findOne({ where: { email: body.email } });
-    if (existingUser) {
+    let findUser = await Users.findOne({ where: { email: body.email } });
+    if (findUser) {
       return res
-        .status(409)
-        .json({ message: "This account already exists ❗" });
+        .status(405)
+        .send({ message: "This account already exists ❗" });
     }
 
-    const { error, value } = userValidation(body);
+    const { error, value } = usersValidation(body);
     if (error) {
-      return res.status(422).json({ message: error.details[0].message });
+      return res.status(422).send({ message: error.details[0].message });
     }
 
-    value.password = await bcrypt.hash(value.password, 10);
-    const newUser = await User.create(value);
+    value.password = await bcrypt.hash(body.password, 10);
+    const registered = await Users.create(value);
 
-    const otp = totp.generate(`${TOTP_KEY}${value.email}`);
-
+    let otp = totp.generate(`${TOTP_KEY}${body.email}`);
     await transporter.sendMail({
-      to: value.email,
-      subject: "Account Activation OTP",
-      html: `
-        <h2>Activate your account</h2>
-        <p>This is your one-time password:</p>
-        <h1>${otp}</h1>
-        <p><b>Note:</b> OTP is valid for 30 minutes.</p>
-      `,
+      to: body.email,
+      subject: "One-time password",
+      html: `This is an OTP to activate your account: <h1>${otp}</h1>`,
     });
 
-    res.status(201).json({
-      message: "Registered successfully ✅. OTP sent to your email.",
-      data: {
-        id: newUser.id,
-        fullName: newUser.fullName,
-        email: newUser.email,
-        status: newUser.status,
-        role: newUser.role,
-      },
+    res.status(200).send({
+      message:
+        "Registered successfully ✅. We sent OTP to your email for activation",
+      data: registered,
     });
   } catch (error) {
-    console.error("Registration error:", error);
-    res
-      .status(500)
-      .json({ message: "Registration failed ❌", error: error.message });
+    res.status(400).send({ error_message: error.message });
   }
 }
 
 async function verifyOtp(req, res) {
   try {
     const { email, otp } = req.body;
-
-    const user = await User.findOne({ where: { email } });
-    if (!user) {
-      return res.status(404).json({ message: "Email is incorrect ❗" });
+    const findUser = await Users.findOne({ where: { email } });
+    if (!findUser) {
+      return res.status(405).send({ message: "Email is incorrect ❗" });
     }
 
-    const isOtpValid = totp.verify({
-      token: otp,
-      secret: `${TOTP_KEY}${email}`,
-    });
-
-    if (!isOtpValid) {
-      return res.status(403).json({ message: "OTP is incorrect ❗" });
+    let checkOtp = totp.verify({ token: otp, secret: `${TOTP_KEY}${email}` });
+    if (!checkOtp) {
+      return res.status(403).send({ message: "OTP is incorrect ❗" });
     }
 
-    if (user.status === "Inactive") {
-      await User.update({ status: "Active" }, { where: { email } });
+    if (findUser.status === "Inactive") {
+      await Users.update({ status: "Active" }, { where: { email } });
     }
 
     res
       .status(200)
-      .json({ message: "Your account has been activated successfully ✅" });
+      .send({ message: "Your account has been activated successfully" });
   } catch (error) {
-    console.error("OTP verification error:", error);
-    res.status(500).json({ error_message: error.message });
+    res.status(400).send({ error_message: error.message });
   }
 }
 
 async function login(req, res) {
+  let { password, email } = req.body;
   try {
-    const { email, userName, password } = req.body;
-
-    const user = await User.findOne({
-      where: email ? { email } : { userName },
-    });
-
+    let user = await Users.findOne({ where: { email } });
     if (!user) {
-      return res.status(404).json({ message: "User not found ❗" });
+      return res.status(404).send("User not found!");
     }
-
-    const match = await bcrypt.compare(password, user.password);
+    let match = await bcrypt.compare(password, user.password);
     if (!match) {
-      return res.status(401).json({ message: "Invalid password ❗" });
-    }
-
-    if (user.status === "Inactive") {
-      return res.status(403).json({
-        message: "Account not activated ❗ Please check your email for OTP.",
-      });
+      return res.status(401).send("Invalid password!");
     }
 
     const accessToken = jwt.sign(
-      { id: user.id, email: user.email, role: user.role },
-      ACCESS_KEY,
+      { id: user.id, role: user.role },
+      "access_secret",
       { expiresIn: "15m" }
     );
 
     const refreshToken = jwt.sign(
       { id: user.id, role: user.role },
-      REFRESH_KEY,
+      "refresh_secret",
       { expiresIn: "7d" }
     );
 
@@ -159,89 +117,184 @@ async function login(req, res) {
       deviceInfo: req.headers["user-agent"],
     });
 
-    res.status(200).json({
-      message: "Logged in successfully ✅",
-      accessToken,
-      refreshToken,
-    });
+    res.send({ accessToken, refreshToken });
   } catch (error) {
-    console.error("Login error:", error);
-    res.status(500).json({ error_message: error.message });
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+}
+
+async function accessTokenGenereate(payload) {
+  try {
+    let accessSecret = process.env.ACCESS_KEY || "accessKey";
+    return jwt.sign(payload, accessSecret, { expiresIn: "15m" });
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+async function refreshTokenGenereate(payload) {
+  try {
+    let accessSecret = process.env.REFRESH_KEY || "refreshKey";
+    return jwt.sign(payload, accessSecret, { expiresIn: "7d" });
+  } catch (error) {
+    console.log(error.message);
   }
 }
 
 async function promoteToAdmin(req, res) {
   try {
-    const { id } = req.params;
-
-    const updated = await User.update({ role: "Admin" }, { where: { id } });
-
-    if (!updated[0]) {
-      return res.status(404).json({ message: "User not found ❗" });
-    }
-
-    res.status(200).json({ message: "User promoted to Admin successfully ✅" });
+    const role = "Admin";
+    let { id } = req.params;
+    await Users.update({ role }, { where: { id } });
+    res.status(200).send({ message: "Updated successfully" });
   } catch (error) {
-    console.error("Promote error:", error);
-    res.status(500).json({ error_message: error.message });
+    res.status(400).send({ error_message: error.message });
+  }
+}
+
+async function getNewAccessToken(req, res) {
+  try {
+    const refreshToken = req.header("Authorization")?.split(" ")[1];
+
+    let data = await jwt.verify(
+      refreshToken,
+      process.env.REFRESH_KEY || "refreshKey"
+    );
+    const user = await Users.findByPk(data.id);
+    if (!user) {
+      return res.status(404).send({ message: "User not found ❗" });
+    }
+    let accessToken = await accessTokenGenereate({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+    });
+    res.status(200).send({
+      message: "New access token generated successfully",
+      access_token: accessToken,
+    });
+  } catch (error) {
+    res.status(400).send({ error_message: error.message });
+  }
+}
+
+async function sendOtpPhone(req, res) {
+  try {
+    const user = await Users.findOne({ where: { phone: req.body.phone } });
+    if (!user) {
+      res.status(404).send({ message: "User not found" });
+      return;
+    }
+    const token = await sendSms(req.body.phone);
+    res.status(200).send({ message: "OTP sent successfully", otp: token });
+  } catch (error) {
+    res.status(400).send({ error_message: error.message });
+  }
+}
+
+async function verifyOtpPhone(req, res) {
+  try {
+    const user = await Users.findOne({ where: { phone: req.body.phone } });
+    if (!user) {
+      res.status(404).send({ message: "User not found" });
+      return;
+    }
+    const match = totp.verify({
+      token: req.body.otp,
+      secret: req.body.phone + process.env.ESKIZ_KEY || "eskizSecret",
+    });
+    if (!match) {
+      res.status(403).send({ message: "OTP is incorrect" });
+      return;
+    }
+    if (user.status === "Inactive") {
+      await user.update({ status: "Active" });
+      res.status(200).send({ message: "Account activated successfully" });
+      return;
+    }
+    res.status(200).send({ message: "Account activated successfully" });
+  } catch (error) {
+    res.status(400).send({ error_message: error.message });
   }
 }
 
 async function findAll(req, res) {
   try {
-    let { role, id } = req.user;
-    role = Array.isArray(role) ? role : [role];
-
-    const userAttributes = [
-      "id",
-      "fullName",
-      "email",
-      "role",
-      "avatar",
-      "status",
-      "createdAt",
-      "updatedAt",
-      "phone",
-      "location",
-      "regionID",
-    ];
-
-    if (role.includes("Admin")) {
-      const users = await User.findAll({ attributes: userAttributes });
-      return res.status(200).json({ data: users });
+    if (["Admin"].includes(req.userRole)) {
+      let findAllUsers = await Users.findAll({
+        attributes: [
+          "id",
+          "fullName",
+          "email",
+          "role",
+          "avatar",
+          "status",
+          "createdAt",
+          "updatedAt",
+          "phone",
+          "regionID",
+        ],
+        include: [
+          {
+            model: Regions,
+            as: "Region",
+            attributes: ["id", "name"],
+          },
+        ],
+      });
+      return res.status(200).send({ data: findAllUsers });
     }
 
     if (role.includes("SuperAdmin")) {
-      return res.status(403).json({
-        message: "SuperAdmin can only update users, not view all ❗",
+      return res
+        .status(403)
+        .send({ message: "SuperAdmin can only update users, not view all ❗" });
+    }
+
+    if (role.includes("Users")) {
+      let findUser = await Users.findByPk(req.user.id, {
+        attributes: [
+          "id",
+          "fullName",
+          "yearOfBirth",
+          "email",
+          "role",
+          "avatar",
+          "status",
+          "createdAt",
+          "updatedAt",
+          "phone",
+          "regionID",
+        ],
+        include: [
+          {
+            model: Regions,
+            as: "Region",
+            attributes: ["id", "name"],
+          },
+        ],
       });
-    }
-
-    if (role.includes("User")) {
-      const user = await User.findByPk(id, { attributes: userAttributes });
-
-      if (!user) {
-        return res.status(404).json({ message: "User not found ❗" });
+      if (!findUser) {
+        return res.status(404).send({ message: "Users not found ❗" });
       }
-
-      return res.status(200).json({ data: user });
+      return res.status(200).send({ data: findUser });
     }
 
-    res.status(403).json({ message: "Unauthorized user type ❗" });
+    res.status(403).send({ message: "Unauthorized user type ❗" });
   } catch (error) {
-    console.error("findAll error:", error);
-    res.status(500).json({ error_message: error.message });
+    res.status(400).send({ error_message: error.message });
   }
 }
 
 async function findOne(req, res) {
   try {
     const { id } = req.params;
-
-    const user = await User.findByPk(id, {
+    let user = await Users.findByPk(id, {
       attributes: [
         "id",
         "fullName",
+        "yearOfBirth",
         "email",
         "role",
         "avatar",
@@ -249,95 +302,66 @@ async function findOne(req, res) {
         "createdAt",
         "updatedAt",
         "phone",
-        "location",
         "regionID",
       ],
+      include: [
+        {
+          model: Regions,
+          as: "Region",
+          attributes: ["id", "name"],
+        },
+      ],
     });
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found ❗" });
-    }
-
-    res.status(200).json({ data: user });
+    if (!user) return res.status(404).send({ message: "Users not found ❗" });
+    res.status(200).send({ data: user });
   } catch (error) {
-    console.error("Find one user error:", error);
-    res.status(500).json({ error_message: error.message });
+    res.status(400).send({ error_message: error.message });
   }
 }
 
 async function update(req, res) {
   try {
     const { id } = req.params;
+    const { error, value } = usersValidationUpdate(req.body);
+    if (error)
+      return res.status(422).send({ message: error.details[0].message });
+    if (value.password) value.password = await bcrypt.hash(value.password, 10);
 
-    const { error, value } = userValidationUpdate(req.body);
-    if (error) {
-      return res.status(422).json({ message: error.details[0].message });
-    }
-
-    if (value.password) {
-      value.password = await bcrypt.hash(value.password, 10);
-    }
-
-    if (req.user.role !== "SuperAdmin") {
+    if (!["SuperAdmin", "Admin"].includes(req.user.role)) {
       return res
         .status(403)
-        .json({ message: "Only SuperAdmin can update users ❗" });
+        .send({ message: "Only SuperAdmin can update users ❗️" });
     }
-
-    const updatedUser = await User.update(value, { where: { id } });
-    if (!updatedUser[0]) {
-      return res.status(404).json({ message: "User not found ❗️" });
+    let findUser = await Users.findByPk(id);
+    if (!findUser) {
+      return res.status(403).send({ message: "User not found" });
     }
-
-    const result = await User.findByPk(id, {
-      attributes: [
-        "id",
-        "fullName",
-        "email",
-        "phone",
-        "role",
-        "avatar",
-        "status",
-        "createdAt",
-        "updatedAt",
-        "location",
-        "regionID",
-      ],
-    });
-
+    await findUser.update(req.body);
     res
       .status(200)
-      .json({ message: "User updated successfully ✅", data: result });
+      .send({ message: "Users updated successfully", data: findUser });
   } catch (error) {
-    console.error("Update error:", error);
-    res.status(500).json({ error_message: error.message });
+    res.status(400).send({ error_message: error.message });
   }
 }
 
 async function remove(req, res) {
   try {
     const { id } = req.params;
-
-    const user = await User.findByPk(id);
-    if (!user) {
-      return res.status(404).json({ message: "User not found ❗" });
+    let findUser = await Users.findByPk(id);
+    if (!findUser)
+      return res.status(404).send({ message: "Users not found ❗️" });
+    if (findUser.role == "Admin") {
+      return res.status(403).send({ message: "Nobody can destroy admin ❗️" });
     }
-
-    const deletedUser = await User.destroy({
-      where: {
-        id,
-        role: { [Op.in]: ["User"] },
-      },
+    let deletedUser = await Users.destroy({
+      where: { id, role: { [Op.in]: ["Users"] } },
     });
-
-    if (!deletedUser) {
-      return res.status(403).json({ message: "Only users can be deleted ❗" });
-    }
-
-    res.status(200).json({ message: "User deleted successfully ✅" });
-  } catch (error) {
-    console.error("Delete error:", error);
-    res.status(500).json({ error_message: error.message });
+    await findUser.destroy();
+    if (!deletedUser)
+      return res.status(403).send({ message: "Only users can be deleted ❗️" });
+  } catch (e) {
+    res.status(400).send({ error_message: e.message });
   }
 }
 
@@ -350,5 +374,8 @@ module.exports = {
   update,
   remove,
   promoteToAdmin,
-  deleteOldImage,
+  getNewAccessToken,
+  sendOtpPhone,
+  verifyOtpPhone,
+  refreshTokenGenereate,
 };

@@ -6,7 +6,7 @@ const {
   post,
   update,
   remove,
-  myComments
+  myComments,
 } = require("../controllers/comment.controller");
 const verifyToken = require("../middlewares/verifyToken");
 

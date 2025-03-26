@@ -34,7 +34,8 @@ const getAll = async (req, res) => {
       order,
       include: [
         { model: User, attributes: ["id", "name"] },
-        { model: EducationalCenter }],
+        { model: EducationalCenter },
+      ],
     });
 
     if (!data.rows.length) {

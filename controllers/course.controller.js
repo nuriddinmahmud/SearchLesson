@@ -3,7 +3,6 @@ const {
   courseValidation,
   courseUpdateValidation,
 } = require("../validations/course.validation");
-
 const { Op } = require("sequelize");
 
 const getAll = async (req, res) => {
