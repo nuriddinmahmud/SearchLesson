@@ -25,7 +25,7 @@ const UsersRouter = express.Router();
  */
 /**
  * @swagger
- * /api/users/register:
+ * /api/user/register:
  *   post:
  *     summary: Register a new user
  *     tags: [Users]
@@ -79,7 +79,7 @@ UsersRouter.post("/register", register);
 
 /**
  * @swagger
- * /api/users/send-otp-to-phone:
+ * /api/user/send-otp-to-phone:
  *   post:
  *     summary: Send OTP to user's phone
  *     tags: [Users]
@@ -105,7 +105,7 @@ UsersRouter.post("/send-otp-to-phone", sendOtpPhone);
 
 /**
  * @swagger
- * /api/users/verify-otp-phone:
+ * /api/user/verify-otp-phone:
  *   post:
  *     summary: Verify OTP sent to user's phone
  *     tags: [Users]
@@ -136,7 +136,7 @@ UsersRouter.post("/verify-otp-phone", verifyOtpPhone);
 
 /**
  * @swagger
- * /api/users/verify-otp:
+ * /api/user/verify-otp:
  *   post:
  *     summary: Verify OTP for account activation
  *     tags: [Users]
@@ -165,7 +165,7 @@ UsersRouter.post("/verify-otp", verifyOtp);
 
 /**
  * @swagger
- * /api/users/login:
+ * /api/user/login:
  *   post:
  *     summary: Login a user
  *     tags: [Users]
@@ -207,7 +207,7 @@ UsersRouter.post("/login", login);
 
 /**
  * @swagger
- * /api/users/get-access-token:
+ * /api/user/get-access-token:
  *   post:
  *     summary: Get a new access token using a refresh token
  *     tags: [Users]
@@ -234,7 +234,7 @@ UsersRouter.post("/get-access-token", getNewAccessToken);
 
 /**
  * @swagger
- * /api/users/promoteToAdmin/{id}:
+ * /api/user/promoteToAdmin/{id}:
  *   patch:
  *     summary: Promote a user to admin
  *     tags: [Users]
@@ -259,20 +259,68 @@ UsersRouter.patch("/promoteToAdmin/:id", promoteToAdmin);
 
 /**
  * @swagger
- * /api/users:
+ * /api/user:
  *   get:
  *     tags: [Users]
  *     security:
  *       - BearerAuth: []
+ *     parameters:
+ *       - name: page
+ *         in: query
+ *         description: Page number (pagination)
+ *         schema:
+ *           type: integer
+ *       - name: limit
+ *         in: query
+ *         description: Number of users per page
+ *         schema:
+ *           type: integer
+ *       - name: sort
+ *         in: query
+ *         description: Field to sort by (e.g., "fullName", "email", "createdAt")
+ *         schema:
+ *           type: string
+ *       - name: order
+ *         in: query
+ *         description: Sort order (ASC or DESC)
+ *         schema:
+ *           type: string
+ *       - name: status
+ *         in: query
+ *         description: Filter by user status (Active or Inactive)
+ *         schema:
+ *           type: string
+ *       - name: role
+ *         in: query
+ *         description: Filter by user role (Admin, User, Ceo, SuperAdmin)
+ *         schema:
+ *           type: string
+ *       - name: search
+ *         in: query
+ *         description: Search by name or email
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
  *         description: List of users
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/User'
+ *               type: object
+ *               properties:
+ *                 total:
+ *                   type: integer
+ *                   description: Total users count
+ *                 page:
+ *                   type: integer
+ *                   description: Current page number
+ *                 totalPages:
+ *                   type: integer
+ *                   description: Total number of pages
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/User'
  *       403:
  *         description: Unauthorized user type
  *       500:
@@ -282,7 +330,7 @@ UsersRouter.get("/", verifyToken, selfPolice(["Admin"]), findAll);
 
 /**
  * @swagger
- * /api/users/{id}:
+ * /api/user/{id}:
  *   get:
  *     summary: Get a user by ID
  *     tags: [Users]
@@ -311,7 +359,7 @@ UsersRouter.get("/:id", verifyToken, selfPolice(["Admin"]), findOne);
 
 /**
  * @swagger
- * /api/users/{id}:
+ * /api/user/{id}:
  *   patch:
  *     summary: Update a user by ID (Admin or SuperAdmin only)
  *     tags: [Users]
@@ -379,7 +427,7 @@ UsersRouter.patch(
 
 /**
  * @swagger
- * /api/users/{id}:
+ * /api/user/{id}:
  *   delete:
  *     summary: Delete a user by ID (Admin only)
  *     tags: [Users]

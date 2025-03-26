@@ -10,7 +10,7 @@ const { post } = require("../controllers/collabField.controller");
  */
 /**
  * @swagger
- * /collabField:
+ * /api/collabField:
  *   post:
  *     summary: Create a new CollabField
  *     description: This endpoint creates a new CollabField entry.

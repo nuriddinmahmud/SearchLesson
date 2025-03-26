@@ -137,7 +137,12 @@ ResourceCategoryRouter.post("/", verifyToken, selfPolice(["Admin"]), post);
  *       401:
  *         description: Unauthorized
  */
-ResourceCategoryRouter.patch("/:id", verifyToken, selfPolice(["Admin"]), update);
+ResourceCategoryRouter.patch(
+  "/:id",
+  verifyToken,
+  selfPolice(["Admin"]),
+  update
+);
 
 /**
  * @swagger
@@ -162,6 +167,11 @@ ResourceCategoryRouter.patch("/:id", verifyToken, selfPolice(["Admin"]), update)
  *       401:
  *         description: Unauthorized
  */
-ResourceCategoryRouter.delete("/:id", verifyToken, selfPolice(["Admin"]), remove);
+ResourceCategoryRouter.delete(
+  "/:id",
+  verifyToken,
+  selfPolice(["Admin"]),
+  remove
+);
 
 module.exports = ResourceCategoryRouter;

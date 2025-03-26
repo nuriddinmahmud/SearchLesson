@@ -37,7 +37,7 @@ const getAll = async (req, res) => {
     });
 
     if (!data.rows.length) {
-      return res.status(404).json({ message: "Receptions not found" });
+      return res.status(404).json({ message: "Receptions not found ❗" });
     }
 
     res.status(200).json({
@@ -55,7 +55,7 @@ const myCourses = async (req, res) => {
   try {
     const data = await Reception.findAll({ where: { userId: req.userID } });
     if (!data) {
-      res.status(404).send({ message: "Courses not found" });
+      res.status(404).send({ message: "Courses not found ❗" });
       return;
     }
     res.send(data);
@@ -68,7 +68,7 @@ const getOne = async (req, res) => {
   try {
     const data = await Reception.findByPk(req.params.id);
     if (!data) {
-      res.status(404).send({ message: "Course not found" });
+      res.status(404).send({ message: "Reception not found ❗" });
       return;
     }
     res.send(data);
@@ -86,7 +86,7 @@ const post = async (req, res) => {
       },
     });
     if (data) {
-      res.send({ message: "You have already registered to this course" });
+      res.send({ message: "You have already registered to this course ❗" });
       return;
     }
     const { error } = receptionValidation(req.body);
@@ -95,7 +95,7 @@ const post = async (req, res) => {
       return;
     }
     const newData = await Reception.create(req.body);
-    res.send({ message: "You have registered to course succesfully", newData });
+    res.send({ message: "You registered succesfully✅", newData });
   } catch (error) {
     res.status(400).send(error.mesage);
   }
@@ -105,7 +105,7 @@ const update = async (req, res) => {
   try {
     const data = await Reception.findByPk(req.params.id);
     if (!data) {
-      res.status(404).send({ message: "Course not found" });
+      res.status(404).send({ message: "Course not found ❗" });
       return;
     }
     const { error } = receptionUpdateValidation(req.body);
@@ -124,7 +124,7 @@ const remove = async (req, res) => {
   try {
     const data = await Reception.findByPk(req.params.id);
     if (!data) {
-      res.status(404).send({ message: "Course not found" });
+      res.status(404).send({ message: "Course not found ❗" });
       return;
     }
     await data.destroy();

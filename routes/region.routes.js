@@ -12,13 +12,6 @@ const checkRole = require("../middlewares/rolePolice");
 
 /**
  * @swagger
- * tags:
- *   name: Region
- *   description: Region management
- */
-
-/**
- * @swagger
  * /api/region:
  *   get:
  *     summary: Get all regions

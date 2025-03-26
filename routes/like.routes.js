@@ -5,7 +5,7 @@ const {
   getOne,
   post,
   remove,
-  liked
+  liked,
 } = require("../controllers/like.controller");
 const verifyToken = require("../middlewares/verifyToken");
 

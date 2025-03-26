@@ -31,7 +31,7 @@ const getAll = async (req, res) => {
     });
 
     if (!data.rows.length) {
-      return res.status(404).json({ message: "No courses found" });
+      return res.status(404).json({ message: "No courses found ❗" });
     }
 
     res.status(200).json({
@@ -49,7 +49,7 @@ const getOne = async (req, res) => {
   try {
     const data = await Course.findByPk(req.params.id);
     if (!data) {
-      return res.status(404).send("Cource not found!");
+      return res.status(404).send("Cource not found ❗");
     }
     res.send(data);
   } catch (error) {
@@ -61,7 +61,7 @@ const post = async (req, res) => {
   try {
     const data = await Course.findOne({ where: { name: req.body.name } });
     if (!data) {
-      res.send({ message: "Course already exists" });
+      res.send({ message: "Course already exists ❗" });
       return;
     }
     const { error } = courseValidation(req.body);
@@ -80,7 +80,7 @@ const update = async (req, res) => {
   try {
     const data = await Course.findByPk(req.params.id);
     if (!data) {
-      res.send({ message: "Course not found!" });
+      res.send({ message: "Course not found ❗" });
       return;
     }
     const { error } = courseUpdateValidation(req.body);
@@ -99,7 +99,7 @@ const remove = async (req, res) => {
   try {
     const data = await Course.findByPk(req.params.id);
     if (!data) {
-      res.send({ message: "Course not found" });
+      res.send({ message: "Course not found ❗" });
       return;
     }
     await data.destroy();

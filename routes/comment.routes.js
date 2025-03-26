@@ -96,7 +96,7 @@ CommentRouter.get("/:id", verifyToken, getOne);
 
 /**
  * @swagger
- * /api/comment/my-comment:
+ * /api/comment/my-comments:
  *   get:
  *     summary: Foydalanuvchining shaxsiy izohlarini olish
  *     security:
@@ -104,9 +104,11 @@ CommentRouter.get("/:id", verifyToken, getOne);
  *     tags: [Comment]
  *     responses:
  *       200:
- *         description: Muvaffaqiyatli natija
+ *         description: Foydalanuvchiga tegishli kommentlar
+ *       404:
+ *         description: Foydalanuvchining kommentlari topilmadi
  *       401:
- *         description: Ruxsat yo‘q
+ *         description: Ruxsat yo‘q (Token noto‘g‘ri yoki yo‘q)
  *       500:
  *         description: Server xatosi
  */

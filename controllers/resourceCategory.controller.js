@@ -48,7 +48,7 @@ const getOne = async (req, res) => {
     const category = await ResourceCategory.findByPk(id);
 
     if (!category)
-      return res.status(404).json({ message: "Resource Category not found!" });
+      return res.status(404).json({ message: "Resource Category not found ❗" });
 
     res.status(200).send({ data: category });
   } catch (err) {
@@ -103,7 +103,7 @@ const remove = async (req, res) => {
 
     res
       .status(200)
-      .send({ message: "Resource Category deleted successfully!" });
+      .send({ message: "Resource Category deleted successfully ❗" });
   } catch (err) {
     res.status(400).send({ error: err.message });
   }

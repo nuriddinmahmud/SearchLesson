@@ -31,10 +31,7 @@ const getAll = async (req, res) => {
 
     const branches = await Branch.findAndCountAll({
       where: whereClause,
-      include: [
-        { model: Region, attributes: ["id", "name"] },
-        { model: EducationalCenter },
-      ],
+      include: [{ model: Region }, { model: EducationalCenter }],
       limit: pageSize,
       offset: (pageNumber - 1) * pageSize,
       order: order,
@@ -55,13 +52,11 @@ const getOne = async (req, res) => {
   try {
     const { id } = req.params;
     const branch = await Branch.findByPk(id, {
-      include: [
-        { model: Region, attributes: ["id", "name"] },
-        { model: EducationalCenter },
-      ],
+      include: [{ model: Region }, { model: EducationalCenter }],
     });
 
-    if (!branch) return res.status(404).json({ message: "Branch not found" });
+    if (!branch)
+      return res.status(404).json({ message: "Branch not found ❗" });
 
     res.status(200).send({ data: branch });
   } catch (err) {
@@ -108,7 +103,7 @@ const remove = async (req, res) => {
       return res.status(404).send({ message: "Branch not found ❗" });
     }
 
-    res.status(200).send({ message: "Branch deleted successfully" });
+    res.status(200).send({ message: "Branch deleted successfully ❗" });
   } catch (err) {
     res.status(400).send({ error: err.message });
   }

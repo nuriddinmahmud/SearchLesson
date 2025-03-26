@@ -31,10 +31,7 @@ const getAll = async (req, res) => {
 
     const resources = await Resource.findAndCountAll({
       where: whereClause,
-      include: [
-        { model: Category, attributes: ["id", "name"] },
-        { model: User, attributes: ["id", "username"] },
-      ],
+      include: [{ model: Category }, { model: User }],
       limit: pageSize,
       offset: (pageNumber - 1) * pageSize,
       order: order,
@@ -55,14 +52,11 @@ const getOne = async (req, res) => {
   try {
     const { id } = req.params;
     const resource = await Resource.findByPk(id, {
-      include: [
-        { model: Category, attributes: ["id", "name"] },
-        { model: User, attributes: ["id", "username"] },
-      ],
+      include: [{ model: Category }, { model: User }],
     });
 
     if (!resource)
-      return res.status(404).json({ message: "Resource not found" });
+      return res.status(404).json({ message: "Resource not found ❗" });
 
     res.status(200).send({ data: resource });
   } catch (err) {
@@ -109,7 +103,7 @@ const remove = async (req, res) => {
       return res.status(404).send({ message: "Resource not found ❗" });
     }
 
-    res.status(200).send({ message: "Resource deleted successfully" });
+    res.status(200).send({ message: "Resource deleted successfully ❗" });
   } catch (err) {
     res.status(400).send({ error: err.message });
   }

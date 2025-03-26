@@ -32,14 +32,11 @@ const getAll = async (req, res) => {
       limit,
       offset,
       order,
-      include: [
-        { model: User, attributes: ["id", "name"] },
-        { model: EducationalCenter },
-      ],
+      include: [{ model: User }, { model: EducationalCenter }],
     });
 
     if (!data.rows.length) {
-      return res.status(404).json({ message: "No comments found" });
+      return res.status(404).json({ message: "Comments found ❗" });
     }
 
     res.status(200).json({
@@ -55,16 +52,29 @@ const getAll = async (req, res) => {
 
 const myComments = async (req, res) => {
   try {
-    const data = await Comment.findAll();
-    res.send(data);
+    const userId = req.user.id;
+    const data = await Comment.findAll({
+      where: { userId },
+      include: [EducationalCenter],
+      order: [["createdAt", "DESC"]],
+    });
+
+    if (!data.length) {
+      return res.status(404).json({ message: "Comment not found ❗" });
+    }
+
+    res.status(200).json(data);
   } catch (error) {
-    res.send(error.mesage);
+    res.status(500).json({ error: error.message });
   }
 };
 
 const getOne = async (req, res) => {
   try {
     const data = await Comment.findByPk(req.params.id);
+    if (!data) {
+      return res.status(404).json({ message: "Comment not found ❗" });
+    }
     res.send(data);
   } catch (error) {
     res.send(error.mesage);
@@ -75,7 +85,7 @@ const post = async (req, res) => {
   try {
     const data = await Comment.findOne({ where: { name: req.body.name } });
     if (!data) {
-      res.send({ message: "Comment already exists" });
+      res.send({ message: "Comment already exists ❗" });
       return;
     }
     const { error } = commentValidation(req.body);
@@ -94,7 +104,7 @@ const update = async (req, res) => {
   try {
     const data = await Comment.findByPk(req.params.id);
     if (!data) {
-      res.send({ message: "Comment not found" });
+      res.send({ message: "Comment not found ❗" });
       return;
     }
     const { error } = commentUpdateValidation(req.body);
@@ -113,7 +123,7 @@ const remove = async (req, res) => {
   try {
     const data = await Comment.findByPk(req.params.id);
     if (!data) {
-      res.send({ message: "Comment not found" });
+      res.send({ message: "Comment not found ❗" });
       return;
     }
     await data.destroy();

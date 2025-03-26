@@ -1,6 +1,6 @@
 const Session = require("../models/session.model");
 
-const getUserSession = async (req, res) => {
+const getAll = async (req, res) => {
   try {
     const session = await Session.findOne({
       where: { userId: req.user.id },
@@ -18,7 +18,7 @@ const getUserSession = async (req, res) => {
   }
 };
 
-const deleteUserSession = async (req, res) => {
+const remove = async (req, res) => {
   try {
     const session = await Session.findOne({
       where: { userId: req.user.id },
@@ -37,4 +37,4 @@ const deleteUserSession = async (req, res) => {
   }
 };
 
-module.exports = { getUserSession, deleteUserSession };
+module.exports = { getAll, remove };

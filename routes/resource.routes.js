@@ -136,7 +136,12 @@ ResourceRouter.post("/", verifyToken, post);
  *       404:
  *         description: Resource not found
  */
-ResourceRouter.patch("/:id", verifyToken, selfPolice(["User", "Admin"]), update);
+ResourceRouter.patch(
+  "/:id",
+  verifyToken,
+  selfPolice(["User", "Admin"]),
+  update
+);
 
 /**
  * @swagger
@@ -159,6 +164,11 @@ ResourceRouter.patch("/:id", verifyToken, selfPolice(["User", "Admin"]), update)
  *       404:
  *         description: Resource not found
  */
-ResourceRouter.delete("/:id", verifyToken, selfPolice(["User", "Admin"]), remove);
+ResourceRouter.delete(
+  "/:id",
+  verifyToken,
+  selfPolice(["User", "Admin"]),
+  remove
+);
 
 module.exports = ResourceRouter;

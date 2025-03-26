@@ -30,7 +30,7 @@ const getAll = async (req, res) => {
 
     const fields = await Field.findAndCountAll({
       where: whereClause,
-      include: [{ model: Course, attributes: ["id", "name"] }],
+      include: [{ model: Course }],
       limit: pageSize,
       offset: (pageNumber - 1) * pageSize,
       order: order,
@@ -51,10 +51,10 @@ const getOne = async (req, res) => {
   try {
     const { id } = req.params;
     const field = await Field.findByPk(id, {
-      include: [{ model: Course, attributes: ["id", "name"] }],
+      include: [{ model: Course }],
     });
 
-    if (!field) return res.status(404).json({ message: "Field not found" });
+    if (!field) return res.status(404).json({ message: "Field not found ❗" });
 
     res.status(200).send({ data: field });
   } catch (err) {
@@ -101,7 +101,7 @@ const remove = async (req, res) => {
       return res.status(404).send({ message: "Field not found ❗" });
     }
 
-    res.status(200).send({ message: "Field deleted successfully" });
+    res.status(200).send({ message: "Field deleted successfully ✅" });
   } catch (err) {
     res.status(400).send({ error: err.message });
   }

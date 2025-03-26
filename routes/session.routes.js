@@ -1,7 +1,7 @@
 const express = require("express");
 const {
-  getUserSession,
-  deleteUserSession,
+  getAll,
+  remove,
 } = require("../controllers/session.controller");
 const verifyToken = require("../middlewares/verifyToken");
 const SessionRouter = express.Router();
@@ -51,7 +51,7 @@ const SessionRouter = express.Router();
  *       500:
  *         description: Internal server error.
  */
-SessionRouter.get("/me", verifyToken, getUserSession);
+SessionRouter.get("/me", verifyToken, getAll);
 
 /**
  * @swagger
@@ -80,6 +80,6 @@ SessionRouter.get("/me", verifyToken, getUserSession);
  *       500:
  *         description: Internal server error.
  */
-SessionRouter.delete("/delete", verifyToken, deleteUserSession);
+SessionRouter.delete("/delete", verifyToken, remove);
 
 module.exports = SessionRouter;

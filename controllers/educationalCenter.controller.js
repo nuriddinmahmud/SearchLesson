@@ -37,21 +37,9 @@ async function getAll(req, res) {
       include: [
         {
           model: User,
-          attributes: [
-            "id",
-            "fullName",
-            "email",
-            "phone",
-            "role",
-            "avatar",
-            "status",
-            "createdAt",
-            "updatedAt",
-          ],
         },
         {
           model: Region,
-          attributes: ["id", "name"],
         },
         {
           model: Branch,
@@ -63,7 +51,7 @@ async function getAll(req, res) {
     });
 
     if (!educationCenters.rows.length) {
-      return res.status(200).json({ msg: "Empty" });
+      return res.status(200).json({ msg: "Empty ❗" });
     }
 
     res.status(200).json({
@@ -96,35 +84,12 @@ async function getOne(req, res) {
       include: [
         {
           model: User,
-          attributes: [
-            "id",
-            "fullName",
-            "email",
-            "phone",
-            "role",
-            "avatar",
-            "status",
-            "createdAt",
-            "updatedAt",
-          ],
         },
         {
           model: Region,
-          attributes: ["id", "name", "createdAt", "updatedAt"],
         },
         {
           model: Branch,
-          attributes: [
-            "id",
-            "name",
-            "image",
-            "regionID",
-            "centreID",
-            "phone",
-            "address",
-            "createdAt",
-            "updatedAt",
-          ],
         },
       ],
     });

@@ -2,7 +2,7 @@ const Joi = require("joi");
 
 function userValidation(data) {
   const User = Joi.object({
-    fullname: Joi.string()
+    fullName: Joi.string()
       .max(25)
       .min(2)
       .pattern(/^[a-zA-Z]+$/)
@@ -23,13 +23,14 @@ function userValidation(data) {
     role: Joi.string().valid("Admin", "Ceo", "User", "SuperAdmin").required(),
     avatar: Joi.string().required(),
     status: Joi.string().valid("Active", "Inactive").optional(),
+    regionID: Joi.number().positive().required(),
   });
   return User.validate(data, { abortEarly: true });
 }
 
 function userValidationUpdate(data) {
   const User = Joi.object({
-    fullname: Joi.string()
+    fullName: Joi.string()
       .min(2)
       .max(25)
       .pattern(/^[a-zA-Z]+$/)
@@ -50,6 +51,7 @@ function userValidationUpdate(data) {
     role: Joi.string().valid("Admin", "Ceo", "User", "SuperAdmin").optional(),
     avatar: Joi.string().optional(),
     status: Joi.string().valid("Active", "Inactive").optional(),
+    regionID: Joi.number().positive().required(),
   });
 
   return User.validate(data, { abortEarly: true });

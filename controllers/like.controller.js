@@ -29,7 +29,7 @@ const getAll = async (req, res) => {
     });
 
     if (!data.rows.length) {
-      return res.status(404).json({ message: "No Likes found" });
+      return res.status(404).json({ message: "Like found ❗" });
     }
 
     res.status(200).json({
@@ -47,7 +47,7 @@ const liked = async (req, res) => {
   try {
     const data = await Like.findAll({ where: { userId: req.userId } });
     if (!data) {
-      res.send({ message: "Likes not found" });
+      res.send({ message: "Like not found ❗" });
       return;
     }
     res.send(data);
@@ -59,6 +59,10 @@ const liked = async (req, res) => {
 const getOne = async (req, res) => {
   try {
     const data = await Like.findByPk(req.params.id);
+    if (!data) {
+      res.send({ message: "Like not found ❗" });
+      return;
+    }
     res.send(data);
   } catch (error) {
     res.send(error.mesage);
@@ -67,28 +71,31 @@ const getOne = async (req, res) => {
 
 const post = async (req, res) => {
   try {
-    const data = await Like.findOne({ where: { name: req.body.name } });
+    const data = await Like.findOne({
+      where: { userId: req.body.userId, postId: req.body.postId },
+    });
+
     if (data) {
-      res.send({ message: "Like " });
-      return;
+      return res.status(400).json({ message: "Like already exists ❗" });
     }
+
     const { error } = likeValidation(req.body);
     if (error) {
-      res.status(400).send(error.details[0].message);
-      return;
+      return res.status(400).json({ message: error.details[0].message });
     }
+
     const newData = await Like.create(req.body);
-    res.send(newData);
+    res.status(201).json(newData);
   } catch (error) {
-    res.send(error.mesage);
+    res.status(500).json({ error: error.message });
   }
 };
 
 const remove = async (req, res) => {
   try {
-    const data = await Course.findByPk(req.params.id);
+    const data = await Like.findByPk(req.params.id);
     if (!data) {
-      res.send({ message: "Course not found" });
+      res.send({ message: "Like not found ❗" });
       return;
     }
     await data.destroy();

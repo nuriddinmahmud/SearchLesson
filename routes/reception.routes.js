@@ -186,6 +186,11 @@ ReceptionRouter.patch("/:id", verifyToken, checkRole(["Admin", "Ceo"]), update);
  *       404:
  *         description: Reception not found
  */
-ReceptionRouter.delete("/:id", verifyToken, checkRole(["Admin", "Ceo"]), remove);
+ReceptionRouter.delete(
+  "/:id",
+  verifyToken,
+  checkRole(["Admin", "Ceo"]),
+  remove
+);
 
 module.exports = ReceptionRouter;

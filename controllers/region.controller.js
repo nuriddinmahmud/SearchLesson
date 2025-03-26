@@ -47,7 +47,8 @@ const getOne = async (req, res) => {
     const { id } = req.params;
     const region = await Region.findByPk(id);
 
-    if (!region) return res.status(404).json({ message: "Region not found!" });
+    if (!region)
+      return res.status(404).json({ message: "Region not found ❗" });
 
     res.status(200).send({ data: region });
   } catch (err) {
@@ -94,7 +95,7 @@ const remove = async (req, res) => {
       return res.status(404).send({ message: "Region not found ❗" });
     }
 
-    res.status(200).send({ message: "Region deleted successfully!" });
+    res.status(200).send({ message: "Region deleted successfully ❗" });
   } catch (err) {
     res.status(400).send({ error: err.message });
   }

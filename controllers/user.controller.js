@@ -49,12 +49,12 @@ async function register(req, res) {
     await transporter.sendMail({
       to: body.email,
       subject: "One-time password",
-      html: `This is an OTP to activate your account: <h1>${otp}</h1>`,
+      html: `This is an OTP to activate your account: <h1>${otp}</h1> ❗`,
     });
 
     res.status(200).send({
       message:
-        "Registered successfully ✅. We sent OTP to your email for activation",
+        "Registered successfully ✅. We sent OTP to your email for activation ❗",
       data: registered,
     });
   } catch (error) {
@@ -81,7 +81,7 @@ async function verifyOtp(req, res) {
 
     res
       .status(200)
-      .send({ message: "Your account has been activated successfully" });
+      .send({ message: "Your account has been activated successfully ✅" });
   } catch (error) {
     res.status(400).send({ error_message: error.message });
   }
@@ -92,11 +92,11 @@ async function login(req, res) {
   try {
     let user = await User.findOne({ where: { email } });
     if (!user) {
-      return res.status(404).send("User not found!");
+      return res.status(404).send("User not found❗");
     }
     let match = await bcrypt.compare(password, user.password);
     if (!match) {
-      return res.status(401).send("Invalid password!");
+      return res.status(401).send("Invalid password ❗");
     }
 
     const accessToken = jwt.sign(
@@ -120,7 +120,7 @@ async function login(req, res) {
     res.send({ accessToken, refreshToken });
   } catch (error) {
     console.error(error);
-    res.status(500).send("Internal Server Error");
+    res.status(500).send("Internal Server Error ❗");
   }
 }
 
@@ -147,7 +147,7 @@ async function promoteToAdmin(req, res) {
     const role = "Admin";
     let { id } = req.params;
     await User.update({ role }, { where: { id } });
-    res.status(200).send({ message: "Updated successfully" });
+    res.status(200).send({ message: "Updated successfully ✅" });
   } catch (error) {
     res.status(400).send({ error_message: error.message });
   }
@@ -171,7 +171,7 @@ async function getNewAccessToken(req, res) {
       role: user.role,
     });
     res.status(200).send({
-      message: "New access token generated successfully",
+      message: "New access token generated successfully ✅",
       access_token: accessToken,
     });
   } catch (error) {
@@ -183,11 +183,11 @@ async function sendOtpPhone(req, res) {
   try {
     const user = await User.findOne({ where: { phone: req.body.phone } });
     if (!user) {
-      res.status(404).send({ message: "User not found" });
+      res.status(404).send({ message: "User not found ❗" });
       return;
     }
     const token = await sendSms(req.body.phone);
-    res.status(200).send({ message: "OTP sent successfully", otp: token });
+    res.status(200).send({ message: "OTP sent successfully ✅", otp: token });
   } catch (error) {
     res.status(400).send({ error_message: error.message });
   }
@@ -197,7 +197,7 @@ async function verifyOtpPhone(req, res) {
   try {
     const user = await User.findOne({ where: { phone: req.body.phone } });
     if (!user) {
-      res.status(404).send({ message: "User not found" });
+      res.status(404).send({ message: "User not found❗" });
       return;
     }
     const match = totp.verify({
@@ -205,15 +205,15 @@ async function verifyOtpPhone(req, res) {
       secret: req.body.phone + process.env.ESKIZ_KEY || "eskizSecret",
     });
     if (!match) {
-      res.status(403).send({ message: "OTP is incorrect" });
+      res.status(403).send({ message: "OTP is incorrect ❗" });
       return;
     }
     if (user.status === "Inactive") {
       await user.update({ status: "Active" });
-      res.status(200).send({ message: "Account activated successfully" });
+      res.status(200).send({ message: "Account activated successfully ✅" });
       return;
     }
-    res.status(200).send({ message: "Account activated successfully" });
+    res.status(200).send({ message: "Account activated successfully ✅" });
   } catch (error) {
     res.status(400).send({ error_message: error.message });
   }
@@ -221,69 +221,59 @@ async function verifyOtpPhone(req, res) {
 
 async function findAll(req, res) {
   try {
-    if (["Admin"].includes(req.userRole)) {
-      let findAllUser = await User.findAll({
-        attributes: [
-          "id",
-          "fullName",
-          "email",
-          "role",
-          "avatar",
-          "status",
-          "createdAt",
-          "updatedAt",
-          "phone",
-          "regionID",
-        ],
-        include: [
-          {
-            model: Regions,
-            as: "Region",
-            attributes: ["id", "name"],
-          },
-        ],
-      });
-      return res.status(200).send({ data: findAllUser });
+    if (req.userRole !== "Admin") {
+      return res.status(403).send({ message: "You are not allowed ❗" });
     }
 
-    if (role.includes("SuperAdmin")) {
-      return res
-        .status(403)
-        .send({ message: "SuperAdmin can only update User, not view all ❗" });
+    let {
+      page = 1,
+      limit = 10,
+      sort = "createdAt",
+      order = "DESC",
+      status,
+      role,
+      search,
+    } = req.query;
+
+    page = parseInt(page) || 1;
+    limit = parseInt(limit) || 10;
+    let offset = (page - 1) * limit;
+
+    let where = {};
+
+    if (status) where.status = status;
+    if (role) where.role = role;
+    if (search) {
+      where[Op.or] = [
+        { fullName: { [Op.like]: `%${search}%` } },
+        { email: { [Op.like]: `%${search}%` } },
+      ];
     }
 
-    if (role.includes("User")) {
-      let findUser = await User.findByPk(req.user.id, {
-        attributes: [
-          "id",
-          "fullName",
-          "yearOfBirth",
-          "email",
-          "role",
-          "avatar",
-          "status",
-          "createdAt",
-          "updatedAt",
-          "phone",
-          "regionID",
-        ],
-        include: [
-          {
-            model: Regions,
-            as: "Region",
-            attributes: ["id", "name"],
-          },
-        ],
-      });
-      if (!findUser) {
-        return res.status(404).send({ message: "User not found ❗" });
-      }
-      return res.status(200).send({ data: findUser });
-    }
+    let users = await User.findAndCountAll({
+      where,
+      attributes: [
+        "id",
+        "fullName",
+        "email",
+        "role",
+        "avatar",
+        "status",
+        "phone",
+      ],
+      order: [[sort, order.toUpperCase()]],
+      limit,
+      offset,
+    });
 
-    res.status(403).send({ message: "Unauthorized user type ❗" });
+    return res.status(200).send({
+      total: users.count,
+      page,
+      totalPages: Math.ceil(users.count / limit),
+      data: users.rows,
+    });
   } catch (error) {
-    res.status(400).send({ error_message: error.message });
+    res.status(500).send({ error_message: error.message });
   }
 }
 
@@ -299,17 +289,7 @@ async function findOne(req, res) {
         "role",
         "avatar",
         "status",
-        "createdAt",
-        "updatedAt",
         "phone",
-        "regionID",
-      ],
-      include: [
-        {
-          model: Regions,
-          as: "Region",
-          attributes: ["id", "name"],
-        },
       ],
     });
     if (!user) return res.status(404).send({ message: "User not found ❗" });
@@ -334,12 +314,12 @@ async function update(req, res) {
     }
     let findUser = await User.findByPk(id);
     if (!findUser) {
-      return res.status(403).send({ message: "User not found" });
+      return res.status(403).send({ message: "User not found ❗" });
     }
     await findUser.update(req.body);
     res
       .status(200)
-      .send({ message: "User updated successfully", data: findUser });
+      .send({ message: "User updated successfully ✅", data: findUser });
   } catch (error) {
     res.status(400).send({ error_message: error.message });
   }

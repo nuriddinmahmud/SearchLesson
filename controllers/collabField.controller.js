@@ -11,7 +11,7 @@ async function post(req, res) {
 
     const createCollabField = await CollabField.create(value);
     res.status(200).send({
-      message: "CollabField created successfully!",
+      message: "CollabField created successfully ❗",
       data: createCollabField,
     });
   } catch (error) {
