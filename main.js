@@ -15,9 +15,10 @@ const swaggerSpec = swaggerJsDoc({
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "Course System API (Islombek, AbuBakr, Nuriddin)",
+      title: "Course System API",
       version: "1.0.0",
-      description: "API documentation for Course project",
+      description:
+        "API documentation for Course project by (AbuBakr, Islombek, Nuriddin)",
     },
     servers: [
       {

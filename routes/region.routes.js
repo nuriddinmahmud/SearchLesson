@@ -9,6 +9,7 @@ const {
 } = require("../controllers/region.controller");
 const verifyToken = require("../middlewares/verifyToken");
 const checkRole = require("../middlewares/rolePolice");
+const selfPolice = require("../middlewares/selfPolice");
 
 /**
  * @swagger
@@ -132,7 +133,7 @@ RegionRouter.post("/", verifyToken, checkRole(["Admin"]), post);
  *       404:
  *         description: Region not found
  */
-RegionRouter.patch("/:id", verifyToken, checkRole(["Admin"]), update);
+RegionRouter.patch("/:id", verifyToken, selfPolice(["Admin", "SuperAdmin"]), update);
 
 /**
  * @swagger
@@ -155,6 +156,6 @@ RegionRouter.patch("/:id", verifyToken, checkRole(["Admin"]), update);
  *       404:
  *         description: Region not found
  */
-RegionRouter.delete("/:id", verifyToken, checkRole(["Admin"]), remove);
+RegionRouter.delete("/:id", verifyToken, selfPolice(["Admin"]), remove);
 
 module.exports = RegionRouter;

@@ -10,6 +10,7 @@ const {
 
 const verifyToken = require("../middlewares/verifyToken");
 const checkRole = require("../middlewares/rolePolice");
+const selfPolice = require("../middlewares/selfPolice");
 
 /**
  * @swagger
@@ -146,7 +147,7 @@ CenterRouter.get("/:id", getOne);
  *       500:
  *         description: Internal server error
  */
-CenterRouter.post("/", verifyToken, checkRole(["Admin", "Ceo"]), create);
+CenterRouter.post("/", verifyToken, checkRole(["Ceo"]), create);
 
 /**
  * @swagger
@@ -194,7 +195,7 @@ CenterRouter.post("/", verifyToken, checkRole(["Admin", "Ceo"]), create);
  *       500:
  *         description: Internal server error
  */
-CenterRouter.patch("/:id", verifyToken, checkRole(["Admin", "Ceo"]), update);
+CenterRouter.patch("/:id", verifyToken, selfPolice(["Ceo"]), update);
 
 /**
  * @swagger
@@ -221,7 +222,7 @@ CenterRouter.patch("/:id", verifyToken, checkRole(["Admin", "Ceo"]), update);
  *       500:
  *         description: Internal server error
  */
-CenterRouter.delete("/:id", verifyToken, checkRole(["Admin", "Ceo"]), remove);
+CenterRouter.delete("/:id", verifyToken, selfPolice(["Ceo"]), remove);
 
 /**
  * @swagger

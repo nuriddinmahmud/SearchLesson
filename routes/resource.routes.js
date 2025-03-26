@@ -202,7 +202,7 @@ ResourceRouter.post("/", verifyToken, post);
 ResourceRouter.patch(
   "/:id",
   verifyToken,
-  selfPolice(["User", "Admin"]),
+  selfPolice(["SuperAdmin", "Admin", "User"]),
   update
 );
 

@@ -115,7 +115,7 @@ CourseRouter.get("/:id", getOne);
  *       400:
  *         description: Validation error
  */
-CourseRouter.post("/", verifyToken, selfPolice(["Admin"]), post);
+CourseRouter.post("/", verifyToken, checkRole(["Admin"]), post);
 
 /**
  * @swagger
@@ -153,7 +153,7 @@ CourseRouter.post("/", verifyToken, selfPolice(["Admin"]), post);
  *       404:
  *         description: Course not found
  */
-CourseRouter.patch("/:id", checkRole(["Admin"]), update);
+CourseRouter.patch("/:id", selfPolice(["Admin"]), update);
 
 /**
  * @swagger
@@ -176,6 +176,6 @@ CourseRouter.patch("/:id", checkRole(["Admin"]), update);
  *       404:
  *         description: Course not found
  */
-CourseRouter.delete("/:id", checkRole(["Admin"]), remove);
+CourseRouter.delete("/:id", selfPolice(["Admin"]), remove);
 
 module.exports = CourseRouter;

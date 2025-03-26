@@ -14,7 +14,7 @@ const {
   myEducationalCenters,
 } = require("../controllers/user.controller.js");
 const verifyToken = require("../middlewares/verifyToken.js");
-const selfPolice = require("../middlewares/selfPolice.js");
+const checkRole = require("../middlewares/rolePolice.js");
 
 const UsersRouter = express.Router();
 
@@ -449,7 +449,7 @@ UsersRouter.get("/myCentres", verifyToken, myEducationalCenters);
  *       500:
  *         description: Internal server error
  */
-UsersRouter.get("/", verifyToken, selfPolice(["Admin"]), findAll);
+UsersRouter.get("/", verifyToken, checkRole(["Admin", "Ceo"]), findAll);
 
 /**
  * @swagger
@@ -478,7 +478,7 @@ UsersRouter.get("/", verifyToken, selfPolice(["Admin"]), findAll);
  *       500:
  *         description: Internal server error
  */
-UsersRouter.get("/:id", verifyToken, selfPolice(["Admin"]), findOne);
+UsersRouter.get("/:id", verifyToken, checkRole(["Admin", "Ceo"]), findOne);
 
 /**
  * @swagger
@@ -544,7 +544,7 @@ UsersRouter.get("/:id", verifyToken, selfPolice(["Admin"]), findOne);
 UsersRouter.patch(
   "/:id",
   verifyToken,
-  selfPolice(["Admin", "SuperAdmin"]),
+  checkRole(["Admin", "SuperAdmin", "Ceo"]),
   update
 );
 
@@ -573,7 +573,7 @@ UsersRouter.patch(
  *       500:
  *         description: Internal server error
  */
-UsersRouter.delete("/:id", verifyToken, selfPolice(["Admin"]), remove);
+UsersRouter.delete("/:id", verifyToken, checkRole(["Admin", "Ceo"]), remove);
 
 /**
  * @swagger

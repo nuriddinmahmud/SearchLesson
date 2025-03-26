@@ -8,6 +8,7 @@ const {
   remove,
 } = require("../controllers/resourceCategory.controller");
 const verifyToken = require("../middlewares/verifyToken");
+const checkRole = require("../middlewares/rolePolice");
 const selfPolice = require("../middlewares/selfPolice");
 
 /**
@@ -16,7 +17,6 @@ const selfPolice = require("../middlewares/selfPolice");
  *   name: Resource Categories
  *   description: Resource category management API
  */
-
 /**
  * @swagger
  * /api/resourceCategory:
@@ -97,7 +97,7 @@ ResourceCategoryRouter.get("/:id", getOne);
  *       401:
  *         description: Unauthorized
  */
-ResourceCategoryRouter.post("/", verifyToken, selfPolice(["Admin"]), post);
+ResourceCategoryRouter.post("/", verifyToken, checkRole(["Admin"]), post);
 
 /**
  * @swagger
@@ -140,7 +140,7 @@ ResourceCategoryRouter.post("/", verifyToken, selfPolice(["Admin"]), post);
 ResourceCategoryRouter.patch(
   "/:id",
   verifyToken,
-  selfPolice(["Admin"]),
+  selfPolice(["Admin", "SuperAdmin"]),
   update
 );
 

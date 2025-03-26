@@ -2,6 +2,14 @@ const Session = require("../models/session.model");
 
 const getAll = async (req, res) => {
   try {
+    console.log("User data:", req.user); // ✅ Token ichidagi user ma'lumotini tekshiramiz
+
+    if (!req.user || !req.user.id) {
+      return res
+        .status(401)
+        .json({ message: "Unauthorized! User not found in token." });
+    }
+
     const session = await Session.findOne({
       where: { userId: req.user.id },
       order: [["createdAt", "DESC"]],

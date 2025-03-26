@@ -9,6 +9,7 @@ const {
 } = require("../controllers/field.controller");
 const verifyToken = require("../middlewares/verifyToken");
 const checkRole = require("../middlewares/rolePolice");
+const selfPolice = require("../middlewares/selfPolice");
 
 /**
  * @swagger
@@ -145,7 +146,7 @@ FieldRouter.post("/", verifyToken, checkRole(["Admin", "Ceo"]), post);
  *       404:
  *         description: Field not found
  */
-FieldRouter.patch("/:id", verifyToken, checkRole(["Admin", "Ceo"]), update);
+FieldRouter.patch("/:id", verifyToken, selfPolice(["Admin", "Ceo"]), update);
 
 /**
  * @swagger
@@ -168,6 +169,6 @@ FieldRouter.patch("/:id", verifyToken, checkRole(["Admin", "Ceo"]), update);
  *       404:
  *         description: Field not found
  */
-FieldRouter.delete("/:id", verifyToken, checkRole(["Admin", "Ceo"]), remove);
+FieldRouter.delete("/:id", verifyToken, selfPolice(["Admin", "Ceo"]), remove);
 
 module.exports = FieldRouter;

@@ -8,7 +8,7 @@ const {
   remove,
 } = require("../controllers/branch.controller");
 const verifyToken = require("../middlewares/verifyToken");
-const rolePolice = require("../middlewares/rolePolice");
+const checkRole = require("../middlewares/rolePolice");
 const selfPolice = require("../middlewares/selfPolice");
 
 /**
@@ -125,7 +125,7 @@ BranchRouter.get("/:id", getOne);
  *       400:
  *         description: Validation error
  */
-BranchRouter.post("/", verifyToken, selfPolice(["Admin", "Ceo"]), post);
+BranchRouter.post("/", verifyToken, checkRole(["Admin", "Ceo"]), post);
 
 /**
  * @swagger
@@ -175,7 +175,7 @@ BranchRouter.post("/", verifyToken, selfPolice(["Admin", "Ceo"]), post);
  *       404:
  *         description: Branch not found
  */
-BranchRouter.patch("/:id", verifyToken, rolePolice(["Admin"]), update);
+BranchRouter.patch("/:id", verifyToken, selfPolice(["Admin"]), update);
 
 /**
  * @swagger
@@ -198,6 +198,6 @@ BranchRouter.patch("/:id", verifyToken, rolePolice(["Admin"]), update);
  *       404:
  *         description: Branch not found
  */
-BranchRouter.delete("/:id", verifyToken, rolePolice(["Admin"]), remove);
+BranchRouter.delete("/:id", verifyToken, selfPolice(["Admin"]), remove);
 
 module.exports = BranchRouter;

@@ -10,6 +10,7 @@ const {
 } = require("../controllers/reception.controller");
 const verifyToken = require("../middlewares/verifyToken");
 const checkRole = require("../middlewares/rolePolice");
+const selfPolice = require("../middlewares/selfPolice");
 
 /**
  * @swagger
@@ -162,7 +163,7 @@ ReceptionRouter.post("/", verifyToken, post);
  *       404:
  *         description: Reception not found
  */
-ReceptionRouter.patch("/:id", verifyToken, checkRole(["Admin", "Ceo"]), update);
+ReceptionRouter.patch("/:id", verifyToken, selfPolice(["Admin", "Ceo"]), update);
 
 /**
  * @swagger
@@ -187,7 +188,7 @@ ReceptionRouter.patch("/:id", verifyToken, checkRole(["Admin", "Ceo"]), update);
 ReceptionRouter.delete(
   "/:id",
   verifyToken,
-  checkRole(["Admin", "Ceo"]),
+  selfPolice(["Admin", "Ceo"]),
   remove
 );
 
