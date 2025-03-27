@@ -41,7 +41,9 @@ totp.options = { step: 1800, digits: 6 };
 async function register(req, res) {
   try {
     const body = req.body;
-
+    if(2025 - body.yearOfBirth < 18){
+      return res.status(406).send({ message: "You should be older than or equal 18  to register" });
+    }
     let findUser = await User.findOne({ where: { email: body.email } });
     if (findUser) {
       res.status(405).send({ message: "This account already exists ❗" });
