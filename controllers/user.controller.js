@@ -4,6 +4,7 @@ const EducationalCenter = require("../models/educationalCenter.model.js");
 const {
   userValidation,
   userValidationUpdate,
+  userValidationAdmin
 } = require("../validations/user.validation.js");
 const nodemailer = require("nodemailer");
 const { totp } = require("otplib");
@@ -49,7 +50,10 @@ async function register(req, res) {
       res.status(405).send({ message: "This account already exists ❗" });
       authLogger.log("error", "This account already exists ❗");
     }
-
+    
+    if(req.body.role == "Admin"){
+    const { error, value } = userValidationAdmin(body);
+    }
     const { error, value } = userValidation(body);
     if (error) {
       return res.status(422).send({ message: error.details[0].message });
