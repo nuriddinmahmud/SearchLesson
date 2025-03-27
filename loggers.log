@@ -2,3 +2,11 @@
 {"level":"info","message":"New access token generated successfully ✅","module":"Authorization","timestamp":"2025-03-27T10:58:08.545Z"}
 {"level":"info","message":"New access token generated successfully ✅","module":"Authorization","timestamp":"2025-03-27T10:58:36.873Z"}
 {"level":"info","message":"New access token generated successfully ✅","module":"Authorization","timestamp":"2025-03-27T10:58:41.680Z"}
+{"level":"info","message":"Your account has been activated successfully ✅","module":"Authorization","timestamp":"2025-03-27T13:08:46.993Z"}
+{"level":"error","message":"Course not found!","module":"Authorization","timestamp":"2025-03-27T13:11:46.828Z"}
+{"level":"error","message":"Empty!","module":"Authorization","timestamp":"2025-03-27T13:12:49.478Z"}
+{"level":"error","message":"Empty!","module":"Authorization","timestamp":"2025-03-27T13:12:52.357Z"}
+{"level":"error","message":"Unauthorization User type ❗","module":"Authorization","timestamp":"2025-03-27T13:17:36.584Z"}
+{"level":"error","message":"You are not allowed ❗","module":"Authorization","timestamp":"2025-03-27T13:18:01.016Z"}
+{"level":"info","message":"Get all regions!","module":"Authorization","timestamp":"2025-03-27T13:18:47.083Z"}
+{"level":"info","message":"Session created successfully!","module":"Authorization","timestamp":"2025-03-27T13:19:15.648Z"}
