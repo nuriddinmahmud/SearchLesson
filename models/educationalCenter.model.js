@@ -42,7 +42,6 @@ const EducationalCenter = db.define(
         key: "id",
       },
     },
-
   },
   {
     timestamps: false,

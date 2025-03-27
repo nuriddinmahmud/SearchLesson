@@ -15,7 +15,7 @@ const Subject = db.define(
     image: {
       type: DataTypes.STRING,
       allowNull: true,
-    }
+    },
   },
   { timestamps: false }
 );

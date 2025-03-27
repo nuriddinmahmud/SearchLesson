@@ -4,6 +4,8 @@ const Region = require("../models/region.model");
 const User = require("../models/user.model");
 const SubjectEdu = require("../models/subjectEdu.model");
 const FieldEdu = require("../models/fieldEdu.model");
+const Subject = require("../models/subject.model");
+const Field = require("../models/field.model");
 const {
   educationCenterValidationUpdate,
   educationCenterValidation,
@@ -48,12 +50,14 @@ async function getAll(req, res) {
         "updatedAt",
       ],
       include: [
+        { model: Field, as: "Fields", attributes: ["id", "name"] },
+        { model: Subject, as: "Subjects", attributes: ["id", "name"] },
         {
           model: User,
+          as: "Students",
+          attributes: ["id", "fullName", "phone", "email"],
         },
-        {
-          model: Region,
-        },
+        { model: Region, as: "Regions", attributes: ["id", "region"] },
       ],
       order: orderCondition,
       limit: pageSize,
@@ -94,14 +98,18 @@ async function getOne(req, res) {
         "updatedAt",
       ],
       include: [
+        { model: Field, as: "Fields", attributes: ["id", "name"] },
+        { model: Subject, as: "Subjects", attributes: ["id", "name"] },
         {
           model: User,
+          as: "Students",
+          attributes: ["id", "fullName", "phone", "email"],
         },
-        {
-          model: Region,
-        },
+        { model: Region, as: "Regions", attributes: ["id", "region"] },
         {
           model: Branch,
+          as: "Branches",
+          attributes: ["id", "name", "phone", "address"],
         },
       ],
     });
@@ -121,13 +129,12 @@ async function getOne(req, res) {
 
 async function create(req, res) {
   try {
-    const body = req.body;
-    const { role, id } = req.user;
-    const { fields, subjects } = req.body;
-    console.log( body);
-    
+    const { role } = req.user;
+    const { fields, subjects, ...body } = req.body;
+
+    console.log(body);
+
     const { error, value } = educationCenterValidation(body);
-    
     if (error) {
       return res.status(422).json({ message: error.details[0].message });
     }
@@ -162,42 +169,40 @@ async function create(req, res) {
       userID: req.user.id,
     });
 
-    
-    // a = await FieldEdu.findByPk(item)
-    // name: a.name,
-    // educationCenterID: newEducationalCenter.id
+    if (fields && Array.isArray(fields) && fields.length > 0) {
+      const fieldData = await Promise.all(
+        fields.map(async (item) => {
+          const field = await FieldEdu.findByPk(item);
+          if (field) {
+            return {
+              name: field.name,
+              educationCenterID: newEducationalCenter.id,
+            };
+          }
+        })
+      );
 
-    if (fields && fields.length > 0) {
-      const a = "0"
-      const fieldData = fields.map(async (item) => {
-        const ls = await FieldEdu.findByPk(item)
-
-        return {
-          name:  ls.name, 
-          educationCenterID: ls.id,
-        }
-      }
-      )
-      await FieldEdu.bulkCreate(fieldData);
+      await FieldEdu.bulkCreate(fieldData.filter(Boolean));
     }
 
-    if (subjects && subjects.length > 0) {
+    if (subjects && Array.isArray(subjects) && subjects.length > 0) {
       const subjectData = subjects.map((item) => ({
-        name: item.name, 
+        name: item.name,
         educationCenterID: newEducationalCenter.id,
       }));
       await SubjectEdu.bulkCreate(subjectData);
     }
 
-    educationalCenterLogger.log("info", "Educational Center created successfully!");
+    educationalCenterLogger.log(
+      "info",
+      "Educational Center created successfully!"
+    );
     res.status(201).json({ data: newEducationalCenter });
-
   } catch (error) {
     console.error("Error creating educational center:", error);
     res.status(500).json({ message: error.message });
   }
 }
-
 
 async function update(req, res) {
   try {

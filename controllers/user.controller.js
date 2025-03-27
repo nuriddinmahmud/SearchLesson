@@ -4,7 +4,7 @@ const EducationalCenter = require("../models/educationalCenter.model.js");
 const {
   userValidation,
   userValidationUpdate,
-  userValidationAdmin
+  userValidationAdmin,
 } = require("../validations/user.validation.js");
 const nodemailer = require("nodemailer");
 const { totp } = require("otplib");
@@ -42,17 +42,19 @@ totp.options = { step: 1800, digits: 6 };
 async function register(req, res) {
   try {
     const body = req.body;
-    if(2025 - body.yearOfBirth < 18){
-      return res.status(406).send({ message: "You should be older than or equal 18  to register" });
+    if (2025 - body.yearOfBirth < 18) {
+      return res
+        .status(406)
+        .send({ message: "You should be older than or equal 18  to register" });
     }
     let findUser = await User.findOne({ where: { email: body.email } });
     if (findUser) {
       res.status(405).send({ message: "This account already exists ❗" });
       authLogger.log("error", "This account already exists ❗");
     }
-    
-    if(req.body.role == "Admin"){
-    const { error, value } = userValidationAdmin(body);
+
+    if (req.body.role == "Admin") {
+      const { error, value } = userValidationAdmin(body);
     }
     const { error, value } = userValidation(body);
     if (error) {
@@ -130,7 +132,7 @@ async function login(req, res) {
       "access_secret",
       { expiresIn: "15m" }
     );
-
+    
     const refreshToken = jwt.sign(
       { id: user.id, role: user.role },
       "refresh_secret",
@@ -313,11 +315,11 @@ async function verifyOtpPhone(req, res) {
 
 async function findAll(req, res) {
   try {
-    if (req.userRole !== "Admin") {
-      res.status(403).send({ message: "You are not allowed ❗" });
-      authLogger.log("error", "You are not allowed ❗");
-      return;
-    }
+    // if (req.userRole !== "Admin") {
+    //   res.status(403).send({ message: "You are not allowed ❗" });
+    //   authLogger.log("error", "You are not allowed ❗");
+    //   return;
+    // };
 
     let {
       page = 1,
@@ -386,6 +388,7 @@ async function findOne(req, res) {
         "phone",
       ],
     });
+    console.log("User:", user);
     if (!user) {
       res.status(404).send({ message: "User not found ❗" });
       authLogger.log("error", "User not found ❗");
@@ -420,7 +423,7 @@ async function update(req, res) {
     res
       .status(200)
       .send({ message: "User updated successfully ✅", data: findUser });
-    authLogger.log("info",  "User updated successfully ✅");
+    authLogger.log("info", "User updated successfully ✅");
   } catch (error) {
     res.status(400).send({ error_message: error.message });
   }

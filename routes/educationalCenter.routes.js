@@ -9,15 +9,15 @@ const {
 } = require("../controllers/educationalCenter.controller");
 
 const verifyToken = require("../middlewares/verifyToken");
-const checkRole = require("../middlewares/rolePolice");
 const selfPolice = require("../middlewares/selfPolice");
 
 /**
  * @swagger
  * tags:
  *   - name: Educational Centers
- *     description: Education Center management
+ *     description: Management of educational centers
  */
+
 /**
  * @swagger
  * /api/educationalCenter:
@@ -29,7 +29,7 @@ const selfPolice = require("../middlewares/selfPolice");
  *         name: search
  *         schema:
  *           type: string
- *         description: Search by educational center name
+ *         description: Search by name
  *       - in: query
  *         name: sortBy
  *         schema:
@@ -50,25 +50,10 @@ const selfPolice = require("../middlewares/selfPolice");
  *         name: limit
  *         schema:
  *           type: integer
- *         description: Number of results per page
+ *         description: Results per page
  *     responses:
  *       200:
  *         description: List of educational centers
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 total:
- *                   type: integer
- *                 page:
- *                   type: integer
- *                 limit:
- *                   type: integer
- *                 data:
- *                   type: array
- *                   items:
- *                     $ref: '#/components/schemas/EducationalCenter'
  *       500:
  *         description: Internal server error
  */
@@ -78,7 +63,7 @@ CenterRouter.get("/", getAll);
  * @swagger
  * /api/educationalCenter/{id}:
  *   get:
- *     summary: Get an education center by ID
+ *     summary: Get an educational center by ID
  *     tags: [Educational Centers]
  *     parameters:
  *       - in: path
@@ -86,16 +71,12 @@ CenterRouter.get("/", getAll);
  *         required: true
  *         schema:
  *           type: integer
- *         description: Education center ID
+ *         description: Educational center ID
  *     responses:
  *       200:
- *         description: Education center details
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/EducationalCenter'
+ *         description: Center details
  *       404:
- *         description: Education center not found
+ *         description: Not found
  *       500:
  *         description: Internal server error
  */
@@ -105,7 +86,7 @@ CenterRouter.get("/:id", getOne);
  * @swagger
  * /api/educationalCenter:
  *   post:
- *     summary: Create a new education center
+ *     summary: Create a new educational center
  *     tags: [Educational Centers]
  *     security:
  *       - BearerAuth: []
@@ -115,13 +96,7 @@ CenterRouter.get("/:id", getOne);
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - name
- *               - image
- *               - address
- *               - phone
- *               - regionID
- *               - star
+ *             required: [name, image, address, phone, regionID, star]
  *             properties:
  *               name:
  *                 type: string
@@ -135,19 +110,15 @@ CenterRouter.get("/:id", getOne);
  *                 type: integer
  *               userID:
  *                 type: integer
- *               fields: 
+ *               fields:
  *                 type: array
  *                 example: [1,2,3]
- *               subjects: 
+ *               subjects:
  *                 type: array
  *                 example: [1,2,3]
  *     responses:
  *       201:
- *         description: Education center created successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/EducationalCenter'
+ *         description: Created successfully
  *       403:
  *         description: Not permitted
  *       500:
@@ -159,7 +130,7 @@ CenterRouter.post("/", verifyToken, create);
  * @swagger
  * /api/educationalCenter/{id}:
  *   patch:
- *     summary: Update an education center
+ *     summary: Update an educational center
  *     tags: [Educational Centers]
  *     security:
  *       - BearerAuth: []
@@ -169,7 +140,7 @@ CenterRouter.post("/", verifyToken, create);
  *         required: true
  *         schema:
  *           type: integer
- *         description: Education center ID
+ *         description: Educational center ID
  *     requestBody:
  *       required: true
  *       content:
@@ -188,14 +159,10 @@ CenterRouter.post("/", verifyToken, create);
  *     responses:
  *       200:
  *         description: Successfully updated
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/EducationalCenter'
  *       403:
  *         description: Not permitted
  *       404:
- *         description: Education center not found
+ *         description: Not found
  *       500:
  *         description: Internal server error
  */
@@ -205,7 +172,7 @@ CenterRouter.patch("/:id", verifyToken, selfPolice(["Ceo"]), update);
  * @swagger
  * /api/educationalCenter/{id}:
  *   delete:
- *     summary: Delete an education center
+ *     summary: Delete an educational center
  *     tags: [Educational Centers]
  *     security:
  *       - BearerAuth: []
@@ -215,14 +182,14 @@ CenterRouter.patch("/:id", verifyToken, selfPolice(["Ceo"]), update);
  *         required: true
  *         schema:
  *           type: integer
- *         description: Education center ID
+ *         description: Educational center ID
  *     responses:
  *       200:
  *         description: Successfully deleted
  *       403:
  *         description: Not permitted
  *       404:
- *         description: Education center not found
+ *         description: Not found
  *       500:
  *         description: Internal server error
  */
@@ -232,7 +199,7 @@ CenterRouter.delete("/:id", verifyToken, selfPolice(["Ceo"]), remove);
  * @swagger
  * components:
  *   schemas:
- *    EducationalCenter:
+ *     EducationalCenter:
  *       type: object
  *       properties:
  *         id:
@@ -245,7 +212,5 @@ CenterRouter.delete("/:id", verifyToken, selfPolice(["Ceo"]), remove);
  *           type: string
  *         phone:
  *           type: string
- *         star:
- *           type: number
  */
 module.exports = CenterRouter;

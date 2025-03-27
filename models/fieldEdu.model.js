@@ -18,29 +18,28 @@ const FieldEdu = db.define(
         key: "id",
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
-      }
+      },
     },
     educationalCenterID: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: EducationalCenter,
-            key: "id",
-            onUpdate: "CASCADE",
-            onDelete: "CASCADE",
-        }
-    }
-    
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: EducationalCenter,
+        key: "id",
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
+    },
   },
   {
     timestamps: true,
   }
 );
 
-FieldEdu.belongsTo(Field, { foreignKey: "fieldID", onDelete: "CASCADE", onUpdate: "CASCADE" });
-FieldEdu.belongsTo(EducationalCenter, { foreignKey: "educationalCenterID", onDelete: "CASCADE", onUpdate: "CASCADE" });
-
-Field.hasMany(FieldEdu, {foreignKey: "fieldID", onDelete: "CASCADE", onUpdate: "CASCADE" })
-EducationalCenter.hasMany(FieldEdu, {foreignKey: "educationalCenterID", onDelete: "CASCADE", onUpdate: "CASCADE" })
+FieldEdu.belongsToMany(Field, { through: FieldEdu, foreignKey: "fieldID" });
+FieldEdu.belongsToMany(EducationalCenter, {
+  through: FieldEdu,
+  foreignKey: "educationalCenterID",
+});
 
 module.exports = FieldEdu;

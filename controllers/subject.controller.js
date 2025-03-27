@@ -1,7 +1,7 @@
 const Subject = require("../models/subject.model");
 const {
-  SubjectValidation,
-  SubjectUpdateValidation,
+  subjectValidation,
+  subjectValidationUpdate,
 } = require("../validations/subject.validation");
 const { Op } = require("sequelize");
 let winston = require("winston");
@@ -80,7 +80,7 @@ const post = async (req, res) => {
       res.send({ message: "Subject already exists ❗" });
       return;
     }
-    const { error } = SubjectValidation(req.body);
+    const { error } = subjectValidation(req.body);
     if (error) {
       res.status(400).send(error.details[0].message);
       return;
@@ -101,7 +101,7 @@ const update = async (req, res) => {
       res.send({ message: "Subject not found ❗" });
       return;
     }
-    const { error } = SubjectUpdateValidation(req.body);
+    const { error } = subjectValidationUpdate(req.body);
     if (error) {
       res.status(400).send(error.details[0].message);
       return;

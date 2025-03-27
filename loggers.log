@@ -19,3 +19,47 @@
 {"level":"error","message":"Subject already exists!","module":"Authorization","timestamp":"2025-03-27T13:17:24.396Z"}
 {"level":"error","message":"Subject already exists!","module":"Authorization","timestamp":"2025-03-27T13:17:24.912Z"}
 {"level":"error","message":"Subject already exists!","module":"Authorization","timestamp":"2025-03-27T13:17:25.375Z"}
+{"level":"info","message":"Your account has been activated successfully ✅","module":"Authorization","timestamp":"2025-03-27T18:34:56.597Z"}
+{"level":"error","message":"Invalid password ❗","module":"Authorization","timestamp":"2025-03-27T18:35:26.930Z"}
+{"level":"info","message":"New access token generated successfully ✅","module":"Authorization","timestamp":"2025-03-27T18:36:27.790Z"}
+{"level":"info","message":"New access token generated successfully ✅","module":"Authorization","timestamp":"2025-03-27T18:36:30.620Z"}
+{"level":"info","message":"New access token generated successfully ✅","module":"Authorization","timestamp":"2025-03-27T18:36:31.411Z"}
+{"level":"info","message":"New access token generated successfully ✅","module":"Authorization","timestamp":"2025-03-27T18:36:32.068Z"}
+{"level":"error","message":"Unauthorization User type ❗","module":"Authorization","timestamp":"2025-03-27T18:36:45.837Z"}
+{"level":"error","message":"You are not allowed ❗","module":"Authorization","timestamp":"2025-03-27T18:36:56.425Z"}
+{"level":"info","message":"Session created successfully!","module":"Authorization","timestamp":"2025-03-27T18:38:09.356Z"}
+{"level":"info","message":"Updated successfully ✅","module":"Authorization","timestamp":"2025-03-27T18:38:30.655Z"}
+{"level":"error","message":"You are not allowed ❗","module":"Authorization","timestamp":"2025-03-27T18:38:40.433Z"}
+{"level":"error","message":"You are not allowed ❗","module":"Authorization","timestamp":"2025-03-27T18:38:41.192Z"}
+{"level":"error","message":"You are not allowed ❗","module":"Authorization","timestamp":"2025-03-27T18:38:41.419Z"}
+{"level":"error","message":"You are not allowed ❗","module":"Authorization","timestamp":"2025-03-27T18:38:41.618Z"}
+{"level":"error","message":"You are not allowed ❗","module":"Authorization","timestamp":"2025-03-27T18:38:41.815Z"}
+{"level":"error","message":"You are not allowed ❗","module":"Authorization","timestamp":"2025-03-27T18:38:51.136Z"}
+{"level":"error","message":"You are not allowed ❗","module":"Authorization","timestamp":"2025-03-27T18:38:53.742Z"}
+{"level":"error","message":"You are not allowed ❗","module":"Authorization","timestamp":"2025-03-27T18:38:54.070Z"}
+{"level":"error","message":"You are not allowed ❗","module":"Authorization","timestamp":"2025-03-27T18:38:54.381Z"}
+{"level":"error","message":"You are not allowed ❗","module":"Authorization","timestamp":"2025-03-27T18:38:54.522Z"}
+{"level":"error","message":"You are not allowed ❗","module":"Authorization","timestamp":"2025-03-27T18:38:54.743Z"}
+{"level":"error","message":"You are not allowed ❗","module":"Authorization","timestamp":"2025-03-27T18:39:15.853Z"}
+{"level":"error","message":"You are not allowed ❗","module":"Authorization","timestamp":"2025-03-27T18:39:16.647Z"}
+{"level":"error","message":"You are not allowed ❗","module":"Authorization","timestamp":"2025-03-27T18:39:16.863Z"}
+{"level":"error","message":"You are not allowed ❗","module":"Authorization","timestamp":"2025-03-27T18:39:17.300Z"}
+{"level":"error","message":"You are not allowed ❗","module":"Authorization","timestamp":"2025-03-27T18:41:25.497Z"}
+{"level":"error","message":"You are not allowed ❗","module":"Authorization","timestamp":"2025-03-27T18:41:28.665Z"}
+{"level":"error","message":"You are not allowed ❗","module":"Authorization","timestamp":"2025-03-27T18:41:28.877Z"}
+{"level":"error","message":"You are not allowed ❗","module":"Authorization","timestamp":"2025-03-27T18:41:29.066Z"}
+{"level":"error","message":"You are not allowed ❗","module":"Authorization","timestamp":"2025-03-27T18:41:29.240Z"}
+{"level":"error","message":"You are not allowed ❗","module":"Authorization","timestamp":"2025-03-27T18:41:29.422Z"}
+{"level":"error","message":"You are not allowed ❗","module":"Authorization","timestamp":"2025-03-27T18:44:54.910Z"}
+{"level":"error","message":"You are not allowed ❗","module":"Authorization","timestamp":"2025-03-27T18:45:13.009Z"}
+{"level":"info","message":"Get all regions!","module":"Authorization","timestamp":"2025-03-27T18:46:26.665Z"}
+{"level":"info","message":"Get all regions!","module":"Authorization","timestamp":"2025-03-27T18:46:56.485Z"}
+{"level":"error","message":"OTP is incorrect ❗","module":"Authorization","timestamp":"2025-03-27T18:47:48.550Z"}
+{"level":"info","message":"Your account has been activated successfully ✅","module":"Authorization","timestamp":"2025-03-27T18:48:32.564Z"}
+{"level":"error","message":"User not found ❗","module":"Authorization","timestamp":"2025-03-27T18:48:49.976Z"}
+{"level":"error","message":"User not found❗","module":"Authorization","timestamp":"2025-03-27T18:51:59.601Z"}
+{"level":"error","message":"User not found❗","module":"Authorization","timestamp":"2025-03-27T18:52:00.788Z"}
+{"level":"info","message":"Get all regions!","module":"Authorization","timestamp":"2025-03-27T18:53:13.227Z"}
+{"level":"error","message":"Comments not found ❗","module":"Authorization","timestamp":"2025-03-27T18:53:22.109Z"}
+{"level":"info","message":"Your account has been activated successfully ✅","module":"Authorization","timestamp":"2025-03-27T18:54:44.412Z"}
+{"level":"info","message":"New access token generated successfully ✅","module":"Authorization","timestamp":"2025-03-27T18:56:13.489Z"}

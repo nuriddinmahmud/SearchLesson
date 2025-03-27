@@ -1,7 +1,6 @@
 const { db, DataTypes } = require("../config/database");
 const Subject = require("./subject.model");
 const EducationalCenter = require("./educationalCenter.model");
-const Field = require("./field.model");
 
 const SubjectEdu = db.define(
   "SubjectEdu",
@@ -19,29 +18,31 @@ const SubjectEdu = db.define(
         key: "id",
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
-      }
+      },
     },
     educationalCenterID: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: EducationalCenter,
-            key: "id",
-            onUpdate: "CASCADE",
-            onDelete: "CASCADE",
-        }
-    }
-    
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: EducationalCenter,
+        key: "id",
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
+    },
   },
   {
     timestamps: true,
   }
 );
 
-SubjectEdu.belongsTo(Field, { foreignKey: "subjectID", onDelete: "CASCADE", onUpdate: "CASCADE" });
-SubjectEdu.belongsTo(EducationalCenter, { foreignKey: "educationalCenterID", onDelete: "CASCADE", onUpdate: "CASCADE" });
-
-Subject.hasMany(SubjectEdu, {foreignKey: "subjectID", onDelete: "CASCADE", onUpdate: "CASCADE" })
-EducationalCenter.hasMany(SubjectEdu, {foreignKey: "educationalCenterID", onDelete: "CASCADE", onUpdate: "CASCADE" })
+EducationalCenter.belongsToMany(Subject, {
+  through: SubjectEdu,
+  foreignKey: "subjectID",
+});
+Subject.belongsToMany(EducationalCenter, {
+  through: SubjectEdu,
+  foreignKey: "educationalCenterID",
+});
 
 module.exports = SubjectEdu;
