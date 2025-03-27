@@ -1,5 +1,6 @@
 const { db, DataTypes } = require("../config/database");
-const Region = require("./region.model")
+const Region = require("./region.model");
+
 const User = db.define(
   "User",
   {
@@ -44,14 +45,17 @@ const User = db.define(
       references: {
         model: Region,
         key: "id",
-        onUpdate: "CASCADE",
-        onDelete: "CASCADE",
-      }
-    }
+      },
+      onUpdate: "CASCADE",
+      onDelete: "CASCADE",
+    },
   },
   {
     timestamps: true,
   }
 );
+
+User.belongsTo(Region, { foreignKey: "regionID", onDelete: "CASCADE", onUpdate: "CASCADE" });
+Region.hasMany(User, { foreignKey: "regionID", onDelete: "CASCADE", onUpdate: "CASCADE" });
 
 module.exports = User;

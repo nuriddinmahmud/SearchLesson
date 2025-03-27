@@ -60,7 +60,7 @@ const getOne = async (req, res) => {
 const post = async (req, res) => {
   try {
     const data = await Course.findOne({ where: { name: req.body.name } });
-    if (!data) {
+    if (data) {
       res.send({ message: "Course already exists ❗" });
       return;
     }

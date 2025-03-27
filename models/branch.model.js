@@ -33,27 +33,29 @@ const Branch = db.define(
 
     regionID: {
       type: DataTypes.INTEGER,
+      allowNull: false,
       references: {
         model: Region,
         key: "id",
-        onUpdate: "CASCADE",
-        onDelete: "CASCADE",
       },
-      allowNull: false,
     },
 
     centreID: {
       type: DataTypes.INTEGER,
+      allowNull: false,
       references: {
         model: EducationalCenter,
         key: "id",
-        onUpdate: "CASCADE",
-        onDelete: "CASCADE",
       },
-      allowNull: false,
     },
   },
-  { timestamps: false }
+  { timestamps: true }
 );
+
+Region.hasMany(Branch, { foreignKey: "regionID", onDelete: "CASCADE", onUpdate: "CASCADE" });
+Branch.belongsTo(Region, { foreignKey: "regionID" });
+
+EducationalCenter.hasMany(Branch, { foreignKey: "centreID", onDelete: "CASCADE", onUpdate: "CASCADE" });
+Branch.belongsTo(EducationalCenter, { foreignKey: "centreID" });
 
 module.exports = Branch;

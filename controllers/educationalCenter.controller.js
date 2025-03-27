@@ -32,7 +32,7 @@ async function getAll(req, res) {
         "phone",
         "star",
         "createdAt",
-        "updatedAt",
+        "updatedAt"
       ],
       include: [
         {
@@ -40,10 +40,7 @@ async function getAll(req, res) {
         },
         {
           model: Region,
-        },
-        {
-          model: Branch,
-        },
+        }
       ],
       order: orderCondition,
       limit: pageSize,

@@ -111,9 +111,10 @@ async function login(req, res) {
       "refresh_secret",
       { expiresIn: "7d" }
     );
+  
 
     await Session.create({
-      userId: user.id,
+      userID: user.id,
       ipAddress: req.ip,
       deviceInfo: req.headers["user-agent"],
     });
@@ -128,7 +129,7 @@ async function login(req, res) {
 async function myEducationalCenters(req, res) {
   try {
     let { role, id } = req.user;
-    if (!role.includes("Ceo")) {
+    if (!role.includes(["Ceo"])) {
       return res.status(403).send({ message: "Unauthorization User type ❗" });
     }
 
@@ -145,7 +146,7 @@ async function myEducationalCenters(req, res) {
       ],
       include: [
         {
-          model: { User },
+          model: User ,
           attribute: [
             "id",
             "firstName",

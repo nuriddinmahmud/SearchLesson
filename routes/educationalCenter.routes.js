@@ -133,6 +133,8 @@ CenterRouter.get("/:id", getOne);
  *                 type: string
  *               regionID:
  *                 type: integer
+ *               userID:
+ *                 type: integer
  *               star:
  *                 type: number
  *     responses:

@@ -3,8 +3,13 @@ const Region = require("./region.model");
 const User = require("./user.model");
 
 const EducationalCenter = db.define(
-  "EducationCenter",
+  "EducationalCenter",
   {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
     name: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -27,28 +32,30 @@ const EducationalCenter = db.define(
     },
     userID: {
       type: DataTypes.INTEGER,
+      allowNull: false,
       references: {
         model: User,
         key: "id",
-        onUpdate: "CASCADE",
-        onDelete: "CASCADE",
       },
-      allowNull: false,
     },
     regionID: {
       type: DataTypes.INTEGER,
+      allowNull: false,
       references: {
         model: Region,
         key: "id",
-        onUpdate: "CASCADE",
-        onDelete: "CASCADE",
       },
-      allowNull: false,
     },
   },
   {
     timestamps: true,
   }
 );
+
+User.hasMany(EducationalCenter, { foreignKey: "userID", onDelete: "CASCADE", onUpdate: "CASCADE" });
+EducationalCenter.belongsTo(User, { foreignKey: "userID" });
+
+Region.hasMany(EducationalCenter, { foreignKey: "regionID", onDelete: "CASCADE", onUpdate: "CASCADE" });
+EducationalCenter.belongsTo(Region, { foreignKey: "regionID" });
 
 module.exports = EducationalCenter;

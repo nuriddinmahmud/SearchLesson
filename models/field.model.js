@@ -20,14 +20,15 @@ const Field = db.define("Field", {
 
   courseID: {
     type: DataTypes.INTEGER,
+    allowNull: false,
     references: {
       model: Course,
       key: "id",
-      onUpdate: "CASCADE",
-      onDelete: "CASCADE",
     },
-    allowNull: false,
   },
 });
+
+Course.hasMany(Field, { foreignKey: "courseID", onDelete: "CASCADE", onUpdate: "CASCADE" });
+Field.belongsTo(Course, { foreignKey: "courseID" });
 
 module.exports = Field;

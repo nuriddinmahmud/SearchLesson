@@ -1,37 +1,41 @@
 const { db, DataTypes } = require("../config/database");
 const Field = require("./field.model");
-const EducationCenter = require("./educationalCenter.model");
+const EducationalCenter = require("./educationalCenter.model");
 
-const collabField = db.define(
-  "collabField",
+const CollabField = db.define(
+  "CollabField",
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
+
     fieldID: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         model: Field,
         key: "id",
-        onUpdate: "CASCADE",
-        onDelete: "CASCADE",
       },
     },
+
     educationCenterID: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: EducationCenter,
+        model: EducationalCenter,
         key: "id",
-        onUpdate: "CASCADE",
-        onDelete: "CASCADE",
       },
     },
   },
   { timestamps: false }
 );
 
-module.exports = collabField;
+Field.hasMany(CollabField, { foreignKey: "fieldID", onDelete: "CASCADE", onUpdate: "CASCADE" });
+CollabField.belongsTo(Field, { foreignKey: "fieldID" });
+
+EducationalCenter.hasMany(CollabField, { foreignKey: "educationCenterID", onDelete: "CASCADE", onUpdate: "CASCADE" });
+CollabField.belongsTo(EducationalCenter, { foreignKey: "educationCenterID" });
+
+module.exports = CollabField;

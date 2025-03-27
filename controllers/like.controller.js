@@ -29,7 +29,7 @@ const getAll = async (req, res) => {
     });
 
     if (!data.rows.length) {
-      return res.status(404).json({ message: "Like found ❗" });
+      return res.status(404).json({ message: "Like not found ❗" });
     }
 
     res.status(200).json({

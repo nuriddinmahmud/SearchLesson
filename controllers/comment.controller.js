@@ -36,7 +36,7 @@ const getAll = async (req, res) => {
     });
 
     if (!data.rows.length) {
-      return res.status(404).json({ message: "Comments found ❗" });
+      return res.status(404).json({ message: "Comments not found ❗" });
     }
 
     res.status(200).json({
