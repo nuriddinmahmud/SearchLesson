@@ -3,7 +3,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const db = new Sequelize(
-  "exam3",
+  "exaaaaaaaam",
   "root",
   "0901",
   {

@@ -233,9 +233,9 @@ async function promoteToAdmin(req, res) {
 
 async function getNewAccessToken(req, res) {
   try {
-    const refreshToken = req.body.refresh_token;
+    const refreshToken = req.header("Authorization")?.split(" ")[1];
 
-    let data = jwt.verify(
+    let data = await jwt.verify(
       refreshToken,
       process.env.REFRESH_KEY || "refreshKey"
     );
@@ -415,7 +415,7 @@ async function update(req, res) {
     res
       .status(200)
       .send({ message: "User updated successfully ✅", data: findUser });
-    authLogger.log("info", "User updated successfully ✅");
+    authLogger.log("info",  "User updated successfully ✅");
   } catch (error) {
     res.status(400).send({ error_message: error.message });
   }
