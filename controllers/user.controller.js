@@ -248,7 +248,7 @@ async function getNewAccessToken(req, res) {
     let accessToken = await accessTokenGenereate({
       id: user.id,
       email: user.email,
-      role: user.role
+      role: user.role,
     });
     res.status(200).send({
       message: "New access token generated successfully ✅",
