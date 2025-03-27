@@ -38,7 +38,7 @@ const SubjectEdu = db.define(
   }
 );
 
-SubjectEdu.belongsTo(Field, { foreignKey: "subjectID", onDelete: "CASCADE", onUpdate: "CASCADE" });
+SubjectEdu.belongsTo(Subject, { foreignKey: "subjectID", onDelete: "CASCADE", onUpdate: "CASCADE" });
 SubjectEdu.belongsTo(EducationalCenter, { foreignKey: "educationalCenterID", onDelete: "CASCADE", onUpdate: "CASCADE" });
 
 Subject.hasMany(SubjectEdu, {foreignKey: "subjectID", onDelete: "CASCADE", onUpdate: "CASCADE" })

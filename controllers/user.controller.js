@@ -313,7 +313,9 @@ async function verifyOtpPhone(req, res) {
 
 async function findAll(req, res) {
   try {
-    if (req.userRole !== "Admin") {
+    console.log();
+    
+    if (req.user.role !== "Admin") {
       res.status(403).send({ message: "You are not allowed ❗" });
       authLogger.log("error", "You are not allowed ❗");
       return;

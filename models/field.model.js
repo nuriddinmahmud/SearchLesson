@@ -1,5 +1,4 @@
 const { db, DataTypes } = require("../config/database");
-const Course = require("./subject.model");
 
 const Field = db.define("Field", {
   id: {

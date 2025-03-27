@@ -32,7 +32,7 @@ const getAll = async (req, res) => {
     const pageSize = limit ? parseInt(limit) : 10;
     const pageNumber = page ? parseInt(page) : 1;
 
-    let order = [["createdAt", "DESC"]];
+    let order = [["id", "ASC"]];
     if (sortBy) {
       const validSortOrder = sortOrder === "asc" ? "ASC" : "DESC";
       order = [[sortBy, validSortOrder]];
@@ -40,7 +40,6 @@ const getAll = async (req, res) => {
 
     const fields = await Field.findAndCountAll({
       where: whereClause,
-      include: [{ model: Course }],
       limit: pageSize,
       offset: (pageNumber - 1) * pageSize,
       order: order,
