@@ -233,9 +233,14 @@ async function promoteToAdmin(req, res) {
 
 async function getNewAccessToken(req, res) {
   try {
+<<<<<<< HEAD
     const refreshToken = req.header("Authorization")?.split(" ")[1];
 
     let data = await jwt.verify(
+=======
+    const refreshToken = req.body.refresh_token;
+    let data = jwt.verify(
+>>>>>>> acef5f98e2889aa7d90f88bfc01d4c01309d7d07
       refreshToken,
       process.env.REFRESH_KEY || "refreshKey"
     );
