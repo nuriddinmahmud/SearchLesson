@@ -157,26 +157,33 @@ async function create(req, res) {
       return res.status(404).json({ message: "Region not found ❗" });
     }
 
-    // ❗ Yangi Educational Center yaratish
     const newEducationalCenter = await EducationalCenter.create({
       ...value,
       userID: req.user.id,
     });
 
-    // ❗ Field va Subject larni saqlash
+    
+    // a = await FieldEdu.findByPk(item)
+    // name: a.name,
+    // educationCenterID: newEducationalCenter.id
+
     if (fields && fields.length > 0) {
       const a = "0"
-      const fieldData = fields.map((item) => ({
-        a = await FieldEdu.findByPk(item)
-        name: a.name,
-        educationCenterID: newEducationalCenter.id,
-      }));
+      const fieldData = fields.map(async (item) => {
+        const ls = await FieldEdu.findByPk(item)
+
+        return {
+          name:  ls.name, 
+          educationCenterID: ls.id,
+        }
+      }
+      )
       await FieldEdu.bulkCreate(fieldData);
     }
 
     if (subjects && subjects.length > 0) {
       const subjectData = subjects.map((item) => ({
-        name: item.name, // Agar subject obyekt ichida `name` bo‘lsa
+        name: item.name, 
         educationCenterID: newEducationalCenter.id,
       }));
       await SubjectEdu.bulkCreate(subjectData);

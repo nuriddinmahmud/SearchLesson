@@ -1,6 +1,7 @@
 const { db, DataTypes } = require("../config/database");
 const Subject = require("./subject.model");
 const EducationalCenter = require("./educationalCenter.model");
+const Field = require("./field.model");
 
 const SubjectEdu = db.define(
   "SubjectEdu",
