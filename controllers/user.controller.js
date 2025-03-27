@@ -13,6 +13,17 @@ const jwt = require("jsonwebtoken");
 const { Op } = require("sequelize");
 const sendSms = require("../config/eskiz.js");
 const Session = require("../models/session.model.js");
+let winston = require("winston");
+require("winston-mongodb");
+
+let { json, combine, timestamp } = winston.format;
+const logger = winston.createLogger({
+  level: "silly",
+  format: combine(timestamp(), json()),
+  transports: [new winston.transports.File({ filename: "loggers.log" })],
+});
+
+let authLogger = logger.child({ module: "Authorization" });
 
 dotenv.config();
 const TOTP_KEY = process.env.SECRET_KEY;
@@ -33,9 +44,8 @@ async function register(req, res) {
 
     let findUser = await User.findOne({ where: { email: body.email } });
     if (findUser) {
-      return res
-        .status(405)
-        .send({ message: "This account already exists ❗" });
+      res.status(405).send({ message: "This account already exists ❗" });
+      authLogger.log("error", "This account already exists ❗");
     }
 
     const { error, value } = userValidation(body);
@@ -68,12 +78,16 @@ async function verifyOtp(req, res) {
     const { email, otp } = req.body;
     const findUser = await User.findOne({ where: { email } });
     if (!findUser) {
-      return res.status(405).send({ message: "Email is incorrect ❗" });
+      res.status(405).send({ message: "Email is incorrect ❗" });
+      authLogger.log("error", "Email is incorrect ❗");
+      return;
     }
 
     let checkOtp = totp.verify({ token: otp, secret: `${TOTP_KEY}${email}` });
     if (!checkOtp) {
-      return res.status(403).send({ message: "OTP is incorrect ❗" });
+      res.status(403).send({ message: "OTP is incorrect ❗" });
+      authLogger.log("error", "OTP is incorrect ❗");
+      return;
     }
 
     if (findUser.status === "Inactive") {
@@ -83,6 +97,7 @@ async function verifyOtp(req, res) {
     res
       .status(200)
       .send({ message: "Your account has been activated successfully ✅" });
+    authLogger.log("info", "Your account has been activated successfully ✅");
   } catch (error) {
     res.status(400).send({ error_message: error.message });
   }
@@ -93,11 +108,15 @@ async function login(req, res) {
   try {
     let user = await User.findOne({ where: { email } });
     if (!user) {
-      return res.status(404).send("User not found❗");
+      res.status(404).send("User not found❗");
+      authLogger.log("error", "User not found❗");
+      return;
     }
     let match = await bcrypt.compare(password, user.password);
     if (!match) {
-      return res.status(401).send("Invalid password ❗");
+      res.status(401).send("Invalid password ❗");
+      authLogger.log("error", "Invalid password ❗");
+      return;
     }
 
     const accessToken = jwt.sign(
@@ -111,7 +130,6 @@ async function login(req, res) {
       "refresh_secret",
       { expiresIn: "7d" }
     );
-  
 
     await Session.create({
       userID: user.id,
@@ -124,13 +142,15 @@ async function login(req, res) {
     console.error(error);
     res.status(500).send("Internal Server Error ❗");
   }
-};
+}
 
 async function myEducationalCenters(req, res) {
   try {
     let { role, id } = req.user;
     if (!role.includes(["Ceo"])) {
-      return res.status(403).send({ message: "Unauthorization User type ❗" });
+      res.status(403).send({ message: "Unauthorization User type ❗" });
+      authLogger.log("error", "Unauthorization User type ❗");
+      return;
     }
 
     const allCentres = await EducationalCenter.findAll({
@@ -146,7 +166,7 @@ async function myEducationalCenters(req, res) {
       ],
       include: [
         {
-          model: User ,
+          model: User,
           attribute: [
             "id",
             "firstName",
@@ -166,12 +186,14 @@ async function myEducationalCenters(req, res) {
       ],
     });
     if (!allCentres.length) {
-      return res
-        .status(200)
-        .send({
-          message:
-            "You have not created any Educational Centers yet 🫱🏿‍🫲🏻(my nig*a)",
-        });
+      res.status(200).send({
+        message:
+          "You have not created any Educational Centers yet 🫱🏿‍🫲🏻(my nig*a)",
+      });
+      authLogger.log(
+        "error",
+        "You have not created any Educational Centers yet 🫱🏿‍🫲🏻(my nig*a)"
+      );
     }
     res.status(200).send({ data: allCentres });
   } catch (error) {
@@ -203,6 +225,7 @@ async function promoteToAdmin(req, res) {
     let { id } = req.params;
     await User.update({ role }, { where: { id } });
     res.status(200).send({ message: "Updated successfully ✅" });
+    authLogger.log("info", "Updated successfully ✅");
   } catch (error) {
     res.status(400).send({ error_message: error.message });
   }
@@ -218,17 +241,20 @@ async function getNewAccessToken(req, res) {
     );
     const user = await User.findByPk(data.id);
     if (!user) {
-      return res.status(404).send({ message: "User not found ❗" });
+      res.status(404).send({ message: "User not found ❗" });
+      authLogger.log("error", "User not found ❗");
+      return;
     }
     let accessToken = await accessTokenGenereate({
       id: user.id,
       email: user.email,
-      role: user.role
+      role: user.role,
     });
     res.status(200).send({
       message: "New access token generated successfully ✅",
       access_token: accessToken,
     });
+    authLogger.log("info", "New access token generated successfully ✅");
   } catch (error) {
     res.status(400).send({ error_message: error.message });
   }
@@ -239,10 +265,12 @@ async function sendOtpPhone(req, res) {
     const user = await User.findOne({ where: { phone: req.body.phone } });
     if (!user) {
       res.status(404).send({ message: "User not found ❗" });
+      authLogger.log("error", "User not found ❗");
       return;
     }
     const token = await sendSms(req.body.phone);
     res.status(200).send({ message: "OTP sent successfully ✅", otp: token });
+    authLogger.log("info", "OTP sent successfully ✅");
   } catch (error) {
     res.status(400).send({ error_message: error.message });
   }
@@ -253,6 +281,7 @@ async function verifyOtpPhone(req, res) {
     const user = await User.findOne({ where: { phone: req.body.phone } });
     if (!user) {
       res.status(404).send({ message: "User not found❗" });
+      authLogger.log("error", "User not found ❗");
       return;
     }
     const match = totp.verify({
@@ -261,14 +290,17 @@ async function verifyOtpPhone(req, res) {
     });
     if (!match) {
       res.status(403).send({ message: "OTP is incorrect ❗" });
+      authLogger.log("error", "OTP is incorrect ❗");
       return;
     }
     if (user.status === "Inactive") {
       await user.update({ status: "Active" });
       res.status(200).send({ message: "Account activated successfully ✅" });
+      authLogger.log("info", "Account activated successfully ✅");
       return;
     }
     res.status(200).send({ message: "Account activated successfully ✅" });
+    authLogger.log("info", "Account activated successfully ✅");
   } catch (error) {
     res.status(400).send({ error_message: error.message });
   }
@@ -277,7 +309,9 @@ async function verifyOtpPhone(req, res) {
 async function findAll(req, res) {
   try {
     if (req.userRole !== "Admin") {
-      return res.status(403).send({ message: "You are not allowed ❗" });
+      res.status(403).send({ message: "You are not allowed ❗" });
+      authLogger.log("error", "You are not allowed ❗");
+      return;
     }
 
     let {
@@ -347,7 +381,11 @@ async function findOne(req, res) {
         "phone",
       ],
     });
-    if (!user) return res.status(404).send({ message: "User not found ❗" });
+    if (!user) {
+      res.status(404).send({ message: "User not found ❗" });
+      authLogger.log("error", "User not found ❗");
+      return;
+    }
     res.status(200).send({ data: user });
   } catch (error) {
     res.status(400).send({ error_message: error.message });
@@ -363,18 +401,21 @@ async function update(req, res) {
     if (value.password) value.password = await bcrypt.hash(value.password, 10);
 
     if (!["SuperAdmin", "Admin"].includes(req.user.role)) {
-      return res
-        .status(403)
-        .send({ message: "Only SuperAdmin can update User ❗️" });
+      res.status(403).send({ message: "Only SuperAdmin can update User ❗️" });
+      authLogger.log("error", "User not found ❗");
+      return;
     }
     let findUser = await User.findByPk(id);
     if (!findUser) {
-      return res.status(403).send({ message: "User not found ❗" });
+      res.status(403).send({ message: "User not found ❗" });
+      authLogger.log("error", "User not found ❗");
+      return;
     }
     await findUser.update(req.body);
     res
       .status(200)
       .send({ message: "User updated successfully ✅", data: findUser });
+    authLogger.log("info", "User updated successfully ✅");
   } catch (error) {
     res.status(400).send({ error_message: error.message });
   }
@@ -384,17 +425,26 @@ async function remove(req, res) {
   try {
     const { id } = req.params;
     let findUser = await User.findByPk(id);
-    if (!findUser)
-      return res.status(404).send({ message: "User not found ❗️" });
+    if (!findUser) {
+      res.status(404).send({ message: "User not found ❗️" });
+      authLogger.log("error", "User not found ❗");
+      return;
+    }
+
     if (findUser.role == "Admin") {
-      return res.status(403).send({ message: "Nobody can destroy admin ❗️" });
+      res.status(403).send({ message: "Nobody can destroy admin ❗️" });
+      authLogger.log("error", "User not found ❗");
+      return;
     }
     let deletedUser = await User.destroy({
       where: { id, role: { [Op.in]: ["User"] } },
     });
     await findUser.destroy();
-    if (!deletedUser)
-      return res.status(403).send({ message: "Only User can be deleted ❗️" });
+    if (!deletedUser) {
+      res.status(403).send({ message: "Only User can be deleted ❗️" });
+      authLogger.log("error", "User not found ❗");
+      return;
+    }
   } catch (e) {
     res.status(400).send({ error_message: e.message });
   }

@@ -1,10 +1,20 @@
 const Region = require("../models/region.model.js");
 const { Op } = require("sequelize");
-
 const {
   regionValidation,
   regionValidationUpdate,
 } = require("../validations/region.validation.js");
+let winston = require("winston");
+require("winston-mongodb");
+
+let { json, combine, timestamp } = winston.format;
+const logger = winston.createLogger({
+  level: "silly",
+  format: combine(timestamp(), json()),
+  transports: [new winston.transports.File({ filename: "loggers.log" })],
+});
+
+let regionLogger = logger.child({ module: "Authorization" });
 
 const getAll = async (req, res) => {
   try {
@@ -37,6 +47,7 @@ const getAll = async (req, res) => {
       pageSize: pageSize,
       data: regions.rows,
     });
+    regionLogger.log("info", "Get all regions!");
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -47,10 +58,14 @@ const getOne = async (req, res) => {
     const { id } = req.params;
     const region = await Region.findByPk(id);
 
-    if (!region)
-      return res.status(404).json({ message: "Region not found ❗" });
+    if (!region) {
+      res.status(404).json({ message: "Region not found ❗" });
+      regionLogger.log("error", "Region not found ❗");
+      return;
+    }
 
     res.status(200).send({ data: region });
+    regionLogger.log("info", "Get one regions!");
   } catch (err) {
     res.status(400).send({ error: err.message });
   }
@@ -59,9 +74,12 @@ const getOne = async (req, res) => {
 const post = async (req, res) => {
   try {
     const { error, value } = regionValidation(req.body);
-    if (error) return res.status(422).send({ error: error.details[0].message });
-
+    if (error) {
+      res.status(422).send({ error: error.details[0].message });
+      regionLogger.log("error", "Error in creating regions ❗");
+    }
     const newRegion = await Region.create(value);
+    regionLogger.log("info", "Post regions!");
     res.status(200).send({ data: newRegion });
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -76,10 +94,13 @@ const update = async (req, res) => {
 
     const updateRegion = await Region.update(value, { where: { id } });
     if (!updateRegion[0]) {
-      return res.status(404).send({ message: "Region not found ❗" });
+      res.status(404).send({ message: "Region not found ❗" });
+      regionLogger.log("error", "Region not found ❗");
+      return;
     }
 
     const result = await Region.findByPk(id);
+    regionLogger.log("info", "Updated regions!");
     res.status(200).send({ data: result });
   } catch (err) {
     res.status(400).send({ error: err.message });
@@ -92,9 +113,12 @@ const remove = async (req, res) => {
     const deleteRegion = await Region.destroy({ where: { id } });
 
     if (!deleteRegion) {
-      return res.status(404).send({ message: "Region not found ❗" });
+      res.status(404).send({ message: "Region not found ❗" });
+      regionLogger.log("error", "Region not found ❗");
+      return;
     }
 
+    regionLogger.log("info", "Region deleted successfully ❗");
     res.status(200).send({ message: "Region deleted successfully ❗" });
   } catch (err) {
     res.status(400).send({ error: err.message });

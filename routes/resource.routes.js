@@ -12,45 +12,6 @@ const selfPolice = require("../middlewares/selfPolice");
 
 /**
  * @swagger
- * components:
- *   schemas:
- *     Resource:
- *       type: object
- *       properties:
- *         id:
- *           type: integer
- *           description: Unique identifier of the resource
- *         name:
- *           type: string
- *           description: Name of the resource
- *         description:
- *           type: string
- *           description: Description of the resource
- *         media:
- *           type: string
- *           description: Media URL of the resource
- *         image:
- *           type: string
- *           description: Image URL of the resource
- *         categoryID:
- *           type: integer
- *           description: ID of the resource category
- *         userID:
- *           type: integer
- *           description: ID of the user who added the resource
- *       example:
- *         id: 1
- *         name: "Python Basics"
- *         description: "A beginner-friendly Python course"
- *         media: "https://example.com/video.mp4"
- *         image: "https://example.com/image.jpg"
- *         categoryID: 2
- *         userID: 10
- *
- * tags:
- *   name: Resources
- *   description: Resource management API
- *
  * /api/resource:
  *   get:
  *     summary: Get all resources with filters, sorting, and pagination
@@ -95,21 +56,6 @@ const selfPolice = require("../middlewares/selfPolice");
  *     responses:
  *       200:
  *         description: A list of resources with pagination
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 total:
- *                   type: integer
- *                 page:
- *                   type: integer
- *                 limit:
- *                   type: integer
- *                 data:
- *                   type: array
- *                   items:
- *                     $ref: '#/components/schemas/Resource'
  *       400:
  *         description: Bad request
  *       500:
@@ -133,10 +79,6 @@ ResourceRouter.get("/", getAll);
  *     responses:
  *       200:
  *         description: The resource data
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Resource'
  *       404:
  *         description: Resource not found
  */
@@ -151,34 +93,29 @@ ResourceRouter.get("/:id", getOne);
  *     security:
  *       - BearerAuth: []
  *     requestBody:
- *       required: [name, description, media, image, categoryID,userID]
- *       properties:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [name, description, media, image, categoryID, userID]
+ *             properties:
  *               name:
  *                 type: string
- *                 description: Name of the resource
  *               description:
  *                 type: string
- *                 description: Description of the resource
  *               media:
  *                 type: string
  *                 format: binary
- *                 description: media of recourse
  *               image:
  *                 type: string
- *                 description: Image of the resource
  *               categoryID:
  *                 type: integer
- *                 description: Category of the resource
  *               userID:
  *                 type: integer
- *                 description: id OF the user who added the resource
  *     responses:
  *       201:
  *         description: Resource created
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Resource'
  *       400:
  *         description: Validation error
  */
@@ -204,14 +141,24 @@ ResourceRouter.post("/", verifyToken, post);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Resource'
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               media:
+ *                 type: string
+ *                 format: binary
+ *               image:
+ *                 type: string
+ *               categoryID:
+ *                 type: integer
+ *               userID:
+ *                 type: integer
  *     responses:
  *       200:
  *         description: Resource updated
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Resource'
  *       404:
  *         description: Resource not found
  */

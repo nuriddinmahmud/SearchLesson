@@ -6,6 +6,17 @@ const {
   educationCenterValidationUpdate,
   educationCenterValidation,
 } = require("../validations/educationalCenter.validation");
+let winston = require("winston");
+require("winston-mongodb");
+
+let { json, combine, timestamp } = winston.format;
+const logger = winston.createLogger({
+  level: "silly",
+  format: combine(timestamp(), json()),
+  transports: [new winston.transports.File({ filename: "loggers.log" })],
+});
+
+let educationalCenterLogger = logger.child({ module: "Authorization" });
 
 async function getAll(req, res) {
   try {
@@ -32,7 +43,7 @@ async function getAll(req, res) {
         "phone",
         "star",
         "createdAt",
-        "updatedAt"
+        "updatedAt",
       ],
       include: [
         {
@@ -40,7 +51,7 @@ async function getAll(req, res) {
         },
         {
           model: Region,
-        }
+        },
       ],
       order: orderCondition,
       limit: pageSize,
@@ -48,6 +59,7 @@ async function getAll(req, res) {
     });
 
     if (!educationCenters.rows.length) {
+      educationalCenterLogger.log("error", "Empty!");
       return res.status(200).json({ msg: "Empty ❗" });
     }
 
@@ -57,6 +69,7 @@ async function getAll(req, res) {
       limit: pageSize,
       data: educationCenters.rows,
     });
+    educationalCenterLogger.log("info", "Educational Center get all!");
   } catch (error) {
     console.error("Error fetching education centers:", error);
     res.status(500).json({ error: error.message });
@@ -92,10 +105,12 @@ async function getOne(req, res) {
     });
 
     if (!educationalCenter) {
+      educationalCenterLogger.log("error", "Educational Center not found !");
       return res.status(404).json({ msg: "EducationCenter not found ❗" });
     }
 
     res.status(200).json({ data: educationalCenter });
+    educationalCenterLogger.log("info", "Educational Center get one!");
   } catch (error) {
     console.error("Error fetching education center by ID:", error);
     res.status(500).json({ error: error.message });
@@ -113,13 +128,19 @@ async function create(req, res) {
     }
 
     if (role !== "Ceo" && role !== "Admin") {
-      return res.status(403).json({
+      res.status(403).json({
         message:
           "Not permitted. Only Ceo and Admin can create an Educational Center ❗",
       });
+      educationalCenterLogger.log(
+        "error",
+        "Not permitted. Only Ceo and Admin can create an Educational Center ❗"
+      );
+      return;
     }
 
     if (!value.regionID) {
+      educationalCenterLogger.log("error", "regionID is required ❗");
       return res.status(400).json({ message: "regionID is required ❗" });
     }
 
@@ -127,6 +148,7 @@ async function create(req, res) {
       where: { id: value.regionID },
     });
     if (!regionExists) {
+      educationalCenterLogger.log("error", "Region not found❗");
       return res.status(404).json({ message: "Region not found ❗" });
     }
 
@@ -134,7 +156,7 @@ async function create(req, res) {
       ...value,
       userID,
     });
-
+    educationalCenterLogger.log("info", "Educational Center post!");
     res.status(201).json({ data: newEducationalCenter });
   } catch (error) {
     console.error("Error creating educational center:", error);
@@ -154,10 +176,15 @@ async function update(req, res) {
     }
 
     if (role !== "Admin" && role !== "Ceo") {
-      return res.status(403).json({
+      res.status(403).json({
         message:
           "Not permitted. Only Ceo and Admin can update Educational Centre ❗",
       });
+      educationalCenterLogger.log(
+        "error",
+        "Not permitted. Only Ceo and Admin can update Educational Centre ❗"
+      );
+      return;
     }
 
     const [updateCount] = await EducationalCenter.update(value, {
@@ -165,9 +192,9 @@ async function update(req, res) {
     });
 
     if (!updateCount) {
-      return res
-        .status(404)
-        .json({ message: "Educational Centre not found ❗" });
+      res.status(404).json({ message: "Educational Centre not found ❗" });
+      educationalCenterLogger.log("error", "Educational Centre not found ❗");
+      return;
     }
 
     const updatedCentre = await EducationalCenter.findByPk(id, {
@@ -187,6 +214,7 @@ async function update(req, res) {
       message: "Successfully updated ✅",
       data: updatedCentre,
     });
+    educationalCenterLogger.log("info", "Educational Center update!");
   } catch (error) {
     console.error("Error updating Educational Centre:", error);
     res.status(500).json({ message: error.message });
@@ -199,20 +227,26 @@ async function remove(req, res) {
     const { role } = req.user;
 
     if (role !== "Admin" && role !== "Ceo") {
-      return res.status(403).json({
+      res.status(403).json({
         message:
           "Not permitted. Only Ceo and Admin can delete Educational Centre ❗",
       });
+      educationalCenterLogger.log(
+        "error",
+        "Not permitted. Only Ceo and Admin can delete Educational Centre ❗"
+      );
+      return;
     }
 
     const deleteCount = await EducationalCenter.destroy({ where: { id } });
 
     if (!deleteCount) {
-      return res
-        .status(404)
-        .json({ message: "Educational Centre not found ❗" });
+      res.status(404).json({ message: "Educational Centre not found ❗" });
+      educationalCenterLogger.log("error", "Educational Centre not found ❗");
+      return;
     }
 
+    educationalCenterLogger.log("info", "Educational Center deleted!");
     res.status(200).json({ message: "Successfully deleted ✅" });
   } catch (error) {
     console.error("Error deleting Educational Centre:", error);

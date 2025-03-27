@@ -5,6 +5,17 @@ const {
   commentValidation,
   commentUpdateValidation,
 } = require("../validations/comment.validation");
+let winston = require("winston");
+require("winston-mongodb");
+
+let { json, combine, timestamp } = winston.format;
+const logger = winston.createLogger({
+  level: "silly",
+  format: combine(timestamp(), json()),
+  transports: [new winston.transports.File({ filename: "loggers.log" })],
+});
+
+let commentLogger = logger.child({ module: "Authorization" });
 
 const getAll = async (req, res) => {
   try {
@@ -36,6 +47,7 @@ const getAll = async (req, res) => {
     });
 
     if (!data.rows.length) {
+      commentLogger.log("error", "Comments not found ❗");
       return res.status(404).json({ message: "Comments not found ❗" });
     }
 
@@ -45,6 +57,7 @@ const getAll = async (req, res) => {
       from: offset,
       data: data.rows,
     });
+    commentLogger.log("info", "Comments!");
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -60,9 +73,11 @@ const myComments = async (req, res) => {
     });
 
     if (!data.length) {
+      commentLogger.log("error", "Comments not found ❗");
       return res.status(404).json({ message: "Comment not found ❗" });
     }
 
+    commentLogger.log("info", "Comments!");
     res.status(200).json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -73,8 +88,10 @@ const getOne = async (req, res) => {
   try {
     const data = await Comment.findByPk(req.params.id);
     if (!data) {
+      commentLogger.log("error", "Comments not found ❗");
       return res.status(404).json({ message: "Comment not found ❗" });
     }
+    commentLogger.log("info", "Comments!");
     res.send(data);
   } catch (error) {
     res.send(error.mesage);
@@ -83,12 +100,23 @@ const getOne = async (req, res) => {
 
 const post = async (req, res) => {
   try {
+<<<<<<< HEAD
+=======
+    const data = await Comment.findOne({ where: { name: req.body.name } });
+    if (!data) {
+      commentLogger.log("error", "Comments already exists ❗");
+
+      res.send({ message: "Comment already exists ❗" });
+      return;
+    }
+>>>>>>> ebaf27e304b0eb52bed6d04b31af2655d031d0d3
     const { error } = commentValidation(req.body);
     if (error) {
       res.status(400).send(error.details[0].message);
       return;
     }
     const newData = await Comment.create(req.body);
+    commentLogger.log("info", "Comments!");
     res.send(newData);
   } catch (error) {
     res.send(error.message);
@@ -99,6 +127,7 @@ const update = async (req, res) => {
   try {
     const data = await Comment.findByPk(req.params.id);
     if (!data) {
+      commentLogger.log("error", "Comments not found ❗");
       res.send({ message: "Comment not found ❗" });
       return;
     }
@@ -108,6 +137,7 @@ const update = async (req, res) => {
       return;
     }
     await data.update(req.body);
+    commentLogger.log("info", "Comments!");
     res.send(data);
   } catch (error) {
     res.send(error.mesage);
@@ -118,10 +148,12 @@ const remove = async (req, res) => {
   try {
     const data = await Comment.findByPk(req.params.id);
     if (!data) {
+      commentLogger.log("error", "Comments not found ❗");
       res.send({ message: "Comment not found ❗" });
       return;
     }
     await data.destroy();
+    commentLogger.log("info", "Comments!");
     res.send(data);
   } catch (error) {
     res.send(error.mesage);

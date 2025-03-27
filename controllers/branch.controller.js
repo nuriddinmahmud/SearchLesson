@@ -2,6 +2,17 @@ const Branch = require("../models/branch.model");
 const Region = require("../models/region.model");
 const EducationalCenter = require("../models/educationalCenter.model.js");
 const { Op } = require("sequelize");
+let winston = require("winston");
+require("winston-mongodb");
+
+let { json, combine, timestamp } = winston.format;
+const logger = winston.createLogger({
+  level: "silly",
+  format: combine(timestamp(), json()),
+  transports: [new winston.transports.File({ filename: "loggers.log" })],
+});
+
+let branchLogger = logger.child({ module: "Authorization" });
 
 const {
   branchValidation,
@@ -57,7 +68,7 @@ const getOne = async (req, res) => {
 
     if (!branch)
       return res.status(404).json({ message: "Branch not found ❗" });
-
+    branchLogger.log("error", "Error in GetOne branches!");
     res.status(200).send({ data: branch });
   } catch (err) {
     res.status(400).send({ error: err.message });
@@ -67,9 +78,13 @@ const getOne = async (req, res) => {
 const post = async (req, res) => {
   try {
     const { error, value } = branchValidation(req.body);
-    if (error) return res.status(422).send({ error: error.details[0].message });
-
+    if (error) {
+      res.status(422).send({ error: error.details[0].message });
+      branchLogger.log("error", "Error in post branches!");
+      return;
+    }
     const newBranch = await Branch.create(value);
+    branchLogger.log("info", "Post branches!");
     res.status(200).send({ data: newBranch });
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -80,14 +95,21 @@ const update = async (req, res) => {
   try {
     const { id } = req.params;
     const { error, value } = branchValidationUpdate(req.body);
-    if (error) return res.status(400).json({ error: error.details[0].message });
+    if (error) {
+      res.status(400).json({ error: error.details[0].message });
+      branchLogger.log("error", "Error in update branches!");
+      return;
+    }
 
     const updateBranch = await Branch.update(value, { where: { id } });
     if (!updateBranch[0]) {
-      return res.status(404).send({ message: "Branch not found ❗" });
+      res.status(404).send({ message: "Branch not found ❗" });
+      branchLogger.log("error", "Error in update branches!");
+      return;
     }
 
     const result = await Branch.findByPk(id);
+    branchLogger.log("info", "Update branches!");
     res.status(200).send({ data: result });
   } catch (err) {
     res.status(400).send({ error: err.message });
@@ -100,10 +122,12 @@ const remove = async (req, res) => {
     const deleteBranch = await Branch.destroy({ where: { id } });
 
     if (!deleteBranch) {
+      branchLogger.log("error", "Error in delete branches!");
       return res.status(404).send({ message: "Branch not found ❗" });
     }
 
     res.status(200).send({ message: "Branch deleted successfully ❗" });
+    branchLogger.log("info", "Delete branches!");
   } catch (err) {
     res.status(400).send({ error: err.message });
   }

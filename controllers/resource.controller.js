@@ -2,11 +2,21 @@ const Category = require("../models/resourceCategory.model.js");
 const User = require("../models/user.model");
 const Resource = require("../models/resource.model");
 const { Op } = require("sequelize");
-
 const {
   resourceValidation,
   resourceValidationUpdate,
 } = require("../validations/resource.validation.js");
+let winston = require("winston");
+require("winston-mongodb");
+
+let { json, combine, timestamp } = winston.format;
+const logger = winston.createLogger({
+  level: "silly",
+  format: combine(timestamp(), json()),
+  transports: [new winston.transports.File({ filename: "loggers.log" })],
+});
+
+let resourceLogger = logger.child({ module: "Authorization" });
 
 const getAll = async (req, res) => {
   try {
@@ -43,6 +53,7 @@ const getAll = async (req, res) => {
       pageSize: pageSize,
       data: resources.rows,
     });
+    resourceLogger.log("Taked all resources!");
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -55,10 +66,13 @@ const getOne = async (req, res) => {
       include: [{ model: Category }, { model: User }],
     });
 
-    if (!resource)
-      return res.status(404).json({ message: "Resource not found ❗" });
-
+    if (!resource) {
+      res.status(404).json({ message: "Resource not found ❗" });
+      resourceLogger.log("error", "Resource not found ❗");
+      return;
+    }
     res.status(200).send({ data: resource });
+    resourceLogger.log("info", "Resource taked successfully ❗");
   } catch (err) {
     res.status(400).send({ error: err.message });
   }
@@ -70,6 +84,7 @@ const post = async (req, res) => {
     if (error) return res.status(422).send({ error: error.details[0].message });
 
     const newResource = await Resource.create(value);
+    resourceLogger.log("info", "Resource created successfully ❗");
     res.status(200).send({ data: newResource });
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -84,11 +99,14 @@ const update = async (req, res) => {
 
     const updateResource = await Resource.update(value, { where: { id } });
     if (!updateResource[0]) {
-      return res.status(404).send({ message: "Resource not found ❗" });
+      res.status(404).send({ message: "Resource not found ❗" });
+      resourceLogger.log("error", "Resource not found ❗");
+      return;
     }
 
     const result = await Resource.findByPk(id);
     res.status(200).send({ data: result });
+    resourceLogger.log("info", "Resource updated successfully ❗");
   } catch (err) {
     res.status(400).send({ error: err.message });
   }
@@ -100,10 +118,12 @@ const remove = async (req, res) => {
     const deleteResource = await Resource.destroy({ where: { id } });
 
     if (!deleteResource) {
-      return res.status(404).send({ message: "Resource not found ❗" });
+      res.status(404).send({ message: "Resource not found ❗" });
+      resourceLogger.log("error", "Resource not found ❗");
     }
 
     res.status(200).send({ message: "Resource deleted successfully ❗" });
+    resourceLogger.log("info", "Resource deleted successfully ❗");
   } catch (err) {
     res.status(400).send({ error: err.message });
   }
