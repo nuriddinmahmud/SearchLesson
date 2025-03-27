@@ -212,6 +212,16 @@ UsersRouter.post("/login", login);
  *   post:
  *     summary: Get a new access token using a refresh token
  *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               refresh_token:
+ *                 type: string
+ *                 description: Your refresh token
  *     security:
  *       - BearerAuth: []
  *     responses:

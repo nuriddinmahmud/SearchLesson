@@ -233,9 +233,9 @@ async function promoteToAdmin(req, res) {
 
 async function getNewAccessToken(req, res) {
   try {
-    const refreshToken = req.header("Authorization")?.split(" ")[1];
+    const refreshToken = req.body.refresh_token;
 
-    let data = await jwt.verify(
+    let data = jwt.verify(
       refreshToken,
       process.env.REFRESH_KEY || "refreshKey"
     );
@@ -248,7 +248,7 @@ async function getNewAccessToken(req, res) {
     let accessToken = await accessTokenGenereate({
       id: user.id,
       email: user.email,
-      role: user.role,
+      role: user.role
     });
     res.status(200).send({
       message: "New access token generated successfully ✅",

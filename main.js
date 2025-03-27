@@ -121,7 +121,11 @@ async function Course() {
     await db.authenticate();
     console.log("Connected to database successfully ✅");
     // await db.sync({ force: true });
+<<<<<<< HEAD
     console.log("DB syncerd")
+=======
+    // console.log("DB syncerd")
+>>>>>>> 3fd03466f77ce309d3b346d500d80ba67a5a7a80
     app.listen(PORT, () =>
       console.log(
         `Server started on port ${PORT} ✅ , follow the path "http://localhost:7000/api-docs 🗿 "`

@@ -96,10 +96,13 @@ const getOne = async (req, res) => {
 
 const post = async (req, res) => {
   try {
+    console.log(req.body.userID,req.body.educationCenterID );
     const data = await Reception.findOne({
       where: {
-        userId: req.userID,
-        educationCenterId: req.body.educationCenterId,
+        userID: req.body.userID,
+        educationCenterID: req.body.educationCenterID,
+        fieldID: req.body.fieldID,
+        branchID: req.body.branchID
       },
     });
     if (data) {
@@ -110,6 +113,7 @@ const post = async (req, res) => {
       );
       return;
     }
+    
     const { error } = receptionValidation(req.body);
     if (error) {
       res.status(400).send(error.details[0].message);
@@ -119,7 +123,7 @@ const post = async (req, res) => {
     res.send({ message: "You registered succesfully✅", newData });
     receptionLogger.log("info", "You registered succesfully✅");
   } catch (error) {
-    res.status(400).send(error.mesage);
+    res.status(400).send(error.message);
   }
 };
 
