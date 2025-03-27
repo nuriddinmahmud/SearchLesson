@@ -10,3 +10,12 @@
 {"level":"error","message":"You are not allowed ❗","module":"Authorization","timestamp":"2025-03-27T13:18:01.016Z"}
 {"level":"info","message":"Get all regions!","module":"Authorization","timestamp":"2025-03-27T13:18:47.083Z"}
 {"level":"info","message":"Session created successfully!","module":"Authorization","timestamp":"2025-03-27T13:19:15.648Z"}
+{"level":"info","message":"Post regions!","module":"Authorization","timestamp":"2025-03-27T13:13:27.706Z"}
+{"level":"info","message":"Field created successfully ✅","module":"Authorization","timestamp":"2025-03-27T13:15:40.736Z"}
+{"level":"info","message":"Field created successfully ✅","module":"Authorization","timestamp":"2025-03-27T13:15:46.318Z"}
+{"level":"info","message":"Field created successfully ✅","module":"Authorization","timestamp":"2025-03-27T13:15:49.427Z"}
+{"level":"info","message":"Field created successfully ✅","module":"Authorization","timestamp":"2025-03-27T13:15:49.731Z"}
+{"level":"info","message":"Subject post!","module":"Authorization","timestamp":"2025-03-27T13:17:22.225Z"}
+{"level":"error","message":"Subject already exists!","module":"Authorization","timestamp":"2025-03-27T13:17:24.396Z"}
+{"level":"error","message":"Subject already exists!","module":"Authorization","timestamp":"2025-03-27T13:17:24.912Z"}
+{"level":"error","message":"Subject already exists!","module":"Authorization","timestamp":"2025-03-27T13:17:25.375Z"}

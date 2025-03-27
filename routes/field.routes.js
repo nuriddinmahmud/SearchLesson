@@ -96,9 +96,6 @@ FieldRouter.get("/:id", getOne);
  *               image:
  *                 type: string
  *                 description: Image URL of the field
- *               courseID:
- *                 type: integer
- *                 description: Associated course ID
  *     responses:
  *       201:
  *         description: Successfully created

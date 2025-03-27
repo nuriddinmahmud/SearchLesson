@@ -135,8 +135,12 @@ CenterRouter.get("/:id", getOne);
  *                 type: integer
  *               userID:
  *                 type: integer
- *               star:
- *                 type: number
+ *               fields: 
+ *                 type: array
+ *                 example: [1,2,3]
+ *               subjects: 
+ *                 type: array
+ *                 example: [1,2,3]
  *     responses:
  *       201:
  *         description: Education center created successfully
@@ -149,7 +153,7 @@ CenterRouter.get("/:id", getOne);
  *       500:
  *         description: Internal server error
  */
-CenterRouter.post("/", verifyToken, checkRole(["Admin"]), create);
+CenterRouter.post("/", verifyToken, create);
 
 /**
  * @swagger

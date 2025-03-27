@@ -2,6 +2,8 @@ const Branch = require("../models/branch.model");
 const EducationalCenter = require("../models/educationalCenter.model");
 const Region = require("../models/region.model");
 const User = require("../models/user.model");
+const SubjectEdu = require("../models/subjectEdu.model");
+const FieldEdu = require("../models/fieldEdu.model");
 const {
   educationCenterValidationUpdate,
   educationCenterValidation,
@@ -120,9 +122,12 @@ async function getOne(req, res) {
 async function create(req, res) {
   try {
     const body = req.body;
-    const { role, id: userID } = req.user;
-
+    const { role, id } = req.user;
+    const { fields, subjects } = req.body;
+    console.log( body);
+    
     const { error, value } = educationCenterValidation(body);
+    
     if (error) {
       return res.status(422).json({ message: error.details[0].message });
     }
@@ -152,17 +157,40 @@ async function create(req, res) {
       return res.status(404).json({ message: "Region not found ❗" });
     }
 
+    // ❗ Yangi Educational Center yaratish
     const newEducationalCenter = await EducationalCenter.create({
       ...value,
       userID: req.user.id,
     });
-    educationalCenterLogger.log("info", "Educational Center post!");
+
+    // ❗ Field va Subject larni saqlash
+    if (fields && fields.length > 0) {
+      const a = "0"
+      const fieldData = fields.map((item) => ({
+        a = await FieldEdu.findByPk(item)
+        name: a.name,
+        educationCenterID: newEducationalCenter.id,
+      }));
+      await FieldEdu.bulkCreate(fieldData);
+    }
+
+    if (subjects && subjects.length > 0) {
+      const subjectData = subjects.map((item) => ({
+        name: item.name, // Agar subject obyekt ichida `name` bo‘lsa
+        educationCenterID: newEducationalCenter.id,
+      }));
+      await SubjectEdu.bulkCreate(subjectData);
+    }
+
+    educationalCenterLogger.log("info", "Educational Center created successfully!");
     res.status(201).json({ data: newEducationalCenter });
+
   } catch (error) {
     console.error("Error creating educational center:", error);
     res.status(500).json({ message: error.message });
   }
 }
+
 
 async function update(req, res) {
   try {

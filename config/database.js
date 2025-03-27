@@ -3,9 +3,9 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const db = new Sequelize(
-  "exam3",
+  "db",
   "root",
-  "0901",
+  "12345678",
   {
     host: "localhost",
     dialect: "mysql",
