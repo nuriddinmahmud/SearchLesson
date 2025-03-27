@@ -181,8 +181,6 @@ CenterRouter.post("/", verifyToken, checkRole(["Admin"]), create);
  *                 type: string
  *               phone:
  *                 type: string
- *               star:
- *                 type: number
  *     responses:
  *       200:
  *         description: Successfully updated

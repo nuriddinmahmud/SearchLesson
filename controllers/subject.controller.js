@@ -1,8 +1,8 @@
-const Course = require("../models/course.model");
+const Subject = require("../models/subject.model");
 const {
-  courseValidation,
-  courseUpdateValidation,
-} = require("../validations/course.validation");
+  SubjectValidation,
+  SubjectUpdateValidation,
+} = require("../validations/subject.validation");
 const { Op } = require("sequelize");
 let winston = require("winston");
 require("winston-mongodb");
@@ -14,7 +14,7 @@ const logger = winston.createLogger({
   transports: [new winston.transports.File({ filename: "loggers.log" })],
 });
 
-let courseLogger = logger.child({ module: "Authorization" });
+let SubjectLogger = logger.child({ module: "Authorization" });
 
 const getAll = async (req, res) => {
   try {
@@ -34,7 +34,7 @@ const getAll = async (req, res) => {
       order = [[sortBy, validSortOrder]];
     }
 
-    const data = await Course.findAndCountAll({
+    const data = await Subject.findAndCountAll({
       where: whereClause,
       limit,
       offset,
@@ -42,8 +42,8 @@ const getAll = async (req, res) => {
     });
 
     if (!data.rows.length) {
-      courseLogger.log("error", "Course not found!");
-      return res.status(404).json({ message: "No courses found ❗" });
+      SubjectLogger.log("error", "Subject not found!");
+      return res.status(404).json({ message: "No Subjects found ❗" });
     }
 
     res.status(200).json({
@@ -52,7 +52,7 @@ const getAll = async (req, res) => {
       from: offset,
       data: data.rows,
     });
-    courseLogger.log("info", "Course getall!");
+    SubjectLogger.log("info", "Subject getall!");
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -60,12 +60,12 @@ const getAll = async (req, res) => {
 
 const getOne = async (req, res) => {
   try {
-    const data = await Course.findByPk(req.params.id);
+    const data = await Subject.findByPk(req.params.id);
     if (!data) {
-      courseLogger.log("error", "Course not found!");
+      SubjectLogger.log("error", "Subject not found!");
       return res.status(404).send("Cource not found ❗");
     }
-    courseLogger.log("info", "Course getone!");
+    SubjectLogger.log("info", "Subject getone!");
     res.send(data);
   } catch (error) {
     res.send(error.mesage);
@@ -74,19 +74,19 @@ const getOne = async (req, res) => {
 
 const post = async (req, res) => {
   try {
-    const data = await Course.findOne({ where: { name: req.body.name } });
+    const data = await Subject.findOne({ where: { name: req.body.name } });
     if (data) {
-      courseLogger.log("error", "Course already exists!");
-      res.send({ message: "Course already exists ❗" });
+      SubjectLogger.log("error", "Subject already exists!");
+      res.send({ message: "Subject already exists ❗" });
       return;
     }
-    const { error } = courseValidation(req.body);
+    const { error } = SubjectValidation(req.body);
     if (error) {
       res.status(400).send(error.details[0].message);
       return;
     }
-    const newData = await Course.create(req.body);
-    courseLogger.log("info", "Course post!");
+    const newData = await Subject.create(req.body);
+    SubjectLogger.log("info", "Subject post!");
     res.send(newData);
   } catch (error) {
     res.send(error.mesage);
@@ -95,19 +95,19 @@ const post = async (req, res) => {
 
 const update = async (req, res) => {
   try {
-    const data = await Course.findByPk(req.params.id);
+    const data = await Subject.findByPk(req.params.id);
     if (!data) {
-      courseLogger.log("error", "Course not found!");
-      res.send({ message: "Course not found ❗" });
+      SubjectLogger.log("error", "Subject not found!");
+      res.send({ message: "Subject not found ❗" });
       return;
     }
-    const { error } = courseUpdateValidation(req.body);
+    const { error } = SubjectUpdateValidation(req.body);
     if (error) {
       res.status(400).send(error.details[0].message);
       return;
     }
     await data.update(req.body);
-    courseLogger.log("info", "Course update!");
+    SubjectLogger.log("info", "Subject update!");
     res.send(data);
   } catch (error) {
     res.send(error.mesage);
@@ -116,14 +116,14 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
   try {
-    const data = await Course.findByPk(req.params.id);
+    const data = await Subject.findByPk(req.params.id);
     if (!data) {
-      courseLogger.log("error", "Course not found!");
-      res.send({ message: "Course not found ❗" });
+      SubjectLogger.log("error", "Subject not found!");
+      res.send({ message: "Subject not found ❗" });
       return;
     }
     await data.destroy();
-    courseLogger.log("info", "Course delete!");
+    SubjectLogger.log("info", "Subject delete!");
     res.send(data);
   } catch (error) {
     res.send(error.mesage);

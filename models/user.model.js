@@ -55,7 +55,15 @@ const User = db.define(
   }
 );
 
-User.belongsTo(Region, { foreignKey: "regionID", onDelete: "CASCADE", onUpdate: "CASCADE" });
-Region.hasMany(User, { foreignKey: "regionID", onDelete: "CASCADE", onUpdate: "CASCADE" });
+Region.hasMany(User, {
+  foreignKey: "regionID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+User.belongsTo(Region, {
+  foreignKey: "regionID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
 
 module.exports = User;

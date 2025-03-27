@@ -7,7 +7,6 @@ function fieldValidation(data) {
       .pattern(/^[a-zA-Z]+$/)
       .required(),
     image: Joi.string().required(),
-    courseID: Joi.number().positive(),
   });
   return fieldSchema.validate(data, { abortEarly: true });
 }
@@ -18,7 +17,6 @@ function fieldValidationUpdate(data) {
       .min(2)
       .pattern(/^[a-zA-Z]+$/),
     image: Joi.string(),
-    courseID: Joi.number().positive(),
   });
   return fieldSchema.validate(data, { abortEarly: true });
 }

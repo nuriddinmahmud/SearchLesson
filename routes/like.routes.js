@@ -2,7 +2,6 @@ const { Router } = require("express");
 const LikesRouter = Router();
 const {
   getAll,
-  getOne,
   post,
   remove,
   liked,
@@ -70,28 +69,7 @@ LikesRouter.get("/", getAll);
 
 /**
  * @swagger
- * /api/like/{id}:
- *   get:
- *     summary: Get a like by ID
- *     tags: [Likes]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: The like ID
- *     responses:
- *       200:
- *         description: Like details
- *       404:
- *         description: Like not found
- */
-LikesRouter.get("/:id", getOne);
-
-/**
- * @swagger
- * /api/like/liked:
+ * /api/like/my-likes:
  *   get:
  *     summary: Get liked items of authenticated user
  *     tags: [Likes]
@@ -103,7 +81,7 @@ LikesRouter.get("/:id", getOne);
  *       404:
  *         description: Likes not found
  */
-LikesRouter.get("/liked", verifyToken, liked);
+LikesRouter.get("/my-likes", verifyToken, liked);
 
 /**
  * @swagger

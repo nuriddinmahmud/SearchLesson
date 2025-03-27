@@ -1,4 +1,4 @@
-const Course = require("../models/course.model.js");
+const Course = require("../models/subject.model.js");
 const Field = require("../models/field.model.js");
 const { Op } = require("sequelize");
 const {

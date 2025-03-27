@@ -1,7 +1,7 @@
 const { db, DataTypes } = require("../config/database");
 
-const Course = db.define(
-  "Course",
+const Subject = db.define(
+  "Subject",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -15,13 +15,9 @@ const Course = db.define(
     image: {
       type: DataTypes.STRING,
       allowNull: true,
-    },
-    type: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
+    }
   },
   { timestamps: false }
 );
 
-module.exports = Course;
+module.exports = Subject;

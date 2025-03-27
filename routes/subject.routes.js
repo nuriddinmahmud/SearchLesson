@@ -6,7 +6,7 @@ const {
   post,
   remove,
   update,
-} = require("../controllers/course.controller");
+} = require("../controllers/subject.controller");
 const verifyToken = require("../middlewares/verifyToken");
 const checkRole = require("../middlewares/rolePolice");
 const selfPolice = require("../middlewares/selfPolice");
