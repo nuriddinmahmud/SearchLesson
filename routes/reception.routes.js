@@ -121,16 +121,16 @@ ReceptionRouter.get("/my", verifyToken, myCourses);
  *             type: object
  *             required: [fieldId, branchId, userId, educationCenterId]
  *             properties:
- *               fieldId:
+ *               fieldID:
  *                 type: integer
  *                 description: ID of the field
- *               branchId:
+ *               branchID:
  *                 type: integer
  *                 description: ID of the branch
- *               userId:
+ *               userID:
  *                 type: integer
  *                 description: ID of the user registering for the course
- *               educationCenterId:
+ *               educationCenterID:
  *                 type: integer
  *                 description: ID of the education center
  *     responses:

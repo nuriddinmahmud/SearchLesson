@@ -71,9 +71,11 @@ const getOne = async (req, res) => {
 
 const post = async (req, res) => {
   try {
+    
     const data = await Like.findOne({
-      where: { userId: req.body.userId, postId: req.body.postId },
+      where: { userID: req.body.userID},
     });
+    console.log(req.body.userId,req.body.educationCentreID);
 
     if (data) {
       return res.status(400).json({ message: "Like already exists ❗" });

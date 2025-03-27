@@ -120,9 +120,9 @@ LikesRouter.get("/liked", verifyToken, liked);
  *           schema:
  *             type: object
  *             properties:
- *               userId:
+ *               userID:
  *                 type: integer
- *               educationCenterId:
+ *               educationCentreID:
  *                 type: integer
  *     responses:
  *       201:

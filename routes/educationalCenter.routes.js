@@ -149,7 +149,7 @@ CenterRouter.get("/:id", getOne);
  *       500:
  *         description: Internal server error
  */
-CenterRouter.post("/", verifyToken, checkRole(["Ceo"]), create);
+CenterRouter.post("/", verifyToken, checkRole(["Admin"]), create);
 
 /**
  * @swagger

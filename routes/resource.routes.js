@@ -151,11 +151,27 @@ ResourceRouter.get("/:id", getOne);
  *     security:
  *       - BearerAuth: []
  *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Resource'
+ *       required: [name, description, media, image, categoryID,userID]
+ *       properties:
+ *               name:
+ *                 type: string
+ *                 description: Name of the resource
+ *               description:
+ *                 type: string
+ *                 description: Description of the resource
+ *               media:
+ *                 type: string
+ *                 format: binary
+ *                 description: media of recourse
+ *               image:
+ *                 type: string
+ *                 description: Image of the resource
+ *               categoryID:
+ *                 type: integer
+ *                 description: Category of the resource
+ *               userID:
+ *                 type: integer
+ *                 description: id OF the user who added the resource
  *     responses:
  *       201:
  *         description: Resource created
