@@ -10,7 +10,7 @@ const Like = db.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    userId: {
+    userID: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -20,7 +20,7 @@ const Like = db.define(
         onDelete: "CASCADE",
       },
     },
-    educationCenterId: {
+    educationCenterID: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {

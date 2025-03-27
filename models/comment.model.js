@@ -18,7 +18,7 @@ const Comment = db.define(
       type: DataTypes.INTEGER,
       allowNull: true,
     },
-    userId: {
+    userID: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -28,7 +28,7 @@ const Comment = db.define(
         onDelete: "CASCADE",
       },
     },
-    educationCenterId: {
+    educationCenterID: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {

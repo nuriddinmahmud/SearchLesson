@@ -12,7 +12,7 @@ const Reception = db.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    fieldId: {
+    fieldID: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -22,7 +22,7 @@ const Reception = db.define(
         onDelete: "CASCADE",
       },
     },
-    branchId: {
+    branchID: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -32,7 +32,7 @@ const Reception = db.define(
         onDelete: "CASCADE",
       },
     },
-    userId: {
+    userID: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -42,7 +42,7 @@ const Reception = db.define(
         onDelete: "CASCADE",
       },
     },
-    educationCenterId: {
+    educationCenterID: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {

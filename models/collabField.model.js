@@ -10,7 +10,7 @@ const collabField = db.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    fieldId: {
+    fieldID: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -20,7 +20,7 @@ const collabField = db.define(
         onDelete: "CASCADE",
       },
     },
-    educationCenterId: {
+    educationCenterID: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {

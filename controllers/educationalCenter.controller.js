@@ -1,5 +1,5 @@
 const Branch = require("../models/branch.model");
-const EducationCenter = require("../models/educationalCenter.model");
+const EducationalCenter = require("../models/educationalCenter.model");
 const Region = require("../models/region.model");
 const User = require("../models/user.model");
 const {
@@ -22,7 +22,7 @@ async function getAll(req, res) {
 
     const orderCondition = [[sortBy || "createdAt", order || "DESC"]];
 
-    const educationCenters = await EducationCenter.findAndCountAll({
+    const educationCenters = await EducationalCenter.findAndCountAll({
       where: whereCondition,
       attributes: [
         "id",
@@ -70,7 +70,7 @@ async function getOne(req, res) {
   try {
     const { id } = req.params;
 
-    const educationalCenter = await EducationCenter.findByPk(id, {
+    const educationalCenter = await EducationalCenter.findByPk(id, {
       attributes: [
         "id",
         "name",
@@ -133,7 +133,7 @@ async function create(req, res) {
       return res.status(404).json({ message: "Region not found ❗" });
     }
 
-    const newEducationalCenter = await EducationCenter.create({
+    const newEducationalCenter = await EducationalCenter.create({
       ...value,
       userID,
     });
@@ -163,7 +163,7 @@ async function update(req, res) {
       });
     }
 
-    const [updateCount] = await EducationCenter.update(value, {
+    const [updateCount] = await EducationalCenter.update(value, {
       where: { id },
     });
 
@@ -173,7 +173,7 @@ async function update(req, res) {
         .json({ message: "Educational Centre not found ❗" });
     }
 
-    const updatedCentre = await EducationCenter.findByPk(id, {
+    const updatedCentre = await EducationalCenter.findByPk(id, {
       attributes: [
         "id",
         "name",
@@ -208,7 +208,7 @@ async function remove(req, res) {
       });
     }
 
-    const deleteCount = await EducationCenter.destroy({ where: { id } });
+    const deleteCount = await EducationalCenter.destroy({ where: { id } });
 
     if (!deleteCount) {
       return res

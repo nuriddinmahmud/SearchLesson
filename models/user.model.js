@@ -1,5 +1,5 @@
 const { db, DataTypes } = require("../config/database");
-
+const Region = require("./region.model")
 const User = db.define(
   "User",
   {
@@ -38,6 +38,16 @@ const User = db.define(
       allowNull: true,
       defaultValue: "Inactive",
     },
+    regionID: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: Region,
+        key: "id",
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      }
+    }
   },
   {
     timestamps: true,

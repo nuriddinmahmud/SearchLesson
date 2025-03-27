@@ -2,7 +2,7 @@ const { db, DataTypes } = require("../config/database");
 const Region = require("./region.model");
 const User = require("./user.model");
 
-const EducationCenter = db.define(
+const EducationalCenter = db.define(
   "EducationCenter",
   {
     name: {
@@ -51,4 +51,4 @@ const EducationCenter = db.define(
   }
 );
 
-module.exports = EducationCenter;
+module.exports = EducationalCenter;

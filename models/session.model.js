@@ -8,7 +8,7 @@ const Session = db.define(
       autoIncrement: true,
       primaryKey: true,
     },
-    userId: {
+    userID: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },

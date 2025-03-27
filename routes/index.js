@@ -15,13 +15,13 @@ const ResourceRoute = require("./resource.routes.js");
 const CollabFieldRoute = require("./collabField.routes.js");
 const SessionRoute = require("./session.routes.js");
 
-mainRouter.use("educationalCenter", EducationCenterRouter);
+mainRouter.use("/educationalCenter", EducationCenterRouter);
 mainRouter.use("/user", UserRouter);
 mainRouter.use("/resourceCategory", ResourceCategoryRouter);
 mainRouter.use("/comment", CommentRouter);
 mainRouter.use("/region", RegionRouter);
 mainRouter.use("/session", SessionRoute);
-mainRouter.use("/branche", BranchRouter);
+mainRouter.use("/branch", BranchRouter);
 mainRouter.use("/field", FieldRouter);
 mainRouter.use("/like", LikesRouter);
 mainRouter.use("/course", CourseRoute);
