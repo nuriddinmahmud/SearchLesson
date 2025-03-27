@@ -416,7 +416,7 @@ async function update(req, res) {
     res
       .status(200)
       .send({ message: "User updated successfully ✅", data: findUser });
-    authLogger.log("info", "User updated successfully ✅");
+    authLogger.log("info",  "User updated successfully ✅");
   } catch (error) {
     res.status(400).send({ error_message: error.message });
   }
