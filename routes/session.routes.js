@@ -12,7 +12,7 @@ const SessionRouter = express.Router();
  *   get:
  *     summary: Get current session information
  *     description: Retrieves the latest session information for the authenticated user, including user ID, IP address, device info, and creation time.
- *     tags: [Session]
+ *     tags: [Sessions]
  *     security:
  *       - BearerAuth: []
  *     responses:
@@ -59,7 +59,7 @@ SessionRouter.get("/me", verifyToken, getAll);
  *   delete:
  *     summary: Delete current session
  *     description: Deletes the latest session for the authenticated user.
- *     tags: [Session]
+ *     tags: [Sessions]
  *     security:
  *       - BearerAuth: []
  *     responses:

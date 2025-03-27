@@ -1,5 +1,6 @@
 const User = require("../models/user.model.js");
 const Regions = require("../models/region.model.js");
+const EducationalCenter = require("../models/educationalCenter.model.js");
 const {
   userValidation,
   userValidationUpdate,
@@ -121,6 +122,59 @@ async function login(req, res) {
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error ❗");
+  }
+};
+
+async function myEducationalCenters(req, res) {
+  try {
+    let { role, id } = req.user;
+    if (!role.includes("Ceo")) {
+      return res.status(403).send({ message: "Unauthorization User type ❗" });
+    }
+
+    const allCentres = await EducationalCenter.findAll({
+      where: { userID: id },
+      attributes: [
+        "id",
+        "name",
+        "image",
+        "address",
+        "phone",
+        "createdAt",
+        "updatedAt",
+      ],
+      include: [
+        {
+          model: { User },
+          attribute: [
+            "id",
+            "firstName",
+            "lastName",
+            "email",
+            "phone",
+            "role",
+            "status",
+            "createdAt",
+            "updatedAt",
+          ],
+        },
+        {
+          model: { Regions },
+          attributes: ["id", "name", "createdAt", "updatedAt"],
+        },
+      ],
+    });
+    if (!allCentres.length) {
+      return res
+        .status(200)
+        .send({
+          message:
+            "You have not created any Educational Centers yet 🫱🏿‍🫲🏻(my nig*a)",
+        });
+    }
+    res.status(200).send({ data: allCentres });
+  } catch (error) {
+    res.status(400).send({ error_message: error.message });
   }
 }
 
@@ -358,4 +412,5 @@ module.exports = {
   sendOtpPhone,
   verifyOtpPhone,
   refreshTokenGenereate,
+  myEducationalCenters,
 };

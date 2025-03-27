@@ -10,11 +10,12 @@ const {
 
 const verifyToken = require("../middlewares/verifyToken");
 const checkRole = require("../middlewares/rolePolice");
+const selfPolice = require("../middlewares/selfPolice");
 
 /**
  * @swagger
  * tags:
- *   - name: EducationalCenter
+ *   - name: Educational Centers
  *     description: Education Center management
  */
 /**
@@ -22,7 +23,7 @@ const checkRole = require("../middlewares/rolePolice");
  * /api/educationalCenter:
  *   get:
  *     summary: Get all educational centers
- *     tags: [EducationalCenter]
+ *     tags: [Educational Centers]
  *     parameters:
  *       - in: query
  *         name: search
@@ -78,7 +79,7 @@ CenterRouter.get("/", getAll);
  * /api/educationalCenter/{id}:
  *   get:
  *     summary: Get an education center by ID
- *     tags: [EducationalCenter]
+ *     tags: [Educational Centers]
  *     parameters:
  *       - in: path
  *         name: id
@@ -105,7 +106,7 @@ CenterRouter.get("/:id", getOne);
  * /api/educationalCenter:
  *   post:
  *     summary: Create a new education center
- *     tags: [EducationalCenter]
+ *     tags: [Educational Centers]
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -146,14 +147,14 @@ CenterRouter.get("/:id", getOne);
  *       500:
  *         description: Internal server error
  */
-CenterRouter.post("/", verifyToken, checkRole(["Admin", "Ceo"]), create);
+CenterRouter.post("/", verifyToken, checkRole(["Ceo"]), create);
 
 /**
  * @swagger
  * /api/educationalCenter/{id}:
  *   patch:
  *     summary: Update an education center
- *     tags: [EducationalCenter]
+ *     tags: [Educational Centers]
  *     security:
  *       - BearerAuth: []
  *     parameters:
@@ -194,14 +195,14 @@ CenterRouter.post("/", verifyToken, checkRole(["Admin", "Ceo"]), create);
  *       500:
  *         description: Internal server error
  */
-CenterRouter.patch("/:id", verifyToken, checkRole(["Admin", "Ceo"]), update);
+CenterRouter.patch("/:id", verifyToken, selfPolice(["Ceo"]), update);
 
 /**
  * @swagger
  * /api/educationalCenter/{id}:
  *   delete:
  *     summary: Delete an education center
- *     tags: [EducationalCenter]
+ *     tags: [Educational Centers]
  *     security:
  *       - BearerAuth: []
  *     parameters:
@@ -221,7 +222,7 @@ CenterRouter.patch("/:id", verifyToken, checkRole(["Admin", "Ceo"]), update);
  *       500:
  *         description: Internal server error
  */
-CenterRouter.delete("/:id", verifyToken, checkRole(["Admin", "Ceo"]), remove);
+CenterRouter.delete("/:id", verifyToken, selfPolice(["Ceo"]), remove);
 
 /**
  * @swagger

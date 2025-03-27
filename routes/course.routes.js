@@ -24,7 +24,7 @@ const selfPolice = require("../middlewares/selfPolice");
  *     summary: Get all courses
  *     tags: [Courses]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     parameters:
  *       - in: query
  *         name: search
@@ -65,7 +65,7 @@ const selfPolice = require("../middlewares/selfPolice");
  *       404:
  *         description: No courses found
  */
-CourseRouter.get("/", verifyToken, getAll);
+CourseRouter.get("/", getAll);
 
 /**
  * @swagger
@@ -95,7 +95,7 @@ CourseRouter.get("/:id", getOne);
  *     summary: Create a new course
  *     tags: [Courses]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -115,7 +115,7 @@ CourseRouter.get("/:id", getOne);
  *       400:
  *         description: Validation error
  */
-CourseRouter.post("/", verifyToken, selfPolice(["Admin"]), post);
+CourseRouter.post("/", verifyToken, checkRole(["Admin"]), post);
 
 /**
  * @swagger
@@ -124,7 +124,7 @@ CourseRouter.post("/", verifyToken, selfPolice(["Admin"]), post);
  *     summary: Update a course
  *     tags: [Courses]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -153,7 +153,7 @@ CourseRouter.post("/", verifyToken, selfPolice(["Admin"]), post);
  *       404:
  *         description: Course not found
  */
-CourseRouter.patch("/:id", checkRole(["Admin"]), update);
+CourseRouter.patch("/:id", selfPolice(["Admin"]), update);
 
 /**
  * @swagger
@@ -162,7 +162,7 @@ CourseRouter.patch("/:id", checkRole(["Admin"]), update);
  *     summary: Delete a course
  *     tags: [Courses]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -176,6 +176,6 @@ CourseRouter.patch("/:id", checkRole(["Admin"]), update);
  *       404:
  *         description: Course not found
  */
-CourseRouter.delete("/:id", checkRole(["Admin"]), remove);
+CourseRouter.delete("/:id", selfPolice(["Admin"]), remove);
 
 module.exports = CourseRouter;

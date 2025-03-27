@@ -26,7 +26,7 @@ mainRouter.use("/field", FieldRouter);
 mainRouter.use("/like", LikesRouter);
 mainRouter.use("/course", CourseRoute);
 mainRouter.use("/reception", ReceptionRoute);
-mainRouter.use("/resources", ResourceRoute);
+mainRouter.use("/resource", ResourceRoute);
 mainRouter.use("/collabField", CollabFieldRoute);
 
 module.exports = mainRouter;

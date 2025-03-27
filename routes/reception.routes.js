@@ -10,20 +10,20 @@ const {
 } = require("../controllers/reception.controller");
 const verifyToken = require("../middlewares/verifyToken");
 const checkRole = require("../middlewares/rolePolice");
+const selfPolice = require("../middlewares/selfPolice");
 
 /**
  * @swagger
  * tags:
- *   name: Reception
+ *   name: Receptions
  *   description: Reception management
  */
-
 /**
  * @swagger
  * /api/reception:
  *   get:
  *     summary: Get all receptions
- *     tags: [Reception]
+ *     tags: [Receptions]
  *     parameters:
  *       - in: query
  *         name: take
@@ -67,31 +67,14 @@ const checkRole = require("../middlewares/rolePolice");
  *       404:
  *         description: No receptions found
  */
-
 ReceptionRouter.get("/", getAll);
-
-/**
- * @swagger
- * /api/reception/my:
- *   get:
- *     summary: Get my courses
- *     tags: [Reception]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: List of user courses
- *       404:
- *         description: No courses found
- */
-ReceptionRouter.get("/my", verifyToken, myCourses);
 
 /**
  * @swagger
  * /api/reception/{id}:
  *   get:
  *     summary: Get reception by ID
- *     tags: [Reception]
+ *     tags: [Receptions]
  *     parameters:
  *       - in: path
  *         name: id
@@ -108,12 +91,28 @@ ReceptionRouter.get("/:id", getOne);
 
 /**
  * @swagger
+ * /api/reception/my:
+ *   get:
+ *     summary: Get my courses
+ *     tags: [Receptions]
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of user courses
+ *       404:
+ *         description: No courses found
+ */
+ReceptionRouter.get("/my", verifyToken, myCourses);
+
+/**
+ * @swagger
  * /api/reception:
  *   post:
  *     summary: Register for a course
- *     tags: [Reception]
+ *     tags: [Receptions]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -149,9 +148,9 @@ ReceptionRouter.post("/", verifyToken, post);
  * /api/reception/{id}:
  *   patch:
  *     summary: Update reception details
- *     tags: [Reception]
+ *     tags: [Receptions]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -164,16 +163,16 @@ ReceptionRouter.post("/", verifyToken, post);
  *       404:
  *         description: Reception not found
  */
-ReceptionRouter.patch("/:id", verifyToken, checkRole(["Admin", "Ceo"]), update);
+ReceptionRouter.patch("/:id", verifyToken, selfPolice(["Admin", "Ceo"]), update);
 
 /**
  * @swagger
  * /api/reception/{id}:
  *   delete:
  *     summary: Delete a reception
- *     tags: [Reception]
+ *     tags: [Receptions]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -189,7 +188,7 @@ ReceptionRouter.patch("/:id", verifyToken, checkRole(["Admin", "Ceo"]), update);
 ReceptionRouter.delete(
   "/:id",
   verifyToken,
-  checkRole(["Admin", "Ceo"]),
+  selfPolice(["Admin", "Ceo"]),
   remove
 );
 

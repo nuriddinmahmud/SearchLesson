@@ -70,22 +70,6 @@ LikesRouter.get("/", getAll);
 
 /**
  * @swagger
- * /api/like/liked:
- *   get:
- *     summary: Get liked items of authenticated user
- *     tags: [Likes]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: List of liked items
- *       404:
- *         description: Likes not found
- */
-LikesRouter.get("/liked", verifyToken, liked);
-
-/**
- * @swagger
  * /api/like/{id}:
  *   get:
  *     summary: Get a like by ID
@@ -107,12 +91,28 @@ LikesRouter.get("/:id", getOne);
 
 /**
  * @swagger
+ * /api/like/liked:
+ *   get:
+ *     summary: Get liked items of authenticated user
+ *     tags: [Likes]
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of liked items
+ *       404:
+ *         description: Likes not found
+ */
+LikesRouter.get("/liked", verifyToken, liked);
+
+/**
+ * @swagger
  * /api/like:
  *   post:
  *     summary: Create a new like
  *     tags: [Likes]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -139,7 +139,7 @@ LikesRouter.post("/", verifyToken, post);
  *     summary: Delete a like by ID
  *     tags: [Likes]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id

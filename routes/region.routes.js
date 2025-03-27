@@ -9,13 +9,14 @@ const {
 } = require("../controllers/region.controller");
 const verifyToken = require("../middlewares/verifyToken");
 const checkRole = require("../middlewares/rolePolice");
+const selfPolice = require("../middlewares/selfPolice");
 
 /**
  * @swagger
  * /api/region:
  *   get:
  *     summary: Get all regions
- *     tags: [Region]
+ *     tags: [Regions]
  *     parameters:
  *       - in: query
  *         name: search
@@ -56,7 +57,7 @@ RegionRouter.get("/", getAll);
  * /api/region/{id}:
  *   get:
  *     summary: Get a single region by ID
- *     tags: [Region]
+ *     tags: [Regions]
  *     parameters:
  *       - in: path
  *         name: id
@@ -77,9 +78,9 @@ RegionRouter.get("/:id", getOne);
  * /api/region:
  *   post:
  *     summary: Create a new region
- *     tags: [Region]
+ *     tags: [Regions]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -104,9 +105,9 @@ RegionRouter.post("/",  post);
  * /api/region/{id}:
  *   patch:
  *     summary: Update region details
- *     tags: [Region]
+ *     tags: [Regions]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -132,16 +133,16 @@ RegionRouter.post("/",  post);
  *       404:
  *         description: Region not found
  */
-RegionRouter.patch("/:id", verifyToken, checkRole(["Admin"]), update);
+RegionRouter.patch("/:id", verifyToken, selfPolice(["Admin", "SuperAdmin"]), update);
 
 /**
  * @swagger
  * /api/region/{id}:
  *   delete:
  *     summary: Delete a region
- *     tags: [Region]
+ *     tags: [Regions]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -155,6 +156,6 @@ RegionRouter.patch("/:id", verifyToken, checkRole(["Admin"]), update);
  *       404:
  *         description: Region not found
  */
-RegionRouter.delete("/:id", verifyToken, checkRole(["Admin"]), remove);
+RegionRouter.delete("/:id", verifyToken, selfPolice(["Admin"]), remove);
 
 module.exports = RegionRouter;

@@ -1,25 +1,29 @@
-const dotenv = require("dotenv");
 const jwt = require("jsonwebtoken");
 
-dotenv.config();
-const accessKey = process.env.ACCESS_KEY || "accessKey";
+const authMiddleware = (req, res, next) => {
+  const authHeader =
+    req.headers["authorization"] ||
+    req.headers["Authorization"] ||
+    req.headers["token"];
 
-function verifyToken(req, res, next) {
+  if (!authHeader) {
+    return res
+      .status(401)
+      .json({ message: "No token provided or invalid format!" });
+  }
+
+  const token = authHeader.startsWith("Bearer ")
+    ? authHeader.split(" ")[1]
+    : authHeader;
+
   try {
-    let token = req.header("Authorization")?.split(" ")[1];
-
-    if (!token) {
-      return res.status(401).send({ message: "Token not found ❗" });
-    }
-
-    let accessSecret = accessKey;
-    let data = jwt.decode(token, accessSecret);
-    req.user = data;
-    req.userId = data.id
+    const user = jwt.verify(token, "access_secret");
+    req.user = user;
     next();
   } catch (error) {
-    res.status(400).send({ error_message: error.message });
+    console.error("JWT Verification Error:", error);
+    return res.status(401).json({ message: "Invalid token!" });
   }
-}
+};
 
-module.exports = verifyToken;
+module.exports = authMiddleware;

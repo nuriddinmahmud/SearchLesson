@@ -8,13 +8,13 @@ const {
   remove,
 } = require("../controllers/branch.controller");
 const verifyToken = require("../middlewares/verifyToken");
-const rolePolice = require("../middlewares/rolePolice");
+const checkRole = require("../middlewares/rolePolice");
 const selfPolice = require("../middlewares/selfPolice");
 
 /**
  * @swagger
  * tags:
- *   name: Branch
+ *   name: Branches
  *   description: Branch management
  */
 
@@ -23,7 +23,7 @@ const selfPolice = require("../middlewares/selfPolice");
  * /api/branch:
  *   get:
  *     summary: Get all branches
- *     tags: [Branch]
+ *     tags: [Branches]
  *     parameters:
  *       - in: query
  *         name: search
@@ -69,7 +69,7 @@ BranchRouter.get("/", getAll);
  * /api/branch/{id}:
  *   get:
  *     summary: Get a single branch by ID
- *     tags: [Branch]
+ *     tags: [Branches]
  *     parameters:
  *       - in: path
  *         name: id
@@ -90,9 +90,9 @@ BranchRouter.get("/:id", getOne);
  * /api/branch:
  *   post:
  *     summary: Create a new branch
- *     tags: [Branch]
+ *     tags: [Branches]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -125,16 +125,16 @@ BranchRouter.get("/:id", getOne);
  *       400:
  *         description: Validation error
  */
-BranchRouter.post("/", verifyToken, selfPolice(["Admin", "Ceo"]), post);
+BranchRouter.post("/", verifyToken, checkRole(["Admin", "Ceo"]), post);
 
 /**
  * @swagger
  * /api/branch/{id}:
  *   patch:
  *     summary: Update branch details
- *     tags: [Branch]
+ *     tags: [Branches]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -175,16 +175,16 @@ BranchRouter.post("/", verifyToken, selfPolice(["Admin", "Ceo"]), post);
  *       404:
  *         description: Branch not found
  */
-BranchRouter.patch("/:id", verifyToken, rolePolice(["Admin"]), update);
+BranchRouter.patch("/:id", verifyToken, selfPolice(["Admin"]), update);
 
 /**
  * @swagger
  * /api/branch/{id}:
  *   delete:
  *     summary: Delete a branch
- *     tags: [Branch]
+ *     tags: [Branches]
  *     security:
- *       - bearerAuth: []
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -198,6 +198,6 @@ BranchRouter.patch("/:id", verifyToken, rolePolice(["Admin"]), update);
  *       404:
  *         description: Branch not found
  */
-BranchRouter.delete("/:id", verifyToken, rolePolice(["Admin"]), remove);
+BranchRouter.delete("/:id", verifyToken, selfPolice(["Admin"]), remove);
 
 module.exports = BranchRouter;
