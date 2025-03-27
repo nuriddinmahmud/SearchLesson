@@ -108,9 +108,13 @@ CenterRouter.get("/:id", getOne);
  *                 type: string
  *               regionID:
  *                 type: integer
+<<<<<<< HEAD
  *               userID:
  *                 type: integer
  *               fields:
+=======
+ *               fields: 
+>>>>>>> 519c9fec0640cf3815049629b36c6738d8fcd915
  *                 type: array
  *                 example: [1,2,3]
  *               subjects:

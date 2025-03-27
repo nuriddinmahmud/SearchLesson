@@ -315,11 +315,21 @@ async function verifyOtpPhone(req, res) {
 
 async function findAll(req, res) {
   try {
+<<<<<<< HEAD
     // if (req.userRole !== "Admin") {
     //   res.status(403).send({ message: "You are not allowed ❗" });
     //   authLogger.log("error", "You are not allowed ❗");
     //   return;
     // };
+=======
+    console.log();
+    
+    if (req.user.role !== "Admin") {
+      res.status(403).send({ message: "You are not allowed ❗" });
+      authLogger.log("error", "You are not allowed ❗");
+      return;
+    }
+>>>>>>> 519c9fec0640cf3815049629b36c6738d8fcd915
 
     let {
       page = 1,

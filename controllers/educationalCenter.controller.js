@@ -3,6 +3,8 @@ const EducationalCenter = require("../models/educationalCenter.model");
 const Region = require("../models/region.model");
 const User = require("../models/user.model");
 const SubjectEdu = require("../models/subjectEdu.model");
+const Subject = require("../models/subject.model");
+const Field = require("../models/field.model");
 const FieldEdu = require("../models/fieldEdu.model");
 const Subject = require("../models/subject.model");
 const Field = require("../models/field.model");
@@ -129,12 +131,22 @@ async function getOne(req, res) {
 
 async function create(req, res) {
   try {
+<<<<<<< HEAD
     const { role } = req.user;
     const { fields, subjects, ...body } = req.body;
 
     console.log(body);
 
     const { error, value } = educationCenterValidation(body);
+=======
+    const body = req.body;
+    const { role } = req.user;
+    const { fields, subjects } = req.body;
+    console.log(body);
+
+    const { error, value } = educationCenterValidation(body);
+
+>>>>>>> 519c9fec0640cf3815049629b36c6738d8fcd915
     if (error) {
       return res.status(422).json({ message: error.details[0].message });
     }
@@ -151,7 +163,7 @@ async function create(req, res) {
       return;
     }
 
-    if (!value.regionID) {
+    if (!value.regionID && req.body.role !== "Admin") {
       educationalCenterLogger.log("error", "regionID is required ❗");
       return res.status(400).json({ message: "regionID is required ❗" });
     }
@@ -169,6 +181,7 @@ async function create(req, res) {
       userID: req.user.id,
     });
 
+<<<<<<< HEAD
     if (fields && Array.isArray(fields) && fields.length > 0) {
       const fieldData = await Promise.all(
         fields.map(async (item) => {
@@ -191,6 +204,46 @@ async function create(req, res) {
         educationCenterID: newEducationalCenter.id,
       }));
       await SubjectEdu.bulkCreate(subjectData);
+=======
+    if (fields && fields.length > 0) {
+      const fieldData = await Promise.all(
+        fields.map(async (item) => {
+          const ls = await Field.findByPk(item);
+          if (ls) {
+            return {
+              fieldID: ls.id,
+              educationalCenterID: newEducationalCenter.id,
+            };
+          }
+          return null;
+        })
+      );
+
+      const validFieldData = fieldData.filter((item) => item !== null);
+      if (validFieldData.length > 0) {
+        await FieldEdu.bulkCreate(validFieldData);
+      }
+    }
+
+    if (subjects && subjects.length > 0) {
+      const subjectData = await Promise.all(
+        subjects.map(async (item) => {
+          const ls = await Subject.findByPk(item);
+          if (ls) {
+            return {
+              subjectID: ls.id,
+              educationalCenterID: newEducationalCenter.id,
+            };
+          }
+          return null;
+        })
+      );
+
+      const validSubjectData = subjectData.filter((item) => item !== null);
+      if (validSubjectData.length > 0) {
+        await SubjectEdu.bulkCreate(validSubjectData);
+      }
+>>>>>>> 519c9fec0640cf3815049629b36c6738d8fcd915
     }
 
     educationalCenterLogger.log(
@@ -293,6 +346,7 @@ async function remove(req, res) {
     res.status(500).json({ message: error.message });
   }
 }
+
 
 module.exports = {
   getAll,

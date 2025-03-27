@@ -107,8 +107,6 @@ CourseRouter.get("/:id", getOne);
  *                 type: string
  *               image:
  *                 type: string
- *               type:
- *                 type: string
  *     responses:
  *       201:
  *         description: Course created

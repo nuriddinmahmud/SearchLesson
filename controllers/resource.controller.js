@@ -33,7 +33,7 @@ const getAll = async (req, res) => {
     const pageSize = limit ? parseInt(limit) : 10;
     const pageNumber = page ? parseInt(page) : 1;
 
-    let order = [["createdAt", "DESC"]];
+    let order = [["id", "DESC"]];
     if (sortBy) {
       const validSortOrder = sortOrder === "asc" ? "ASC" : "DESC";
       order = [[sortBy, validSortOrder]];
@@ -41,7 +41,7 @@ const getAll = async (req, res) => {
 
     const resources = await Resource.findAndCountAll({
       where: whereClause,
-      include: [{ model: Category }, { model: User }],
+      include: [{ model: Category }],
       limit: pageSize,
       offset: (pageNumber - 1) * pageSize,
       order: order,

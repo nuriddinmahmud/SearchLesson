@@ -19,6 +19,7 @@
 {"level":"error","message":"Subject already exists!","module":"Authorization","timestamp":"2025-03-27T13:17:24.396Z"}
 {"level":"error","message":"Subject already exists!","module":"Authorization","timestamp":"2025-03-27T13:17:24.912Z"}
 {"level":"error","message":"Subject already exists!","module":"Authorization","timestamp":"2025-03-27T13:17:25.375Z"}
+<<<<<<< HEAD
 {"level":"info","message":"Your account has been activated successfully ✅","module":"Authorization","timestamp":"2025-03-27T18:34:56.597Z"}
 {"level":"error","message":"Invalid password ❗","module":"Authorization","timestamp":"2025-03-27T18:35:26.930Z"}
 {"level":"info","message":"New access token generated successfully ✅","module":"Authorization","timestamp":"2025-03-27T18:36:27.790Z"}
@@ -63,3 +64,21 @@
 {"level":"error","message":"Comments not found ❗","module":"Authorization","timestamp":"2025-03-27T18:53:22.109Z"}
 {"level":"info","message":"Your account has been activated successfully ✅","module":"Authorization","timestamp":"2025-03-27T18:54:44.412Z"}
 {"level":"info","message":"New access token generated successfully ✅","module":"Authorization","timestamp":"2025-03-27T18:56:13.489Z"}
+=======
+{"level":"error","message":"You are not allowed ❗","module":"Authorization","timestamp":"2025-03-27T16:28:17.071Z"}
+{"level":"error","message":"You are not allowed ❗","module":"Authorization","timestamp":"2025-03-27T16:29:08.168Z"}
+{"level":"error","message":"You are not allowed ❗","module":"Authorization","timestamp":"2025-03-27T16:29:15.144Z"}
+{"level":"info","message":"Subject getall!","module":"Authorization","timestamp":"2025-03-27T16:35:52.148Z"}
+{"level":"error","message":"Subject already exists!","module":"Authorization","timestamp":"2025-03-27T16:36:08.446Z"}
+{"level":"info","message":"Subject post!","module":"Authorization","timestamp":"2025-03-27T16:36:19.523Z"}
+{"level":"error","message":"Subject already exists!","module":"Authorization","timestamp":"2025-03-27T16:36:21.859Z"}
+{"level":"info","message":"Subject post!","module":"Authorization","timestamp":"2025-03-27T16:36:26.917Z"}
+{"level":"info","message":"Post regions!","module":"Authorization","timestamp":"2025-03-27T16:40:38.978Z"}
+{"level":"info","message":"Subject post!","module":"Authorization","timestamp":"2025-03-27T16:42:27.508Z"}
+{"level":"info","message":"Subject post!","module":"Authorization","timestamp":"2025-03-27T16:42:45.556Z"}
+{"level":"info","message":"Subject post!","module":"Authorization","timestamp":"2025-03-27T16:42:49.482Z"}
+{"level":"info","message":"Field created successfully ✅","module":"Authorization","timestamp":"2025-03-27T16:43:12.102Z"}
+{"level":"info","message":"Field created successfully ✅","module":"Authorization","timestamp":"2025-03-27T16:43:22.656Z"}
+{"level":"info","message":"Field created successfully ✅","module":"Authorization","timestamp":"2025-03-27T16:43:27.698Z"}
+{"level":"info","message":"Educational Center created successfully!","module":"Authorization","timestamp":"2025-03-27T16:52:15.435Z"}
+>>>>>>> 519c9fec0640cf3815049629b36c6738d8fcd915
