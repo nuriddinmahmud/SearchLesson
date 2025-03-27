@@ -83,11 +83,6 @@ const getOne = async (req, res) => {
 
 const post = async (req, res) => {
   try {
-    const data = await Comment.findOne({ where: { name: req.body.name } });
-    if (!data) {
-      res.send({ message: "Comment already exists ❗" });
-      return;
-    }
     const { error } = commentValidation(req.body);
     if (error) {
       res.status(400).send(error.details[0].message);
@@ -96,7 +91,7 @@ const post = async (req, res) => {
     const newData = await Comment.create(req.body);
     res.send(newData);
   } catch (error) {
-    res.send(error.mesage);
+    res.send(error.message);
   }
 };
 

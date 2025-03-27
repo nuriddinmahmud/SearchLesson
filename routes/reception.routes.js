@@ -110,7 +110,8 @@ ReceptionRouter.get("/my", verifyToken, myCourses);
  * /api/reception:
  *   post:
  *     summary: Register for a course
- *     tags: [Receptions]
+ *     tags: 
+ *       - Receptions
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -119,28 +120,75 @@ ReceptionRouter.get("/my", verifyToken, myCourses);
  *         application/json:
  *           schema:
  *             type: object
- *             required: [fieldId, branchId, userId, educationCenterId]
  *             properties:
  *               fieldID:
  *                 type: integer
  *                 description: ID of the field
+ *                 example: 1
  *               branchID:
  *                 type: integer
  *                 description: ID of the branch
+ *                 example: 2
  *               userID:
  *                 type: integer
  *                 description: ID of the user registering for the course
+ *                 example: 123
  *               educationCenterID:
  *                 type: integer
  *                 description: ID of the education center
+ *                 example: 10
  *     responses:
  *       201:
  *         description: Successfully registered
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "You registered successfully ✅"
+ *                 newData:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 1
+ *                     fieldID:
+ *                       type: integer
+ *                       example: 1
+ *                     branchID:
+ *                       type: integer
+ *                       example: 2
+ *                     userID:
+ *                       type: integer
+ *                       example: 123
+ *                     educationCenterID:
+ *                       type: integer
+ *                       example: 10
  *       400:
  *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "fieldID is required"
  *       409:
  *         description: User is already registered for this course
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "You have already registered to this course ❗"
  */
+
+
 ReceptionRouter.post("/", verifyToken, post);
 
 /**

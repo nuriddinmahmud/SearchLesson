@@ -8,7 +8,8 @@ function commentValidation(data) {
       .required(),
     star: Joi.number().positive().required(),
     createdAt: Joi.date().optional(),
-    educationalCentreID: Joi.number().positive().required(),
+    educationalCenterID: Joi.number().positive().required(),
+    userID: Joi.number().positive().required(),
   });
   return commentSchema.validate(data, { abortEarly: true });
 }
@@ -20,7 +21,8 @@ function commentValidationUpdate(data) {
       .pattern(/^[a-zA-Z]+$/),
     star: Joi.number().positive(),
     createdAt: Joi.date(),
-    educationalCentreID: Joi.number().positive(),
+    educationCentreID: Joi.number().positive(),
+    userID: Joi.number().positive(),
   });
   return commentSchema.validate(data, { abortEarly: true });
 }
