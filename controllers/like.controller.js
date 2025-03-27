@@ -90,9 +90,9 @@ const post = async (req, res) => {
   try {
     
     const data = await Like.findOne({
-      where: { userID: req.body.userID},
+      where: { userID: req.user.id},
     });
-    console.log(req.body.userId,req.body.educationCentreID);
+    console.log(req.body.userId,req.body.educationalCenterID);
 
     if (data) {
       return res.status(400).json({ message: "Like already exists ❗" });
@@ -103,7 +103,7 @@ const post = async (req, res) => {
       return res.status(400).json({ message: error.details[0].message });
     }
 
-    const newData = await Like.create(req.body);
+    const newData = await Like.create({...req.body, userID: req.user.id});
     likeLogger.log("info", "Like created succesfully✅");
     res.status(201).json(newData);
   } catch (error) {

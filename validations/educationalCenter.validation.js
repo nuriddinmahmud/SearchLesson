@@ -51,7 +51,6 @@ function educationCenterValidation(data) {
       .pattern(/^\+998\d{9}$/)
       .required(),
     star: Joi.number().positive().required(),
-    userID: Joi.number().positive().required(),
   });
   return educationCenterSchema.validate(data, { abortEarly: true });
 }
@@ -107,7 +106,6 @@ function educationCenterValidationUpdate(data) {
       .pattern(/^\+998\d{9}$/)
       .optional(),
     star: Joi.number().positive().optional(),
-    userID: Joi.number().positive().optional(),
   });
 
   return educationCenterSchema.validate(data, { abortEarly: true });

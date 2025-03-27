@@ -132,9 +132,6 @@ CommentRouter.get("/my-comments", verifyToken, myComments);
  *               star:
  *                 type: integer
  *                 example: 5
- *               userID:
- *                 type: integer
- *                 example: 1
  *               educationCenterID:
  *                 type: integer
  *                 example: 2

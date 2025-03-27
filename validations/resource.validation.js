@@ -12,7 +12,6 @@ function resourceValidation(data) {
       .required(),
     image: Joi.string().required(),
     media: Joi.string().required(),
-    createdAt: Joi.date().optional(),
     categoryID: Joi.number().positive().required(),
   });
   return resourceSchema.validate(data, { abortEarly: true });
@@ -30,7 +29,6 @@ function resourceValidationUpdate(data) {
       .optional(),
     image: Joi.string().optional(),
     media: Joi.string().optional(),
-    createdAt: Joi.date().optional(),
     categoryID: Joi.number().positive().optional(),
   });
   return resourceSchema.validate(data, { abortEarly: true });

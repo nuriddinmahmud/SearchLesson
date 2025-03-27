@@ -9,7 +9,6 @@ function commentValidation(data) {
     star: Joi.number().positive().required(),
     createdAt: Joi.date().optional(),
     educationalCenterID: Joi.number().positive().required(),
-    userID: Joi.number().positive().required(),
   });
   return commentSchema.validate(data, { abortEarly: true });
 }
@@ -22,7 +21,6 @@ function commentValidationUpdate(data) {
     star: Joi.number().positive(),
     createdAt: Joi.date(),
     educationCentreID: Joi.number().positive(),
-    userID: Joi.number().positive(),
   });
   return commentSchema.validate(data, { abortEarly: true });
 }
