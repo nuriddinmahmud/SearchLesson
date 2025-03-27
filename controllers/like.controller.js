@@ -71,21 +71,6 @@ const liked = async (req, res) => {
   }
 };
 
-const getOne = async (req, res) => {
-  try {
-    const data = await Like.findByPk(req.params.id);
-    if (!data) {
-      res.send({ message: "Like not found ❗" });
-      likeLogger.log("error", "Like not found ❗");
-      return;
-    }
-    likeLogger.log("info", "Like get by id!");
-    res.send(data);
-  } catch (error) {
-    res.send(error.mesage);
-  }
-};
-
 const post = async (req, res) => {
   try {
     
@@ -129,7 +114,6 @@ const remove = async (req, res) => {
 
 module.exports = {
   getAll,
-  getOne,
   post,
   remove,
   liked,

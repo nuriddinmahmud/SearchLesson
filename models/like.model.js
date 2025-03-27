@@ -34,10 +34,26 @@ const Like = db.define(
   { timestamps: false }
 );
 
-Like.belongsTo(User, { foreignKey: "userID", onDelete: "CASCADE", onUpdate: "CASCADE" });
-User.hasMany(Like, { foreignKey: "userID", onDelete: "CASCADE", onUpdate: "CASCADE" });
+Like.belongsTo(User, {
+  foreignKey: "userID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+User.hasMany(Like, {
+  foreignKey: "userID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
 
-Like.belongsTo(EducationCenter, { foreignKey: "educationCenterID", onDelete: "CASCADE", onUpdate: "CASCADE" });
-EducationCenter.hasMany(Like, { foreignKey: "educationCenterID", onDelete: "CASCADE", onUpdate: "CASCADE" });
+Like.belongsTo(EducationCenter, {
+  foreignKey: "educationCenterID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+EducationCenter.hasMany(Like, {
+  foreignKey: "educationCenterID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
 
 module.exports = Like;

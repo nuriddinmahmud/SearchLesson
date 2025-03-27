@@ -22,10 +22,6 @@ const EducationalCenter = db.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    star: {
-      type: DataTypes.FLOAT,
-      allowNull: false,
-    },
     phone: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -52,10 +48,18 @@ const EducationalCenter = db.define(
   }
 );
 
-User.hasMany(EducationalCenter, { foreignKey: "userID", onDelete: "CASCADE", onUpdate: "CASCADE" });
+User.hasMany(EducationalCenter, {
+  foreignKey: "userID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
 EducationalCenter.belongsTo(User, { foreignKey: "userID" });
 
-Region.hasMany(EducationalCenter, { foreignKey: "regionID", onDelete: "CASCADE", onUpdate: "CASCADE" });
+Region.hasMany(EducationalCenter, {
+  foreignKey: "regionID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
 EducationalCenter.belongsTo(Region, { foreignKey: "regionID" });
 
 module.exports = EducationalCenter;

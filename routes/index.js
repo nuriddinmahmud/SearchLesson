@@ -9,10 +9,9 @@ const BranchRouter = require("./branch.routes.js");
 const RegionRouter = require("./region.routes.js");
 const LikesRouter = require("./like.routes.js");
 const FieldRouter = require("./field.routes.js");
-const CourseRoute = require("./course.routes.js");
+const CourseRoute = require("./subject.routes.js");
 const ReceptionRoute = require("./reception.routes.js");
 const ResourceRoute = require("./resource.routes.js");
-// const CollabFieldRoute = require("./collabField.routes.js");
 const SessionRoute = require("./session.routes.js");
 
 mainRouter.use("/educationalCenter", EducationCenterRouter);
@@ -27,6 +26,5 @@ mainRouter.use("/like", LikesRouter);
 mainRouter.use("/course", CourseRoute);
 mainRouter.use("/reception", ReceptionRoute);
 mainRouter.use("/resource", ResourceRoute);
-// mainRouter.use("/collabField", CollabFieldRoute);
 
 module.exports = mainRouter;

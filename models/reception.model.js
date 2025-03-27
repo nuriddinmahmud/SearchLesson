@@ -56,16 +56,48 @@ const Reception = db.define(
   { timestamps: false }
 );
 
-Reception.belongsTo(Field, { foreignKey: "fieldID", onDelete: "CASCADE", onUpdate: "CASCADE" });
-Field.hasMany(Reception, { foreignKey: "fieldID", onDelete: "CASCADE", onUpdate: "CASCADE" });
+Reception.belongsTo(Field, {
+  foreignKey: "fieldID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Field.hasMany(Reception, {
+  foreignKey: "fieldID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
 
-Reception.belongsTo(Branch, { foreignKey: "branchID", onDelete: "CASCADE", onUpdate: "CASCADE" });
-Branch.hasMany(Reception, { foreignKey: "branchID", onDelete: "CASCADE", onUpdate: "CASCADE" });
+Reception.belongsTo(Branch, {
+  foreignKey: "branchID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+Branch.hasMany(Reception, {
+  foreignKey: "branchID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
 
-Reception.belongsTo(User, { foreignKey: "userID", onDelete: "CASCADE", onUpdate: "CASCADE" });
-User.hasMany(Reception, { foreignKey: "userID", onDelete: "CASCADE", onUpdate: "CASCADE" });
+Reception.belongsTo(User, {
+  foreignKey: "userID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+User.hasMany(Reception, {
+  foreignKey: "userID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
 
-Reception.belongsTo(EducationCenter, { foreignKey: "educationCenterID", onDelete: "CASCADE", onUpdate: "CASCADE" });
-EducationCenter.hasMany(Reception, { foreignKey: "educationCenterID", onDelete: "CASCADE", onUpdate: "CASCADE" });
+Reception.belongsTo(EducationCenter, {
+  foreignKey: "educationCenterID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+EducationCenter.hasMany(Reception, {
+  foreignKey: "educationCenterID",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
 
 module.exports = Reception;
