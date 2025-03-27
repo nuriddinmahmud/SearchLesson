@@ -119,7 +119,7 @@ const post = async (req, res) => {
       res.status(400).send(error.details[0].message);
       return;
     }
-    const newData = await Reception.create(req.body);
+    const newData = await Reception.create({...req.body, userID: req.user.id});
     res.send({ message: "You registered succesfully✅", newData });
     receptionLogger.log("info", "You registered succesfully✅");
   } catch (error) {

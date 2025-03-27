@@ -100,19 +100,12 @@ const getOne = async (req, res) => {
 
 const post = async (req, res) => {
   try {
-    const data = await Comment.findOne({ where: { name: req.body.name } });
-    if (!data) {
-      commentLogger.log("error", "Comments already exists ❗");
-
-      res.send({ message: "Comment already exists ❗" });
-      return;
-    }
     const { error } = commentValidation(req.body);
     if (error) {
       res.status(400).send(error.details[0].message);
       return;
     }
-    const newData = await Comment.create(req.body);
+    const newData = await Comment.create({...req.body, userID: req.user.id});
     commentLogger.log("info", "Comments!");
     res.send(newData);
   } catch (error) {

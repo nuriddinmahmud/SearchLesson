@@ -4,7 +4,6 @@ function receptionValidation(data) {
   const receptionSchema = Joi.object({
     fieldID: Joi.number().positive().required(),
     branchID: Joi.number().positive().required(),
-    userID: Joi.number().positive().required(),
     educationCenterID: Joi.number().positive().required(),
   });
   return receptionSchema.validate(data, { abortEarly: true });

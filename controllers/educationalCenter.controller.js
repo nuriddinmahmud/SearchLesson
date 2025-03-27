@@ -154,7 +154,7 @@ async function create(req, res) {
 
     const newEducationalCenter = await EducationalCenter.create({
       ...value,
-      userID,
+      userID: req.user.id,
     });
     educationalCenterLogger.log("info", "Educational Center post!");
     res.status(201).json({ data: newEducationalCenter });
