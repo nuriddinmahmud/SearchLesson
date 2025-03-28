@@ -14,59 +14,6 @@ const verifyToken = require("../middlewares/verifyToken");
  *   name: Likes
  *   description: Like management API
  */
-
-/**
- * @swagger
- * /api/like:
- *   get:
- *     summary: Get all likes
- *     tags: [Likes]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: query
- *         name: take
- *         schema:
- *           type: integer
- *         description: Number of likes to return
- *       - in: query
- *         name: from
- *         schema:
- *           type: integer
- *         description: Number of likes to skip
- *       - in: query
- *         name: userId
- *         schema:
- *           type: integer
- *         description: Filter by user ID
- *       - in: query
- *         name: postId
- *         schema:
- *           type: integer
- *         description: Filter by post ID
- *     responses:
- *       200:
- *         description: A list of likes
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 total:
- *                   type: integer
- *                 take:
- *                   type: integer
- *                 from:
- *                   type: integer
- *                 data:
- *                   type: array
- *       404:
- *         description: No likes found
- *       500:
- *         description: Internal server error
- */
-LikesRouter.get("/", getAll);
-
 /**
  * @swagger
  * /api/like/my-likes:

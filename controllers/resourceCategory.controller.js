@@ -1,20 +1,20 @@
-const ResourceCategory = require("../models/resourceCategory.model.js");
+const { ResourceCategory } = require("../models/index");
 const { Op } = require("sequelize");
 const {
   resourceCategoryValidation,
   resourceCategoryValidationUpdate,
 } = require("../validations/resourceCategory.validation.js");
-let winston = require("winston");
+const winston = require("winston");
 require("winston-mongodb");
 
-let { json, combine, timestamp } = winston.format;
+const { json, combine, timestamp } = winston.format;
 const logger = winston.createLogger({
   level: "silly",
   format: combine(timestamp(), json()),
   transports: [new winston.transports.File({ filename: "loggers.log" })],
 });
 
-let resourceCategoryLogger = logger.child({ module: "Authorization" });
+const resourceCategoryLogger = logger.child({ module: "ResourceCategory" });
 
 const getAll = async (req, res) => {
   try {
@@ -49,7 +49,7 @@ const getAll = async (req, res) => {
     });
     resourceCategoryLogger.log(
       "info",
-      "Resource categpry taked all succesfully✅"
+      "Resource category retrieved successfully ✅"
     );
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -62,30 +62,32 @@ const getOne = async (req, res) => {
     const category = await ResourceCategory.findByPk(id);
 
     if (!category) {
-      res.status(404).json({ message: "Resource Category not found ❗" });
-      resourceCategoryLogger.log("error", "Resource Category not found ❗");
-      return;
+      resourceCategoryLogger.log("error", "Resource category not found ❗");
+      return res
+        .status(404)
+        .json({ message: "Resource Category not found ❗" });
     }
-    res.status(200).send({ data: category });
+
+    res.status(200).json({ data: category });
     resourceCategoryLogger.log(
       "info",
-      "Resource category taked one succesfully✅"
+      "Resource category retrieved successfully ✅"
     );
   } catch (err) {
-    res.status(400).send({ error: err.message });
+    res.status(400).json({ error: err.message });
   }
 };
 
 const post = async (req, res) => {
   try {
     const { error, value } = resourceCategoryValidation(req.body);
-    if (error) return res.status(422).send({ error: error.details[0].message });
+    if (error) return res.status(422).json({ error: error.details[0].message });
 
     const newCategory = await ResourceCategory.create(value);
-    res.status(200).send({ data: newCategory });
+    res.status(201).json({ data: newCategory });
     resourceCategoryLogger.log(
       "info",
-      "Resource category created succesfully✅"
+      "Resource category created successfully ✅"
     );
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -98,46 +100,48 @@ const update = async (req, res) => {
     const { error, value } = resourceCategoryValidationUpdate(req.body);
     if (error) return res.status(400).json({ error: error.details[0].message });
 
-    const updateCategory = await ResourceCategory.update(value, {
+    const [updatedRowCount] = await ResourceCategory.update(value, {
       where: { id },
     });
-    if (!updateCategory[0]) {
-      res.status(404).send({ message: "Resource Category not found ❗" });
-      resourceCategoryLogger.log("error", "Resource Category not found ❗");
-      return;
+    if (!updatedRowCount) {
+      resourceCategoryLogger.log("error", "Resource category not found ❗");
+      return res
+        .status(404)
+        .json({ message: "Resource Category not found ❗" });
     }
 
-    const result = await ResourceCategory.findByPk(id);
-    res.status(200).send({ data: result });
+    const updatedCategory = await ResourceCategory.findByPk(id);
+    res.status(200).json({ data: updatedCategory });
     resourceCategoryLogger.log(
       "info",
-      "Resource cateopry updated succesfully✅"
+      "Resource category updated successfully ✅"
     );
   } catch (err) {
-    res.status(400).send({ error: err.message });
+    res.status(400).json({ error: err.message });
   }
 };
 
 const remove = async (req, res) => {
   try {
     const { id } = req.params;
-    const deleteCategory = await ResourceCategory.destroy({ where: { id } });
+    const deletedRowCount = await ResourceCategory.destroy({ where: { id } });
 
-    if (!deleteCategory) {
-      res.status(404).send({ message: "Resource Category not found ❗" });
-      resourceCategoryLogger.log("error", "Resource Category not found ❗");
-      return;
+    if (!deletedRowCount) {
+      resourceCategoryLogger.log("error", "Resource category not found ❗");
+      return res
+        .status(404)
+        .json({ message: "Resource Category not found ❗" });
     }
 
     res
       .status(200)
-      .send({ message: "Resource Category deleted successfully ❗" });
+      .json({ message: "Resource Category deleted successfully ✅" });
     resourceCategoryLogger.log(
       "info",
-      "Resource cateopry removed succesfully✅"
+      "Resource category removed successfully ✅"
     );
   } catch (err) {
-    res.status(400).send({ error: err.message });
+    res.status(400).json({ error: err.message });
   }
 };
 

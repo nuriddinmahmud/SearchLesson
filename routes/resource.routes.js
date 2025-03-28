@@ -9,6 +9,7 @@ const {
 } = require("../controllers/resource.controller");
 const verifyToken = require("../middlewares/verifyToken");
 const selfPolice = require("../middlewares/selfPolice");
+const checkRole = require("../middlewares/rolePolice");
 
 /**
  * @swagger
@@ -27,11 +28,6 @@ const selfPolice = require("../middlewares/selfPolice");
  *         schema:
  *           type: integer
  *         description: Filter by category ID
- *       - in: query
- *         name: userID
- *         schema:
- *           type: integer
- *         description: Filter by user ID
  *       - in: query
  *         name: page
  *         schema:
@@ -98,7 +94,7 @@ ResourceRouter.get("/:id", getOne);
  *         application/json:
  *           schema:
  *             type: object
- *             required: [name, description, media, image, categoryID, userID]
+ *             required: [name, description, media, image, categoryID]
  *             properties:
  *               name:
  *                 type: string
@@ -111,15 +107,18 @@ ResourceRouter.get("/:id", getOne);
  *                 type: string
  *               categoryID:
  *                 type: integer
- *               userID:
- *                 type: integer
  *     responses:
  *       201:
  *         description: Resource created
  *       400:
  *         description: Validation error
  */
-ResourceRouter.post("/", verifyToken, post);
+ResourceRouter.post(
+  "/",
+  verifyToken,
+  checkRole(["SuperAdmin", "Admin", "User"]),
+  post
+);
 
 /**
  * @swagger
@@ -153,8 +152,6 @@ ResourceRouter.post("/", verifyToken, post);
  *               image:
  *                 type: string
  *               categoryID:
- *                 type: integer
- *               userID:
  *                 type: integer
  *     responses:
  *       200:
@@ -193,7 +190,7 @@ ResourceRouter.patch(
 ResourceRouter.delete(
   "/:id",
   verifyToken,
-  selfPolice(["User", "Admin"]),
+  selfPolice(["SuperAdmin", "Admin", "User"]),
   remove
 );
 

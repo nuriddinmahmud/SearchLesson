@@ -1,10 +1,7 @@
 const { Router } = require("express");
 const ReceptionRouter = Router();
 const {
-  getAll,
-  getOne,
   post,
-  update,
   remove,
   myCourses,
 } = require("../controllers/reception.controller");
@@ -20,78 +17,7 @@ const selfPolice = require("../middlewares/selfPolice");
  */
 /**
  * @swagger
- * /api/reception:
- *   get:
- *     summary: Get all receptions
- *     tags: [Receptions]
- *     parameters:
- *       - in: query
- *         name: take
- *         schema:
- *           type: integer
- *         description: Number of records to retrieve
- *       - in: query
- *         name: from
- *         schema:
- *           type: integer
- *         description: Offset for pagination
- *       - in: query
- *         name: fieldId
- *         schema:
- *           type: integer
- *         description: Filter by field ID
- *       - in: query
- *         name: userId
- *         schema:
- *           type: integer
- *         description: Filter by user ID
- *       - in: query
- *         name: branchId
- *         schema:
- *           type: integer
- *         description: Filter by branch ID
- *       - in: query
- *         name: sortBy
- *         schema:
- *           type: string
- *         description: Column to sort by
- *       - in: query
- *         name: sortOrder
- *         schema:
- *           type: string
- *           enum: [asc, desc]
- *         description: Sort order (ascending or descending)
- *     responses:
- *       200:
- *         description: List of receptions
- *       404:
- *         description: No receptions found
- */
-ReceptionRouter.get("/", getAll);
-
-/**
- * @swagger
- * /api/reception/{id}:
- *   get:
- *     summary: Get reception by ID
- *     tags: [Receptions]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Reception data
- *       404:
- *         description: Reception not found
- */
-ReceptionRouter.get("/:id", getOne);
-
-/**
- * @swagger
- * /api/reception/my:
+ * /api/reception/my-courses:
  *   get:
  *     summary: Get my courses
  *     tags: [Receptions]
@@ -102,15 +28,17 @@ ReceptionRouter.get("/:id", getOne);
  *         description: List of user courses
  *       404:
  *         description: No courses found
+ *       401:
+ *         description: Unauthorized
  */
-ReceptionRouter.get("/my", verifyToken, myCourses);
+ReceptionRouter.get("/my-courses", verifyToken, myCourses);
 
 /**
  * @swagger
  * /api/reception:
  *   post:
  *     summary: Register for a course
- *     tags: 
+ *     tags:
  *       - Receptions
  *     security:
  *       - BearerAuth: []
@@ -129,10 +57,6 @@ ReceptionRouter.get("/my", verifyToken, myCourses);
  *                 type: integer
  *                 description: ID of the branch
  *                 example: 2
- *               userID:
- *                 type: integer
- *                 description: ID of the user registering for the course
- *                 example: 123
  *               educationCenterID:
  *                 type: integer
  *                 description: ID of the education center
@@ -160,58 +84,17 @@ ReceptionRouter.get("/my", verifyToken, myCourses);
  *                     branchID:
  *                       type: integer
  *                       example: 2
- *                     userID:
- *                       type: integer
- *                       example: 123
  *                     educationCenterID:
  *                       type: integer
  *                       example: 10
  *       400:
  *         description: Validation error
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "fieldID is required"
  *       409:
  *         description: User is already registered for this course
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "You have already registered to this course ❗"
+ *       401:
+ *         description: Unauthorized
  */
-
-
 ReceptionRouter.post("/", verifyToken, post);
-
-/**
- * @swagger
- * /api/reception/{id}:
- *   patch:
- *     summary: Update reception details
- *     tags: [Receptions]
- *     security:
- *       - BearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Reception updated
- *       404:
- *         description: Reception not found
- */
-ReceptionRouter.patch("/:id", verifyToken, selfPolice(["Admin", "Ceo"]), update);
 
 /**
  * @swagger
@@ -232,11 +115,13 @@ ReceptionRouter.patch("/:id", verifyToken, selfPolice(["Admin", "Ceo"]), update)
  *         description: Reception deleted
  *       404:
  *         description: Reception not found
+ *       401:
+ *         description: Unauthorized
  */
 ReceptionRouter.delete(
   "/:id",
   verifyToken,
-  selfPolice(["Admin", "Ceo"]),
+  checkRole(["Admin", "Ceo"]),
   remove
 );
 

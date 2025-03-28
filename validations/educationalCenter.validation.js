@@ -51,7 +51,7 @@ function educationCenterValidation(data) {
       .pattern(/^\+998\d{9}$/)
       .required(),
     fields: Joi.array().required(),
-    subjects: Joi.array().required()
+    subjects: Joi.array().required(),
   });
   return educationCenterSchema.validate(data, { abortEarly: true });
 }
@@ -106,6 +106,8 @@ function educationCenterValidationUpdate(data) {
       .max(13)
       .pattern(/^\+998\d{9}$/)
       .optional(),
+    fields: Joi.array().required(),
+    subjects: Joi.array().required(),
   });
 
   return educationCenterSchema.validate(data, { abortEarly: true });

@@ -65,6 +65,8 @@ ResourceCategoryRouter.get("/", getAll);
  *         description: Resource category data
  *       404:
  *         description: Resource category not found
+ *       400:
+ *         description: Invalid ID
  */
 ResourceCategoryRouter.get("/:id", getOne);
 

@@ -38,12 +38,14 @@ const getAll = async (req, res) => {
     }
 
     const data = await Comment.findAndCountAll({
-      include: [User, EducationalCenter],
       where: whereClause,
       limit,
       offset,
       order,
-      include: [{ model: User }, { model: EducationalCenter }],
+      include: [
+        { model: User, attributes: ["name", "email", "phone"] },
+        { model: EducationalCenter, attributes: ["name"] },
+      ],
     });
 
     if (!data.rows.length) {
@@ -86,7 +88,12 @@ const myComments = async (req, res) => {
 
 const getOne = async (req, res) => {
   try {
-    const data = await Comment.findByPk(req.params.id);
+    const data = await Comment.findByPk(req.params.id, {
+      include: [
+        { model: User, attributes: ["name", "email", "phone"] },
+        { model: EducationalCenter, attributes: ["name"] },
+      ],
+    });
     if (!data) {
       commentLogger.log("error", "Comments not found ❗");
       return res.status(404).json({ message: "Comment not found ❗" });
@@ -105,7 +112,7 @@ const post = async (req, res) => {
       res.status(400).send(error.details[0].message);
       return;
     }
-    const newData = await Comment.create({...req.body, userID: req.user.id});
+    const newData = await Comment.create({ ...req.body, userID: req.user.id });
     commentLogger.log("info", "Comments!");
     res.send(newData);
   } catch (error) {

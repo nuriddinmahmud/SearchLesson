@@ -1,9 +1,7 @@
 const express = require("express");
-const {
-  getAll,
-  remove,
-} = require("../controllers/session.controller");
+const { getAll, remove } = require("../controllers/session.controller");
 const verifyToken = require("../middlewares/verifyToken");
+
 const SessionRouter = express.Router();
 
 /**
@@ -12,7 +10,7 @@ const SessionRouter = express.Router();
  *   get:
  *     summary: Get current session information
  *     description: Retrieves the latest session information for the authenticated user, including user ID, IP address, device info, and creation time.
- *     tags: [Sessions]
+ *     tags: [Session]
  *     security:
  *       - BearerAuth: []
  *     responses:
@@ -59,7 +57,7 @@ SessionRouter.get("/me", verifyToken, getAll);
  *   delete:
  *     summary: Delete current session
  *     description: Deletes the latest session for the authenticated user.
- *     tags: [Sessions]
+ *     tags: [Session]
  *     security:
  *       - BearerAuth: []
  *     responses:
@@ -80,6 +78,6 @@ SessionRouter.get("/me", verifyToken, getAll);
  *       500:
  *         description: Internal server error.
  */
-SessionRouter.delete("/delete", verifyToken, remove);
+SessionRouter.delete("/me", verifyToken, remove);
 
 module.exports = SessionRouter;

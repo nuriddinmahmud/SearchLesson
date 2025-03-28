@@ -1,6 +1,4 @@
-const Like = require("../models/like.model");
-const User = require("../models/user.model");
-const EducationalCenter = require("../models/educationalCenter.model");
+const { Like } = require("../models/index");
 const { likeValidation } = require("../validations/like.validation");
 let winston = require("winston");
 require("winston-mongodb");
@@ -12,49 +10,7 @@ const logger = winston.createLogger({
   transports: [new winston.transports.File({ filename: "loggers.log" })],
 });
 
-let likeLogger = logger.child({ module: "Authorization" });
-
-const getAll = async (req, res) => {
-  try {
-    let { take, from, userId, sortBy, sortOrder } = req.query;
-
-    let whereClause = {};
-
-    if (userId) whereClause.userId = userId;
-
-    const limit = take ? parseInt(take) : 10;
-    const offset = from ? parseInt(from) : 0;
-
-    let order = [["id", "ASC"]];
-    if (sortBy) {
-      const validSortOrder = sortOrder === "desc" ? "DESC" : "ASC";
-      order = [[sortBy, validSortOrder]];
-    }
-
-    const data = await Like.findAndCountAll({
-      include: [User, EducationalCenter],
-      where: whereClause,
-      limit,
-      offset,
-      order,
-    });
-
-    if (!data.rows.length) {
-      res.status(404).json({ message: "Like not found ❗" });
-      likeLogger.log("error", "Like not found ❗");
-      return;
-    }
-
-    res.status(200).json({
-      total: data.count,
-      pageSize: limit,
-      from: offset,
-      data: data.rows,
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
+let likeLogger = logger.child({ module: "Like" });
 
 const liked = async (req, res) => {
   try {
@@ -73,11 +29,10 @@ const liked = async (req, res) => {
 
 const post = async (req, res) => {
   try {
-    
     const data = await Like.findOne({
-      where: { userID: req.user.id},
+      where: { userID: req.user.id },
     });
-    console.log(req.body.userId,req.body.educationalCenterID);
+    console.log(req.body.userId, req.body.educationalCenterID);
 
     if (data) {
       return res.status(400).json({ message: "Like already exists ❗" });
@@ -88,7 +43,7 @@ const post = async (req, res) => {
       return res.status(400).json({ message: error.details[0].message });
     }
 
-    const newData = await Like.create({...req.body, userID: req.user.id});
+    const newData = await Like.create({ ...req.body, userID: req.user.id });
     likeLogger.log("info", "Like created succesfully✅");
     res.status(201).json(newData);
   } catch (error) {
@@ -113,7 +68,6 @@ const remove = async (req, res) => {
 };
 
 module.exports = {
-  getAll,
   post,
   remove,
   liked,

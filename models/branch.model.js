@@ -51,19 +51,4 @@ const Branch = db.define(
   },
   { timestamps: true }
 );
-
-Region.hasMany(Branch, {
-  foreignKey: "regionID",
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
-});
-Branch.belongsTo(Region, { foreignKey: "regionID" });
-
-EducationalCenter.hasMany(Branch, {
-  foreignKey: "centreID",
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
-});
-Branch.belongsTo(EducationalCenter, { foreignKey: "centreID" });
-
 module.exports = Branch;

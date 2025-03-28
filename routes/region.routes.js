@@ -98,7 +98,7 @@ RegionRouter.get("/:id", getOne);
  *       400:
  *         description: Validation error
  */
-RegionRouter.post("/",  post);
+RegionRouter.post("/", verifyToken, checkRole(["Admin"]), post);
 
 /**
  * @swagger
@@ -133,7 +133,12 @@ RegionRouter.post("/",  post);
  *       404:
  *         description: Region not found
  */
-RegionRouter.patch("/:id", verifyToken, selfPolice(["Admin", "SuperAdmin"]), update);
+RegionRouter.patch(
+  "/:id",
+  verifyToken,
+  selfPolice(["Admin", "SuperAdmin"]),
+  update
+);
 
 /**
  * @swagger

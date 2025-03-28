@@ -8,4 +8,4 @@ function checkRole(data) {
   };
 }
 
-module.exports= checkRole;
+module.exports = checkRole;

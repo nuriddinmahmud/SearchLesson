@@ -39,16 +39,4 @@ const Resource = db.define(
   },
   { timestamps: false }
 );
-
-Resource.belongsTo(ResourceCategory, {
-  foreignKey: "categoryID",
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
-});
-ResourceCategory.hasMany(Resource, {
-  foreignKey: "categoryID",
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
-});
-
 module.exports = Resource;

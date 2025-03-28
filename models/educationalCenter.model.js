@@ -1,6 +1,5 @@
 const { db, DataTypes } = require("../config/database");
 const Region = require("./region.model");
-const User = require("./user.model");
 
 const EducationalCenter = db.define(
   "EducationalCenter",
@@ -26,14 +25,6 @@ const EducationalCenter = db.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    userID: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: User,
-        key: "id",
-      },
-    },
     regionID: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -47,19 +38,4 @@ const EducationalCenter = db.define(
     timestamps: false,
   }
 );
-
-User.hasMany(EducationalCenter, {
-  foreignKey: "userID",
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
-});
-EducationalCenter.belongsTo(User, { foreignKey: "userID" });
-
-Region.hasMany(EducationalCenter, {
-  foreignKey: "regionID",
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
-});
-EducationalCenter.belongsTo(Region, { foreignKey: "regionID" });
-
 module.exports = EducationalCenter;

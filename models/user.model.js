@@ -54,16 +54,4 @@ const User = db.define(
     timestamps: true,
   }
 );
-
-Region.hasMany(User, {
-  foreignKey: "regionID",
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
-});
-User.belongsTo(Region, {
-  foreignKey: "regionID",
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
-});
-
 module.exports = User;

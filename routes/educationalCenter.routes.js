@@ -14,10 +14,9 @@ const selfPolice = require("../middlewares/selfPolice");
 /**
  * @swagger
  * tags:
- *   - name: Educational Centers
- *     description: Management of educational centers
+ *   name: Educational Centers
+ *   description: Management of educational centers
  */
-
 /**
  * @swagger
  * /api/educationalCenter:
@@ -96,7 +95,7 @@ CenterRouter.get("/:id", getOne);
  *         application/json:
  *           schema:
  *             type: object
- *             required: [name, image, address, phone, regionID, star]
+ *             required: [name, image, address, phone, regionID]
  *             properties:
  *               name:
  *                 type: string
@@ -108,18 +107,14 @@ CenterRouter.get("/:id", getOne);
  *                 type: string
  *               regionID:
  *                 type: integer
-<<<<<<< HEAD
- *               userID:
- *                 type: integer
  *               fields:
-=======
- *               fields: 
->>>>>>> 519c9fec0640cf3815049629b36c6738d8fcd915
  *                 type: array
- *                 example: [1,2,3]
+ *                 items:
+ *                   type: integer
  *               subjects:
  *                 type: array
- *                 example: [1,2,3]
+ *                 items:
+ *                   type: integer
  *     responses:
  *       201:
  *         description: Created successfully
@@ -128,7 +123,7 @@ CenterRouter.get("/:id", getOne);
  *       500:
  *         description: Internal server error
  */
-CenterRouter.post("/", verifyToken, create);
+CenterRouter.post("/", verifyToken,  create);
 
 /**
  * @swagger
@@ -216,5 +211,15 @@ CenterRouter.delete("/:id", verifyToken, selfPolice(["Ceo"]), remove);
  *           type: string
  *         phone:
  *           type: string
+ *         regionID:
+ *           type: integer
+ *         fields:
+ *           type: array
+ *           items:
+ *             type: integer
+ *         subjects:
+ *           type: array
+ *           items:
+ *             type: integer
  */
 module.exports = CenterRouter;

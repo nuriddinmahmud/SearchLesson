@@ -1,27 +1,26 @@
-const Subject = require("../models/subject.model");
+const { Subject } = require("../models/index");
 const {
   subjectValidation,
   subjectValidationUpdate,
 } = require("../validations/subject.validation");
 const { Op } = require("sequelize");
-let winston = require("winston");
+const winston = require("winston");
 require("winston-mongodb");
 
-let { json, combine, timestamp } = winston.format;
+const { json, combine, timestamp } = winston.format;
 const logger = winston.createLogger({
   level: "silly",
   format: combine(timestamp(), json()),
   transports: [new winston.transports.File({ filename: "loggers.log" })],
 });
 
-let SubjectLogger = logger.child({ module: "Authorization" });
+const SubjectLogger = logger.child({ module: "Subject" });
 
 const getAll = async (req, res) => {
   try {
     let { take, from, name, type, sortBy, sortOrder } = req.query;
 
     let whereClause = {};
-
     if (name) whereClause.name = { [Op.like]: `%${name}%` };
     if (type) whereClause.type = type;
 
@@ -40,20 +39,17 @@ const getAll = async (req, res) => {
       offset,
       order,
     });
-
-    if (!data.rows.length) {
-      SubjectLogger.log("error", "Subject not found!");
-      return res.status(404).json({ message: "No Subjects found ❗" });
-    }
-
+    
     res.status(200).json({
       total: data.count,
       pageSize: limit,
       from: offset,
       data: data.rows,
     });
-    SubjectLogger.log("info", "Subject getall!");
+
+    SubjectLogger.info("Subjects retrieved successfully!");
   } catch (error) {
+    SubjectLogger.error(`Error retrieving subjects: ${error.message}`);
     res.status(500).json({ error: error.message });
   }
 };
@@ -62,71 +58,78 @@ const getOne = async (req, res) => {
   try {
     const data = await Subject.findByPk(req.params.id);
     if (!data) {
-      SubjectLogger.log("error", "Subject not found!");
-      return res.status(404).send("Cource not found ❗");
+      SubjectLogger.error("Subject not found!");
+      return res.status(404).json({ message: "Subject not found ❗" });
     }
-    SubjectLogger.log("info", "Subject getone!");
-    res.send(data);
+
+    SubjectLogger.info("Subject retrieved successfully!");
+    res.json(data);
   } catch (error) {
-    res.send(error.mesage);
+    SubjectLogger.error(`Error retrieving subject: ${error.message}`);
+    res.status(500).json({ error: error.message });
   }
 };
 
 const post = async (req, res) => {
   try {
-    const data = await Subject.findOne({ where: { name: req.body.name } });
-    if (data) {
-      SubjectLogger.log("error", "Subject already exists!");
-      res.send({ message: "Subject already exists ❗" });
-      return;
+    const existingSubject = await Subject.findOne({
+      where: { name: req.body.name },
+    });
+    if (existingSubject) {
+      SubjectLogger.error("Subject already exists!");
+      return res.status(400).json({ message: "Subject already exists ❗" });
     }
+
     const { error } = subjectValidation(req.body);
     if (error) {
-      res.status(400).send(error.details[0].message);
-      return;
+      return res.status(400).json({ message: error.details[0].message });
     }
-    const newData = await Subject.create(req.body);
-    SubjectLogger.log("info", "Subject post!");
-    res.send(newData);
+
+    const newSubject = await Subject.create(req.body);
+    SubjectLogger.info("Subject created successfully!");
+    res.status(201).json(newSubject);
   } catch (error) {
-    res.send(error.mesage);
+    SubjectLogger.error(`Error creating subject: ${error.message}`);
+    res.status(500).json({ error: error.message });
   }
 };
 
 const update = async (req, res) => {
   try {
-    const data = await Subject.findByPk(req.params.id);
-    if (!data) {
-      SubjectLogger.log("error", "Subject not found!");
-      res.send({ message: "Subject not found ❗" });
-      return;
+    const subject = await Subject.findByPk(req.params.id);
+    if (!subject) {
+      SubjectLogger.error("Subject not found!");
+      return res.status(404).json({ message: "Subject not found ❗" });
     }
+
     const { error } = subjectValidationUpdate(req.body);
     if (error) {
-      res.status(400).send(error.details[0].message);
-      return;
+      return res.status(400).json({ message: error.details[0].message });
     }
-    await data.update(req.body);
-    SubjectLogger.log("info", "Subject update!");
-    res.send(data);
+
+    await subject.update(req.body);
+    SubjectLogger.info("Subject updated successfully!");
+    res.json({ message: "Subject updated successfully" });
   } catch (error) {
-    res.send(error.mesage);
+    SubjectLogger.error(`Error updating subject: ${error.message}`);
+    res.status(500).json({ error: error.message });
   }
 };
 
 const remove = async (req, res) => {
   try {
-    const data = await Subject.findByPk(req.params.id);
-    if (!data) {
-      SubjectLogger.log("error", "Subject not found!");
-      res.send({ message: "Subject not found ❗" });
-      return;
+    const subject = await Subject.findByPk(req.params.id);
+    if (!subject) {
+      SubjectLogger.error("Subject not found!");
+      return res.status(404).json({ message: "Subject not found ❗" });
     }
-    await data.destroy();
-    SubjectLogger.log("info", "Subject delete!");
-    res.send(data);
+
+    await subject.destroy();
+    SubjectLogger.info("Subject deleted successfully!");
+    res.json({ message: "Subject deleted successfully" });
   } catch (error) {
-    res.send(error.mesage);
+    SubjectLogger.error(`Error deleting subject: ${error.message}`);
+    res.status(500).json({ error: error.message });
   }
 };
 

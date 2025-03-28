@@ -1,5 +1,4 @@
-const Course = require("../models/subject.model.js");
-const Field = require("../models/field.model.js");
+const { Field } = require("../models/index");
 const { Op } = require("sequelize");
 const {
   fieldValidation,
@@ -15,18 +14,15 @@ const logger = winston.createLogger({
   transports: [new winston.transports.File({ filename: "loggers.log" })],
 });
 
-let fieldLogger = logger.child({ module: "Authorization" });
+let fieldLogger = logger.child({ module: "Field" });
 
 const getAll = async (req, res) => {
   try {
-    let { search, page, limit, courseID, sortBy, sortOrder } = req.query;
+    let { search, page, limit, sortBy, sortOrder } = req.query;
     let whereClause = {};
 
     if (search) {
       whereClause.name = { [Op.iLike]: `%${search}%` };
-    }
-    if (courseID) {
-      whereClause.courseID = { [Op.eq]: courseID };
     }
 
     const pageSize = limit ? parseInt(limit) : 10;
@@ -59,15 +55,14 @@ const getAll = async (req, res) => {
 const getOne = async (req, res) => {
   try {
     const { id } = req.params;
-    const field = await Field.findByPk(id, {
-      include: [{ model: Course }],
-    });
+    const field = await Field.findByPk(id);
 
     if (!field) {
-      res.status(404).json({ message: "Field not found ❗" });
-      fieldLogger.log("eeror", "Field not found ❗");
+      fieldLogger.log("error", "Field not found ❗");
+      return res.status(404).json({ message: "Field not found ❗" });
     }
-    fieldLogger.log("info", "Field by Id✅");
+
+    fieldLogger.log("info", "Field retrieved successfully ✅");
     res.status(200).send({ data: field });
   } catch (err) {
     res.status(400).send({ error: err.message });
@@ -78,9 +73,10 @@ const post = async (req, res) => {
   try {
     const { error, value } = fieldValidation(req.body);
     if (error) {
-      res.status(422).send({ error: error.details[0].message });
-      fieldLogger.log("eeror", "Field not found ❗");
+      fieldLogger.log("error", "Validation error ❗");
+      return res.status(422).send({ error: error.details[0].message });
     }
+
     const newField = await Field.create(value);
     fieldLogger.log("info", "Field created successfully ✅");
     res.status(200).send({ data: newField });
@@ -97,9 +93,8 @@ const update = async (req, res) => {
 
     const updateField = await Field.update(value, { where: { id } });
     if (!updateField[0]) {
-      res.status(404).send({ message: "Field not found ❗" });
-      fieldLogger.log("eeror", "Field not found ❗");
-      return;
+      fieldLogger.log("error", "Field not found ❗");
+      return res.status(404).send({ message: "Field not found ❗" });
     }
 
     const result = await Field.findByPk(id);
@@ -116,13 +111,12 @@ const remove = async (req, res) => {
     const deleteField = await Field.destroy({ where: { id } });
 
     if (!deleteField) {
-      res.status(404).send({ message: "Field not found ❗" });
-      fieldLogger.log("eeror", "Field not found ❗");
-      return;
+      fieldLogger.log("error", "Field not found ❗");
+      return res.status(404).send({ message: "Field not found ❗" });
     }
 
-    res.status(200).send({ message: "Field deleted successfully ✅" });
     fieldLogger.log("info", "Field deleted successfully ✅");
+    res.status(200).send({ message: "Field deleted successfully ✅" });
   } catch (err) {
     res.status(400).send({ error: err.message });
   }

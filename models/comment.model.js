@@ -37,19 +37,4 @@ const Comment = db.define(
   },
   { timestamps: false }
 );
-
-User.hasMany(Comment, {
-  foreignKey: "userID",
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
-});
-Comment.belongsTo(User, { foreignKey: "userID" });
-
-EducationalCenter.hasMany(Comment, {
-  foreignKey: "educationalCenterID",
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
-});
-Comment.belongsTo(EducationalCenter, { foreignKey: "educationalCenterID" });
-
 module.exports = Comment;

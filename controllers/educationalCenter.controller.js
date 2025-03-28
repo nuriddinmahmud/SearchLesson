@@ -1,255 +1,200 @@
-const Branch = require("../models/branch.model");
-const EducationalCenter = require("../models/educationalCenter.model");
-const Region = require("../models/region.model");
-const User = require("../models/user.model");
+const {
+  educationalCenter,
+  Region,
+  User,
+  Branch,
+  Comment,
+  Subject,
+  Field,
+} = require("../models/index");
 const SubjectEdu = require("../models/subjectEdu.model");
-const Subject = require("../models/subject.model");
-const Field = require("../models/field.model");
 const FieldEdu = require("../models/fieldEdu.model");
-const Subject = require("../models/subject.model");
-const Field = require("../models/field.model");
 const {
   educationCenterValidationUpdate,
   educationCenterValidation,
 } = require("../validations/educationalCenter.validation");
-let winston = require("winston");
-require("winston-mongodb");
+const winston = require("winston");
+const { Op } = require("sequelize");
 
-let { json, combine, timestamp } = winston.format;
 const logger = winston.createLogger({
   level: "silly",
-  format: combine(timestamp(), json()),
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json()
+  ),
   transports: [new winston.transports.File({ filename: "loggers.log" })],
 });
-
-let educationalCenterLogger = logger.child({ module: "Authorization" });
+const educationalCenterLogger = logger.child({ module: "EducationalCenter" });
 
 async function getAll(req, res) {
   try {
-    const { search, sortBy, order, page, limit } = req.query;
+    console.log("Request Body:", req.body); 
 
-    const pageNumber = parseInt(page) || 1;
-    const pageSize = parseInt(limit) || 10;
-    const offset = (pageNumber - 1) * pageSize;
-
-    const whereCondition = {};
-    if (search) {
-      whereCondition.name = { [Op.like]: `%${search}%` };
+    let { error } = educationCenterValidation(req.body);
+    if (error) {
+      return res.status(400).send({ message: error.details[0].message });
     }
 
-    const orderCondition = [[sortBy || "createdAt", order || "DESC"]];
-
-    const educationCenters = await EducationalCenter.findAndCountAll({
-      where: whereCondition,
-      attributes: [
-        "id",
-        "name",
-        "image",
-        "address",
-        "phone",
-        "star",
-        "createdAt",
-        "updatedAt",
-      ],
-      include: [
-        { model: Field, as: "Fields", attributes: ["id", "name"] },
-        { model: Subject, as: "Subjects", attributes: ["id", "name"] },
-        {
-          model: User,
-          as: "Students",
-          attributes: ["id", "fullName", "phone", "email"],
-        },
-        { model: Region, as: "Regions", attributes: ["id", "region"] },
-      ],
-      order: orderCondition,
-      limit: pageSize,
-      offset: offset,
-    });
-
-    if (!educationCenters.rows.length) {
-      educationalCenterLogger.log("error", "Empty!");
-      return res.status(200).json({ msg: "Empty ❗" });
+    const ceo_id = req.user?.id;
+    if (!ceo_id) {
+      return res.status(401).send({ message: "Unauthorized access" });
     }
 
-    res.status(200).json({
-      total: educationCenters.count,
-      page: pageNumber,
-      limit: pageSize,
-      data: educationCenters.rows,
+    let { name, subject_id, field_id, region_id, ...rest } = req.body;
+
+    if (!name) {
+      return res.status(400).send({ message: '"name" is required' });
+    }
+
+    let existingCenter = await Center.findOne({ where: { name } });
+    if (existingCenter) {
+      return res.status(400).send({
+        message: "The learning center with such a name already exists!",
+      });
+    }
+
+    const region = await Region.findByPk(region_id);
+    if (!region) {
+      return res.status(404).send({ message: "Region not found!" });
+    }
+
+    const fields = await Field.findAll({ where: { id: field_id } });
+    if (fields.length !== field_id.length) {
+      return res.status(404).send({ message: "Some fields_id not found!" });
+    }
+
+    const subjects = await Subject.findAll({ where: { id: subject_id } });
+    if (subjects.length !== subject_id.length) {
+      return res.status(404).send({ message: "Some subjects_id not found!" });
+    }
+
+    const newCenter = await Center.create({
+      name,
+      ...rest,
+      region_id,
+      ceo_id,
     });
-    educationalCenterLogger.log("info", "Educational Center get all!");
+
+    await newCenter.addSubjects(subjects);
+    await newCenter.addFields(fields);
+
+    const createdCenter = await Center.findByPk(newCenter.id, {
+      attributes: ["id", "name", "image", "address", "phone"],
+      include: [Subject, Field, Region],
+    });
+
+    res.status(201).json({
+      message: "Educational Center created successfully",
+      data: createdCenter,
+    });
   } catch (error) {
-    console.error("Error fetching education centers:", error);
-    res.status(500).json({ error: error.message });
+    console.error(error);
+    res.status(500).send({ message: error.message });
   }
 }
 
 async function getOne(req, res) {
   try {
-    const { id } = req.params;
-
-    const educationalCenter = await EducationalCenter.findByPk(id, {
-      attributes: [
-        "id",
-        "name",
-        "image",
-        "address",
-        "phone",
-        "star",
-        "createdAt",
-        "updatedAt",
-      ],
+    const educationalCenter = await Center.findByPk(req.params.id, {
+      attributes: ["id", "name", "image", "address", "phone"],
       include: [
-        { model: Field, as: "Fields", attributes: ["id", "name"] },
-        { model: Subject, as: "Subjects", attributes: ["id", "name"] },
-        {
-          model: User,
-          as: "Students",
-          attributes: ["id", "fullName", "phone", "email"],
-        },
-        { model: Region, as: "Regions", attributes: ["id", "region"] },
-        {
-          model: Branch,
-          as: "Branches",
-          attributes: ["id", "name", "phone", "address"],
-        },
+        Subject,
+        Field,
+        Region,
+        { model: User, attributes: ["name", "email", "phone"] },
+        { model: Branch, attributes: ["name", "location"] },
+        { model: Comment, attributes: ["star", "description"] },
       ],
     });
 
     if (!educationalCenter) {
-      educationalCenterLogger.log("error", "Educational Center not found !");
-      return res.status(404).json({ msg: "EducationCenter not found ❗" });
+      return res
+        .status(404)
+        .json({ message: "Educational Center not found ❗" });
     }
 
     res.status(200).json({ data: educationalCenter });
-    educationalCenterLogger.log("info", "Educational Center get one!");
   } catch (error) {
-    console.error("Error fetching education center by ID:", error);
-    res.status(500).json({ error: error.message });
+    console.error("Error fetching educational center", { error });
+    res.status(500).json({ message: error.message });
   }
 }
 
 async function create(req, res) {
   try {
-<<<<<<< HEAD
-    const { role } = req.user;
-    const { fields, subjects, ...body } = req.body;
+    const { role, id: userID } = req.user;
+    const { fields, subjects, regionID, ...rest } = req.body;
 
-    console.log(body);
-
-    const { error, value } = educationCenterValidation(body);
-=======
-    const body = req.body;
-    const { role } = req.user;
-    const { fields, subjects } = req.body;
-    console.log(body);
-
-    const { error, value } = educationCenterValidation(body);
-
->>>>>>> 519c9fec0640cf3815049629b36c6738d8fcd915
+    const { error } = educationCenterValidation(req.body);
     if (error) {
       return res.status(422).json({ message: error.details[0].message });
     }
 
     if (role !== "Ceo" && role !== "Admin") {
-      res.status(403).json({
+      return res.status(403).json({
         message:
-          "Not permitted. Only Ceo and Admin can create an Educational Center ❗",
+          "Not permitted. Only Ceo and Admin can create an Educational Center",
       });
-      educationalCenterLogger.log(
-        "error",
-        "Not permitted. Only Ceo and Admin can create an Educational Center ❗"
-      );
-      return;
     }
 
-    if (!value.regionID && req.body.role !== "Admin") {
-      educationalCenterLogger.log("error", "regionID is required ❗");
-      return res.status(400).json({ message: "regionID is required ❗" });
+    if (!regionID && role !== "Admin") {
+      return res.status(400).json({ message: "regionID is required" });
     }
 
-    const regionExists = await Region.findOne({
-      where: { id: value.regionID },
-    });
+    const regionExists = await Region.findByPk(regionID);
     if (!regionExists) {
-      educationalCenterLogger.log("error", "Region not found❗");
-      return res.status(404).json({ message: "Region not found ❗" });
+      return res.status(404).json({ message: "Region not found" });
     }
 
-    const newEducationalCenter = await EducationalCenter.create({
-      ...value,
-      userID: req.user.id,
+    const existingCenter = await educationalCenter.findOne({
+      where: { name: rest.name },
+    });
+    if (existingCenter) {
+      return res.status(400).json({
+        message: "The learning center with such a name already exists",
+      });
+    }
+
+    const newEducationalCenter = await educationalCenter.create({
+      ...rest,
+      regionID,
+      userID,
     });
 
-<<<<<<< HEAD
-    if (fields && Array.isArray(fields) && fields.length > 0) {
-      const fieldData = await Promise.all(
-        fields.map(async (item) => {
-          const field = await FieldEdu.findByPk(item);
-          if (field) {
-            return {
-              name: field.name,
-              educationCenterID: newEducationalCenter.id,
-            };
-          }
-        })
-      );
+    if (fields?.length) {
+      const validFieldData = (
+        await Promise.all(
+          fields.map(async (fieldID) => {
+            const field = await Field.findByPk(fieldID);
+            return field
+              ? { fieldID, educationalCenterID: newEducationalCenter.id }
+              : null;
+          })
+        )
+      ).filter(Boolean);
 
-      await FieldEdu.bulkCreate(fieldData.filter(Boolean));
-    }
-
-    if (subjects && Array.isArray(subjects) && subjects.length > 0) {
-      const subjectData = subjects.map((item) => ({
-        name: item.name,
-        educationCenterID: newEducationalCenter.id,
-      }));
-      await SubjectEdu.bulkCreate(subjectData);
-=======
-    if (fields && fields.length > 0) {
-      const fieldData = await Promise.all(
-        fields.map(async (item) => {
-          const ls = await Field.findByPk(item);
-          if (ls) {
-            return {
-              fieldID: ls.id,
-              educationalCenterID: newEducationalCenter.id,
-            };
-          }
-          return null;
-        })
-      );
-
-      const validFieldData = fieldData.filter((item) => item !== null);
-      if (validFieldData.length > 0) {
+      if (validFieldData.length) {
         await FieldEdu.bulkCreate(validFieldData);
       }
     }
 
-    if (subjects && subjects.length > 0) {
-      const subjectData = await Promise.all(
-        subjects.map(async (item) => {
-          const ls = await Subject.findByPk(item);
-          if (ls) {
-            return {
-              subjectID: ls.id,
-              educationalCenterID: newEducationalCenter.id,
-            };
-          }
-          return null;
-        })
-      );
+    if (subjects?.length) {
+      const validSubjectData = (
+        await Promise.all(
+          subjects.map(async (subjectID) => {
+            const subject = await Subject.findByPk(subjectID);
+            return subject
+              ? { subjectID, educationalCenterID: newEducationalCenter.id }
+              : null;
+          })
+        )
+      ).filter(Boolean);
 
-      const validSubjectData = subjectData.filter((item) => item !== null);
-      if (validSubjectData.length > 0) {
+      if (validSubjectData.length) {
         await SubjectEdu.bulkCreate(validSubjectData);
       }
->>>>>>> 519c9fec0640cf3815049629b36c6738d8fcd915
     }
 
-    educationalCenterLogger.log(
-      "info",
-      "Educational Center created successfully!"
-    );
     res.status(201).json({ data: newEducationalCenter });
   } catch (error) {
     console.error("Error creating educational center:", error);
@@ -280,7 +225,7 @@ async function update(req, res) {
       return;
     }
 
-    const [updateCount] = await EducationalCenter.update(value, {
+    const [updateCount] = await educationalCenter.update(value, {
       where: { id },
     });
 
@@ -317,36 +262,25 @@ async function update(req, res) {
 async function remove(req, res) {
   try {
     const { id } = req.params;
-    const { role } = req.user;
-
-    if (role !== "Admin" && role !== "Ceo") {
-      res.status(403).json({
-        message:
-          "Not permitted. Only Ceo and Admin can delete Educational Centre ❗",
-      });
-      educationalCenterLogger.log(
-        "error",
-        "Not permitted. Only Ceo and Admin can delete Educational Centre ❗"
-      );
-      return;
+    if (!["Admin", "Ceo"].includes(req.user.role)) {
+      return res.status(403).json({ message: "Not permitted ❗" });
     }
 
-    const deleteCount = await EducationalCenter.destroy({ where: { id } });
-
+    const deleteCount = await educationalCenter.destroy({ where: { id } });
     if (!deleteCount) {
-      res.status(404).json({ message: "Educational Centre not found ❗" });
-      educationalCenterLogger.log("error", "Educational Centre not found ❗");
-      return;
+      return res
+        .status(404)
+        .json({ message: "Educational Centre not found ❗" });
     }
 
-    educationalCenterLogger.log("info", "Educational Center deleted!");
     res.status(200).json({ message: "Successfully deleted ✅" });
   } catch (error) {
-    console.error("Error deleting Educational Centre:", error);
+    educationalCenterLogger.error("Error deleting Educational Centre", {
+      error,
+    });
     res.status(500).json({ message: error.message });
   }
 }
-
 
 module.exports = {
   getAll,

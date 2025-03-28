@@ -77,7 +77,7 @@ async function register(req, res) {
       data: registered,
     });
   } catch (error) {
-    res.status(400).send({ error_message: error.message });
+    return res.status(400).send({ error_message: error.message });
   }
 }
 
@@ -107,7 +107,7 @@ async function verifyOtp(req, res) {
       .send({ message: "Your account has been activated successfully ✅" });
     authLogger.log("info", "Your account has been activated successfully ✅");
   } catch (error) {
-    res.status(400).send({ error_message: error.message });
+    return res.status(400).send({ error_message: error.message });
   }
 }
 
@@ -132,7 +132,7 @@ async function login(req, res) {
       "access_secret",
       { expiresIn: "15m" }
     );
-    
+
     const refreshToken = jwt.sign(
       { id: user.id, role: user.role },
       "refresh_secret",
@@ -147,8 +147,7 @@ async function login(req, res) {
 
     res.send({ accessToken, refreshToken });
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error ❗");
+    return res.status(500).send("Internal Server Error ❗");
   }
 }
 
@@ -205,7 +204,7 @@ async function myEducationalCenters(req, res) {
     }
     res.status(200).send({ data: allCentres });
   } catch (error) {
-    res.status(400).send({ error_message: error.message });
+    return res.status(400).send({ error_message: error.message });
   }
 }
 
@@ -214,7 +213,7 @@ async function accessTokenGenereate(payload) {
     let accessSecret = process.env.ACCESS_KEY || "accessKey";
     return jwt.sign(payload, accessSecret, { expiresIn: "15m" });
   } catch (error) {
-    console.log(error.message);
+    return console.log(error.message);
   }
 }
 
@@ -223,7 +222,7 @@ async function refreshTokenGenereate(payload) {
     let accessSecret = process.env.REFRESH_KEY || "refreshKey";
     return jwt.sign(payload, accessSecret, { expiresIn: "7d" });
   } catch (error) {
-    console.log(error.message);
+    return console.log(error.message);
   }
 }
 
@@ -235,7 +234,7 @@ async function promoteToAdmin(req, res) {
     res.status(200).send({ message: "Updated successfully ✅" });
     authLogger.log("info", "Updated successfully ✅");
   } catch (error) {
-    res.status(400).send({ error_message: error.message });
+    return res.status(400).send({ error_message: error.message });
   }
 }
 
@@ -263,7 +262,7 @@ async function getNewAccessToken(req, res) {
     });
     authLogger.log("info", "New access token generated successfully ✅");
   } catch (error) {
-    res.status(400).send({ error_message: error.message });
+    return res.status(400).send({ error_message: error.message });
   }
 }
 
@@ -279,7 +278,7 @@ async function sendOtpPhone(req, res) {
     res.status(200).send({ message: "OTP sent successfully ✅", otp: token });
     authLogger.log("info", "OTP sent successfully ✅");
   } catch (error) {
-    res.status(400).send({ error_message: error.message });
+    return res.status(400).send({ error_message: error.message });
   }
 }
 
@@ -309,19 +308,12 @@ async function verifyOtpPhone(req, res) {
     res.status(200).send({ message: "Account activated successfully ✅" });
     authLogger.log("info", "Account activated successfully ✅");
   } catch (error) {
-    res.status(400).send({ error_message: error.message });
+    return res.status(400).send({ error_message: error.message });
   }
 }
 
 async function findAll(req, res) {
   try {
-<<<<<<< HEAD
-    // if (req.userRole !== "Admin") {
-    //   res.status(403).send({ message: "You are not allowed ❗" });
-    //   authLogger.log("error", "You are not allowed ❗");
-    //   return;
-    // };
-=======
     console.log();
     
     if (req.user.role !== "Admin") {
@@ -329,7 +321,6 @@ async function findAll(req, res) {
       authLogger.log("error", "You are not allowed ❗");
       return;
     }
->>>>>>> 519c9fec0640cf3815049629b36c6738d8fcd915
 
     let {
       page = 1,
@@ -379,7 +370,7 @@ async function findAll(req, res) {
       data: users.rows,
     });
   } catch (error) {
-    res.status(500).send({ error_message: error.message });
+    return res.status(500).send({ error_message: error.message });
   }
 }
 
@@ -406,7 +397,7 @@ async function findOne(req, res) {
     }
     res.status(200).send({ data: user });
   } catch (error) {
-    res.status(400).send({ error_message: error.message });
+    return res.status(400).send({ error_message: error.message });
   }
 }
 
@@ -435,7 +426,7 @@ async function update(req, res) {
       .send({ message: "User updated successfully ✅", data: findUser });
     authLogger.log("info", "User updated successfully ✅");
   } catch (error) {
-    res.status(400).send({ error_message: error.message });
+    return res.status(400).send({ error_message: error.message });
   }
 }
 
@@ -464,7 +455,7 @@ async function remove(req, res) {
       return;
     }
   } catch (e) {
-    res.status(400).send({ error_message: e.message });
+    return res.status(400).send({ error_message: e.message });
   }
 }
 

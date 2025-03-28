@@ -9,7 +9,7 @@ const BranchRouter = require("./branch.routes.js");
 const RegionRouter = require("./region.routes.js");
 const LikesRouter = require("./like.routes.js");
 const FieldRouter = require("./field.routes.js");
-const CourseRoute = require("./subject.routes.js");
+const SubjectRoute = require("./subject.routes.js");
 const ReceptionRoute = require("./reception.routes.js");
 const ResourceRoute = require("./resource.routes.js");
 const SessionRoute = require("./session.routes.js");
@@ -23,7 +23,7 @@ mainRouter.use("/session", SessionRoute);
 mainRouter.use("/branch", BranchRouter);
 mainRouter.use("/field", FieldRouter);
 mainRouter.use("/like", LikesRouter);
-mainRouter.use("/course", CourseRoute);
+mainRouter.use("/subject", SubjectRoute);
 mainRouter.use("/reception", ReceptionRoute);
 mainRouter.use("/resource", ResourceRoute);
 

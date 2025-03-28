@@ -1,6 +1,12 @@
-const Branch = require("../models/branch.model");
-const Region = require("../models/region.model");
-const EducationalCenter = require("../models/educationalCenter.model.js");
+const {
+  Branch,
+  EducationalCenter,
+  Region,
+  Field,
+  Subject,
+} = require("../models/index");
+const fieldBra = require("../models/fieldBra.js");
+const subjectBra = require("../models/subjectBra.js");
 const { Op } = require("sequelize");
 let winston = require("winston");
 require("winston-mongodb");
@@ -12,7 +18,7 @@ const logger = winston.createLogger({
   transports: [new winston.transports.File({ filename: "loggers.log" })],
 });
 
-let branchLogger = logger.child({ module: "Authorization" });
+let branchLogger = logger.child({ module: "BranchController" });
 
 const {
   branchValidation,
@@ -24,25 +30,20 @@ const getAll = async (req, res) => {
     let { search, page, limit, regionID, sortBy, sortOrder } = req.query;
     let whereClause = {};
 
-    if (search) {
-      whereClause.name = { [Op.iLike]: `%${search}%` };
-    }
-    if (regionID) {
-      whereClause.regionID = { [Op.eq]: regionID };
-    }
+    if (search) whereClause.name = { [Op.iLike]: `%${search}%` };
+    if (regionID) whereClause.regionID = regionID;
 
     const pageSize = limit ? parseInt(limit) : 10;
     const pageNumber = page ? parseInt(page) : 1;
 
     let order = [["createdAt", "DESC"]];
     if (sortBy) {
-      const validSortOrder = sortOrder === "asc" ? "ASC" : "DESC";
-      order = [[sortBy, validSortOrder]];
+      order = [[sortBy, sortOrder === "asc" ? "ASC" : "DESC"]];
     }
 
     const branches = await Branch.findAndCountAll({
       where: whereClause,
-      include: [{ model: Region }, { model: EducationalCenter }],
+      include: [Region, EducationalCenter, Field, Subject],
       limit: pageSize,
       offset: (pageNumber - 1) * pageSize,
       order: order,
@@ -51,10 +52,11 @@ const getAll = async (req, res) => {
     res.status(200).json({
       total: branches.count,
       page: pageNumber,
-      pageSize: pageSize,
+      pageSize,
       data: branches.rows,
     });
   } catch (err) {
+    branchLogger.error(`Error in getAll: ${err.message}`);
     res.status(400).json({ error: err.message });
   }
 };
@@ -63,30 +65,58 @@ const getOne = async (req, res) => {
   try {
     const { id } = req.params;
     const branch = await Branch.findByPk(id, {
-      include: [{ model: Region }, { model: EducationalCenter }],
+      include: [Region, EducationalCenter, Field, Subject],
     });
 
-    if (!branch)
+    if (!branch) {
+      branchLogger.error(`Branch with ID ${id} not found.`);
       return res.status(404).json({ message: "Branch not found ❗" });
-    branchLogger.log("error", "Error in GetOne branches!");
-    res.status(200).send({ data: branch });
+    }
+
+    res.status(200).json({ data: branch });
   } catch (err) {
-    res.status(400).send({ error: err.message });
+    branchLogger.error(`Error in getOne: ${err.message}`);
+    res.status(400).json({ error: err.message });
   }
 };
 
 const post = async (req, res) => {
   try {
-    const { error, value } = branchValidation(req.body);
+    const { regionID, centreID, fieldID, subjectID, ...rest } = req.body;
+    const { error } = branchValidation(req.body);
     if (error) {
-      res.status(422).send({ error: error.details[0].message });
-      branchLogger.log("error", "Error in post branches!");
-      return;
+      branchLogger.error(`Validation error: ${error.details[0].message}`);
+      return res.status(400).json({ message: error.details[0].message });
     }
-    const newBranch = await Branch.create(value);
-    branchLogger.log("info", "Post branches!");
-    res.status(200).send({ data: newBranch });
+
+    const [center, region] = await Promise.all([
+      EducationalCenter.findByPk(centreID),
+      Region.findByPk(regionID),
+    ]);
+
+    if (!center) return res.status(404).json({ message: "Center not found!" });
+    if (!region) return res.status(404).json({ message: "Region not found!" });
+
+    await center.update({ branch_number: center.branch_number + 1 });
+
+    const newBranch = await Branch.create({ ...rest, regionID, centreID });
+
+    if (Array.isArray(subjectID) && subjectID.length > 0) {
+      await subjectBra.bulkCreate(
+        subjectID.map((id) => ({ BranchId: newBranch.id, subjectID: id }))
+      );
+    }
+
+    if (Array.isArray(fieldID) && fieldID.length > 0) {
+      await fieldBra.bulkCreate(
+        fieldID.map((id) => ({ BranchId: newBranch.id, fieldID: id }))
+      );
+    }
+
+    branchLogger.info(`New branch created with ID: ${newBranch.id}`);
+    res.status(201).json({ data: newBranch });
   } catch (err) {
+    branchLogger.error(`Error in post: ${err.message}`);
     res.status(400).json({ error: err.message });
   }
 };
@@ -96,40 +126,40 @@ const update = async (req, res) => {
     const { id } = req.params;
     const { error, value } = branchValidationUpdate(req.body);
     if (error) {
-      res.status(400).json({ error: error.details[0].message });
-      branchLogger.log("error", "Error in update branches!");
-      return;
+      branchLogger.error(`Validation error: ${error.details[0].message}`);
+      return res.status(400).json({ error: error.details[0].message });
     }
 
-    const updateBranch = await Branch.update(value, { where: { id } });
-    if (!updateBranch[0]) {
-      res.status(404).send({ message: "Branch not found ❗" });
-      branchLogger.log("error", "Error in update branches!");
-      return;
+    const [updated] = await Branch.update(value, { where: { id } });
+    if (!updated) {
+      branchLogger.error(`Branch with ID ${id} not found for update.`);
+      return res.status(404).json({ message: "Branch not found ❗" });
     }
 
-    const result = await Branch.findByPk(id);
-    branchLogger.log("info", "Update branches!");
-    res.status(200).send({ data: result });
+    const updatedBranch = await Branch.findByPk(id);
+    branchLogger.info(`Branch updated with ID: ${id}`);
+    res.status(200).json({ data: updatedBranch });
   } catch (err) {
-    res.status(400).send({ error: err.message });
+    branchLogger.error(`Error in update: ${err.message}`);
+    res.status(400).json({ error: err.message });
   }
 };
 
 const remove = async (req, res) => {
   try {
     const { id } = req.params;
-    const deleteBranch = await Branch.destroy({ where: { id } });
+    const deleted = await Branch.destroy({ where: { id } });
 
-    if (!deleteBranch) {
-      branchLogger.log("error", "Error in delete branches!");
-      return res.status(404).send({ message: "Branch not found ❗" });
+    if (!deleted) {
+      branchLogger.error(`Branch with ID ${id} not found for deletion.`);
+      return res.status(404).json({ message: "Branch not found ❗" });
     }
 
-    res.status(200).send({ message: "Branch deleted successfully ❗" });
-    branchLogger.log("info", "Delete branches!");
+    branchLogger.info(`Branch deleted with ID: ${id}`);
+    res.status(200).json({ message: "Branch deleted successfully ❗" });
   } catch (err) {
-    res.status(400).send({ error: err.message });
+    branchLogger.error(`Error in remove: ${err.message}`);
+    res.status(400).json({ error: err.message });
   }
 };
 

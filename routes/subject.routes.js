@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const CourseRouter = Router();
+const SubjectRouter = Router();
 const {
   getAll,
   getOne,
@@ -13,16 +13,16 @@ const selfPolice = require("../middlewares/selfPolice");
 /**
  * @swagger
  * tags:
- *   name: Courses
- *   description: Course management API
+ *   name: Subjects
+ *   description: Subject management API
  */
 
 /**
  * @swagger
- * /api/course:
+ * /api/subject:
  *   get:
- *     summary: Get all courses
- *     tags: [Courses]
+ *     summary: Get all Subjects
+ *     tags: [Subjects]
  *     security:
  *       - BearerAuth: []
  *     parameters:
@@ -30,7 +30,7 @@ const selfPolice = require("../middlewares/selfPolice");
  *         name: search
  *         schema:
  *           type: string
- *         description: Search by course name
+ *         description: Search by Subject name
  *       - in: query
  *         name: page
  *         schema:
@@ -56,44 +56,44 @@ const selfPolice = require("../middlewares/selfPolice");
  *         name: type
  *         schema:
  *           type: string
- *         description: Filter by course type
+ *         description: Filter by Subject type
  *     responses:
  *       200:
- *         description: List of courses
+ *         description: List of Subjects
  *       400:
  *         description: Bad request
  *       404:
- *         description: No courses found
+ *         description: No Subjects found
  */
-CourseRouter.get("/", getAll);
+SubjectRouter.get("/", getAll);
 
 /**
  * @swagger
- * /api/course/{id}:
+ * /api/subject/{id}:
  *   get:
- *     summary: Get a course by ID
- *     tags: [Courses]
+ *     summary: Get a Subject by ID
+ *     tags: [Subjects]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: integer
- *         description: The course ID
+ *         description: The Subject ID
  *     responses:
  *       200:
- *         description: Course data
+ *         description: Subject data
  *       404:
- *         description: Course not found
+ *         description: Subject not found
  */
-CourseRouter.get("/:id", getOne);
+SubjectRouter.get("/:id", getOne);
 
 /**
  * @swagger
- * /api/course:
+ * /api/subject:
  *   post:
- *     summary: Create a new course
- *     tags: [Courses]
+ *     summary: Create a new Subject
+ *     tags: [Subjects]
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -109,18 +109,18 @@ CourseRouter.get("/:id", getOne);
  *                 type: string
  *     responses:
  *       201:
- *         description: Course created
+ *         description: Subject created
  *       400:
  *         description: Validation error
  */
-CourseRouter.post("/", verifyToken, checkRole(["Admin"]), post);
+SubjectRouter.post("/", verifyToken, checkRole(["Admin"]), post);
 
 /**
  * @swagger
- * /api/course/{id}:
+ * /api/subject/{id}:
  *   patch:
- *     summary: Update a course
- *     tags: [Courses]
+ *     summary: Update a Subject
+ *     tags: [Subjects]
  *     security:
  *       - BearerAuth: []
  *     parameters:
@@ -129,7 +129,7 @@ CourseRouter.post("/", verifyToken, checkRole(["Admin"]), post);
  *         required: true
  *         schema:
  *           type: integer
- *         description: The course ID
+ *         description: The Subject ID
  *     requestBody:
  *       required: true
  *       content:
@@ -141,24 +141,22 @@ CourseRouter.post("/", verifyToken, checkRole(["Admin"]), post);
  *                 type: string
  *               image:
  *                 type: string
- *               type:
- *                 type: string
  *     responses:
  *       200:
- *         description: Course updated
+ *         description: Subject updated
  *       400:
  *         description: Validation error
  *       404:
- *         description: Course not found
+ *         description: Subject not found
  */
-CourseRouter.patch("/:id", selfPolice(["Admin"]), update);
+SubjectRouter.patch("/:id", selfPolice(["Admin"]), update);
 
 /**
  * @swagger
- * /api/course/{id}:
+ * /api/subject/{id}:
  *   delete:
- *     summary: Delete a course
- *     tags: [Courses]
+ *     summary: Delete a Subject
+ *     tags: [Subjects]
  *     security:
  *       - BearerAuth: []
  *     parameters:
@@ -167,13 +165,13 @@ CourseRouter.patch("/:id", selfPolice(["Admin"]), update);
  *         required: true
  *         schema:
  *           type: integer
- *         description: The course ID
+ *         description: The Subject ID
  *     responses:
  *       200:
- *         description: Course deleted
+ *         description: Subject deleted
  *       404:
- *         description: Course not found
+ *         description: Subject not found
  */
-CourseRouter.delete("/:id", selfPolice(["Admin"]), remove);
+SubjectRouter.delete("/:id", selfPolice(["Admin"]), remove);
 
-module.exports = CourseRouter;
+module.exports = SubjectRouter;
