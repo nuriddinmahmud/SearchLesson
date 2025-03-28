@@ -1,55 +1,40 @@
 const Joi = require("joi");
 
+const namePattern = /^[a-zA-Z' .-]+$/;
+
+const messages = {
+  name: {
+    "string.base": "Region name must be a string",
+    "string.empty": "Region name is required",
+    "string.min": "Region name must be at least 2 characters",
+    "string.max": "Region name must be at most 20 characters",
+    "string.pattern.base": "Only letters, spaces, and ['.-] are allowed",
+  },
+};
+
 function regionValidation(data) {
-  const regionSchema = Joi.object({
+  const schema = Joi.object({
     name: Joi.string()
-      .custom((value, helpers) => {
-        if (/\s|['.-]/.test(value)) {
-          if (!/^[a-zA-Z' .-]+$/.test(value)) {
-            return helpers.error("string.invalidFormat");
-          }
-        } else {
-          if (!/^[a-zA-Z]+$/.test(value)) {
-            return helpers.error("string.invalidFormat");
-          }
-        }
-        return value;
-      })
+      .pattern(namePattern)
       .min(2)
       .max(20)
       .required()
-      .messages({
-        "string.invalidFormat":
-          "Invalid name format, Only letters, spaces, and ['.-] are allowed.",
-      }),
+      .messages(messages.name),
   });
-  return regionSchema.validate(data, { abortEarly: true });
+
+  return schema.validate(data, { abortEarly: false });
 }
 
 function regionUpdateValidation(data) {
-  const regionSchema = Joi.object({
+  const schema = Joi.object({
     name: Joi.string()
-      .custom((value, helpers) => {
-        if (/\s|['.-]/.test(value)) {
-          if (!/^[a-zA-Z' .-]+$/.test(value)) {
-            return helpers.error("string.invalidFormat");
-          }
-        } else {
-          if (!/^[a-zA-Z]+$/.test(value)) {
-            return helpers.error("string.invalidFormat");
-          }
-        }
-        return value;
-      })
+      .pattern(namePattern)
       .min(2)
       .max(20)
-      .optional()
-      .messages({
-        "string.invalidFormat":
-          "Invalid name format, Only letters, spaces, and ['.-] are allowed.",
-      }),
+      .messages(messages.name),
   });
-  return regionSchema.validate(data, { abortEarly: true });
+
+  return schema.validate(data, { abortEarly: false });
 }
 
-module.exports = { regionUpdateValidation, regionValidation };
+module.exports = { regionValidation, regionUpdateValidation };

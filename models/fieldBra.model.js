@@ -1,18 +1,19 @@
+// fieldBra.model.js
 const { DataTypes, db } = require("../config/database");
 
-const fieldEdu = db.define(
-  "fieldEdu",
+const fieldBra = db.define(
+  "fieldBra",
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    educationalCenterId: {
+    branchId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: "EducationalCenters",
+        model: "Branches",
         key: "id",
       },
     },
@@ -25,10 +26,7 @@ const fieldEdu = db.define(
       },
     },
   },
-  {
-    timestamps: false,
-    tableName: "fieldEdu", 
-  }
+  { timestamps: false }
 );
 
-module.exports = fieldEdu;
+module.exports = fieldBra;

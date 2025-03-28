@@ -1,4 +1,4 @@
-const { Reception } = require("../models/index");
+const { Reception } = require("../models/index.model");
 const winston = require("winston");
 require("winston-mongodb");
 

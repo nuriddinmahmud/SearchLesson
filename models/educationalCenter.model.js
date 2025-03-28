@@ -1,5 +1,4 @@
 const { db, DataTypes } = require("../config/database");
-const Region = require("./region.model");
 
 const EducationalCenter = db.define(
   "EducationalCenter",
@@ -28,10 +27,6 @@ const EducationalCenter = db.define(
     regionID: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: {
-        model: Region,
-        key: "id",
-      },
     },
   },
   {

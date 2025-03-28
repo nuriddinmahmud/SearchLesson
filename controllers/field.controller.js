@@ -1,4 +1,4 @@
-const { Field } = require("../models/index");
+const { Field } = require("../models/index.model.js");
 const { Op } = require("sequelize");
 const {
   fieldValidation,

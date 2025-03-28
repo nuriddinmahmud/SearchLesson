@@ -1,11 +1,6 @@
 const { Router } = require("express");
 const LikesRouter = Router();
-const {
-  getAll,
-  post,
-  remove,
-  liked,
-} = require("../controllers/like.controller");
+const { post, remove, liked } = require("../controllers/like.controller");
 const verifyToken = require("../middlewares/verifyToken");
 
 /**

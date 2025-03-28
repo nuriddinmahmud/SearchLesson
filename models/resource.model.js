@@ -1,6 +1,4 @@
 const { db, DataTypes } = require("../config/database");
-const ResourceCategory = require("./resourceCategory.model");
-const User = require("./user.model");
 
 const Resource = db.define(
   "Resource",
@@ -29,12 +27,6 @@ const Resource = db.define(
     categoryID: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: {
-        model: ResourceCategory,
-        key: "id",
-      },
-      onUpdate: "CASCADE",
-      onDelete: "CASCADE",
     },
   },
   { timestamps: false }

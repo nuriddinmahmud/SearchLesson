@@ -1,166 +1,337 @@
 const {
-  Branch,
-  EducationalCenter,
+  educationalCenter,
   Region,
-  Field,
   Subject,
-} = require("../models/index");
-const fieldBra = require("../models/fieldBra.js");
-const subjectBra = require("../models/subjectBra.js");
+  Field,
+  Comment,
+  Branch,
+} = require("../models/index.model");
 const { Op } = require("sequelize");
-let winston = require("winston");
-require("winston-mongodb");
+const subjectEdu = require("../models/subjectEdu.model");
+const fieldEdu = require("../models/fieldEdu.model");
+const {
+  educationCenterValidationUpdate,
+  educationCenterValidation,
+} = require("../validations/educationalCenter.validation");
+const winston = require("winston");
 
-let { json, combine, timestamp } = winston.format;
 const logger = winston.createLogger({
-  level: "silly",
-  format: combine(timestamp(), json()),
-  transports: [new winston.transports.File({ filename: "loggers.log" })],
+  level: "info",
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json()
+  ),
+  transports: [
+    new winston.transports.File({ filename: "logs/educationalCenters.log" }),
+  ],
 });
 
-let branchLogger = logger.child({ module: "BranchController" });
+const educationalCenterLogger = logger.child({ module: "EducationalCenter" });
 
-const {
-  branchValidation,
-  branchValidationUpdate,
-} = require("../validations/branch.validation.js");
-
-const getAll = async (req, res) => {
+async function getAll(req, res) {
   try {
-    let { search, page, limit, regionID, sortBy, sortOrder } = req.query;
-    let whereClause = {};
+    const {
+      name,
+      regionId,
+      limit = 10,
+      page = 1,
+      sortBy = "createdAt",
+      order = "DESC",
+    } = req.query;
 
-    if (search) whereClause.name = { [Op.iLike]: `%${search}%` };
-    if (regionID) whereClause.regionID = regionID;
+    const where = {};
+    if (name) where.name = { [Op.iLike]: `%${name}%` };
+    if (regionId) where.regionID = regionId;
 
-    const pageSize = limit ? parseInt(limit) : 10;
-    const pageNumber = page ? parseInt(page) : 1;
-
-    let order = [["createdAt", "DESC"]];
-    if (sortBy) {
-      order = [[sortBy, sortOrder === "asc" ? "ASC" : "DESC"]];
-    }
-
-    const branches = await Branch.findAndCountAll({
-      where: whereClause,
-      include: [Region, EducationalCenter, Field, Subject],
-      limit: pageSize,
-      offset: (pageNumber - 1) * pageSize,
-      order: order,
+    const { count, rows } = await educationalCenter.findAndCountAll({
+      where,
+      limit: parseInt(limit),
+      offset: (parseInt(page) - 1) * parseInt(limit),
+      order: [[sortBy, order]],
+      include: [
+        { model: Region, attributes: ["id", "name"] },
+        {
+          model: Subject,
+          through: { attributes: [] },
+          attributes: ["id", "name"],
+        },
+        {
+          model: Field,
+          through: { attributes: [] },
+          attributes: ["id", "name"],
+        },
+        { model: Comment, attributes: ["id", "description", "star"] },
+        { model: Branch, attributes: ["id", "name"] },
+      ],
+      distinct: true,
     });
 
     res.status(200).json({
-      total: branches.count,
-      page: pageNumber,
-      pageSize,
-      data: branches.rows,
+      success: true,
+      data: rows,
+      meta: {
+        total: count,
+        page: parseInt(page),
+        limit: parseInt(limit),
+        totalPages: Math.ceil(count / parseInt(limit)),
+      },
     });
-  } catch (err) {
-    branchLogger.error(`Error in getAll: ${err.message}`);
-    res.status(400).json({ error: err.message });
+  } catch (error) {
+    educationalCenterLogger.error(`Get all error: ${error.message}`);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch educational centers",
+      error: error.message,
+    });
   }
-};
+}
 
-const getOne = async (req, res) => {
+async function getOne(req, res) {
   try {
-    const { id } = req.params;
-    const branch = await Branch.findByPk(id, {
-      include: [Region, EducationalCenter, Field, Subject],
+    const center = await educationalCenter.findByPk(req.params.id, {
+      attributes: [
+        "id",
+        "name",
+        "image",
+        "address",
+        "phone",
+        "regionID",
+        "createdAt",
+      ],
+      include: [
+        { model: Region, attributes: ["id", "name"] },
+        {
+          model: Subject,
+          through: { attributes: [] },
+          attributes: ["id", "name", "image"],
+        },
+        {
+          model: Field,
+          through: { attributes: [] },
+          attributes: ["id", "name", "image"],
+        },
+        {
+          model: Comment,
+          attributes: ["id", "description", "star", "createdAt"],
+        },
+        {
+          model: Branch,
+          attributes: ["id", "name", "phone", "address"],
+        },
+      ],
     });
 
-    if (!branch) {
-      branchLogger.error(`Branch with ID ${id} not found.`);
-      return res.status(404).json({ message: "Branch not found ❗" });
+    if (!center) {
+      return res.status(404).json({
+        success: false,
+        message: "Educational center not found",
+      });
     }
 
-    res.status(200).json({ data: branch });
-  } catch (err) {
-    branchLogger.error(`Error in getOne: ${err.message}`);
-    res.status(400).json({ error: err.message });
+    res.status(200).json({
+      success: true,
+      data: center,
+    });
+  } catch (error) {
+    educationalCenterLogger.error(`Get one error: ${error.message}`);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch educational center",
+      error: error.message,
+    });
   }
-};
+}
 
-const post = async (req, res) => {
+async function create(req, res) {
   try {
-    const { regionID, centreID, fieldID, subjectID, ...rest } = req.body;
-    const { error } = branchValidation(req.body);
+    const { subjects = [], fields = [], ...rest } = req.body;
+
+    const { error } = educationCenterValidation(req.body);
     if (error) {
-      branchLogger.error(`Validation error: ${error.details[0].message}`);
-      return res.status(400).json({ message: error.details[0].message });
+      return res.status(400).json({
+        success: false,
+        message: "Validation error",
+        errors: error.details.map((d) => d.message),
+      });
     }
 
-    const [center, region] = await Promise.all([
-      EducationalCenter.findByPk(centreID),
-      Region.findByPk(regionID),
-    ]);
+    if (!req.user || !["Admin", "Ceo"].includes(req.user.role)) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized access",
+      });
+    }
 
-    if (!center) return res.status(404).json({ message: "Center not found!" });
-    if (!region) return res.status(404).json({ message: "Region not found!" });
+    const regionExists = await Region.findByPk(rest.regionID);
+    if (!regionExists) {
+      return res.status(404).json({
+        success: false,
+        message: "Region not found",
+      });
+    }
 
-    await center.update({ branch_number: center.branch_number + 1 });
+    const newCenter = await educationalCenter.create({
+      ...rest,
+      createdBy: req.user.id,
+    });
 
-    const newBranch = await Branch.create({ ...rest, regionID, centreID });
+    if (subjects.length) {
+      const existingSubjects = await Subject.findAll({
+        where: { id: subjects },
+      });
 
-    if (Array.isArray(subjectID) && subjectID.length > 0) {
-      await subjectBra.bulkCreate(
-        subjectID.map((id) => ({ BranchId: newBranch.id, subjectID: id }))
+      if (existingSubjects.length !== subjects.length) {
+        const missing = subjects.filter(
+          (id) => !existingSubjects.some((s) => s.id === id)
+        );
+        return res.status(404).json({
+          success: false,
+          message: "Some subjects not found",
+          missingSubjects: missing,
+        });
+      }
+
+      await subjectEdu.bulkCreate(
+        existingSubjects.map((s) => ({
+          educationalCenterId: newCenter.id,
+          subjectId: s.id,
+        }))
       );
     }
 
-    if (Array.isArray(fieldID) && fieldID.length > 0) {
-      await fieldBra.bulkCreate(
-        fieldID.map((id) => ({ BranchId: newBranch.id, fieldID: id }))
+    if (fields.length) {
+      const existingFields = await Field.findAll({
+        where: { id: fields },
+      });
+
+      if (existingFields.length !== fields.length) {
+        const missing = fields.filter(
+          (id) => !existingFields.some((f) => f.id === id)
+        );
+        return res.status(404).json({
+          success: false,
+          message: "Some fields not found",
+          missingFields: missing,
+        });
+      }
+
+      await fieldEdu.bulkCreate(
+        existingFields.map((f) => ({
+          educationalCenterId: newCenter.id,
+          fieldId: f.id,
+        }))
       );
     }
 
-    branchLogger.info(`New branch created with ID: ${newBranch.id}`);
-    res.status(201).json({ data: newBranch });
-  } catch (err) {
-    branchLogger.error(`Error in post: ${err.message}`);
-    res.status(400).json({ error: err.message });
-  }
-};
+    const createdCenter = await educationalCenter.findByPk(newCenter.id, {
+      include: [
+        { model: Region },
+        { model: Subject, through: { attributes: [] } },
+        { model: Field, through: { attributes: [] } },
+      ],
+    });
 
-const update = async (req, res) => {
+    educationalCenterLogger.info(`Center created: ${createdCenter.name}`);
+
+    res.status(201).json({
+      success: true,
+      message: "Educational center created successfully",
+      data: createdCenter,
+    });
+  } catch (error) {
+    educationalCenterLogger.error(`Create error: ${error.message}`);
+    res.status(500).json({
+      success: false,
+      message: "Failed to create educational center",
+      error: error.message,
+    });
+  }
+}
+
+async function update(req, res) {
   try {
     const { id } = req.params;
-    const { error, value } = branchValidationUpdate(req.body);
+    const { error, value } = educationCenterValidationUpdate(req.body);
+
     if (error) {
-      branchLogger.error(`Validation error: ${error.details[0].message}`);
-      return res.status(400).json({ error: error.details[0].message });
+      return res.status(400).json({
+        success: false,
+        message: "Validation error",
+        errors: error.details.map((d) => d.message),
+      });
     }
 
-    const [updated] = await Branch.update(value, { where: { id } });
+    if (!req.user || !["Admin", "Ceo"].includes(req.user.role)) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized access",
+      });
+    }
+
+    const [updated] = await educationalCenter.update(value, { where: { id } });
+
     if (!updated) {
-      branchLogger.error(`Branch with ID ${id} not found for update.`);
-      return res.status(404).json({ message: "Branch not found ❗" });
+      return res.status(404).json({
+        success: false,
+        message: "Educational center not found",
+      });
     }
 
-    const updatedBranch = await Branch.findByPk(id);
-    branchLogger.info(`Branch updated with ID: ${id}`);
-    res.status(200).json({ data: updatedBranch });
-  } catch (err) {
-    branchLogger.error(`Error in update: ${err.message}`);
-    res.status(400).json({ error: err.message });
-  }
-};
+    const updatedCenter = await educationalCenter.findByPk(id);
 
-const remove = async (req, res) => {
+    res.status(200).json({
+      success: true,
+      message: "Educational center updated successfully",
+      data: updatedCenter,
+    });
+  } catch (error) {
+    educationalCenterLogger.error(`Update error: ${error.message}`);
+    res.status(500).json({
+      success: false,
+      message: "Failed to update educational center",
+      error: error.message,
+    });
+  }
+}
+
+async function remove(req, res) {
   try {
     const { id } = req.params;
-    const deleted = await Branch.destroy({ where: { id } });
+
+    if (!req.user || !["Admin", "Ceo"].includes(req.user.role)) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized access",
+      });
+    }
+
+    const deleted = await educationalCenter.destroy({ where: { id } });
 
     if (!deleted) {
-      branchLogger.error(`Branch with ID ${id} not found for deletion.`);
-      return res.status(404).json({ message: "Branch not found ❗" });
+      return res.status(404).json({
+        success: false,
+        message: "Educational center not found",
+      });
     }
 
-    branchLogger.info(`Branch deleted with ID: ${id}`);
-    res.status(200).json({ message: "Branch deleted successfully ❗" });
-  } catch (err) {
-    branchLogger.error(`Error in remove: ${err.message}`);
-    res.status(400).json({ error: err.message });
+    res.status(200).json({
+      success: true,
+      message: "Educational center deleted successfully",
+    });
+  } catch (error) {
+    educationalCenterLogger.error(`Delete error: ${error.message}`);
+    res.status(500).json({
+      success: false,
+      message: "Failed to delete educational center",
+      error: error.message,
+    });
   }
-};
+}
 
-module.exports = { getAll, getOne, post, update, remove };
+module.exports = {
+  getAll,
+  getOne,
+  create,
+  update,
+  remove,
+};

@@ -36,7 +36,7 @@ const verifyToken = require("../middlewares/verifyToken");
  *         required: false
  *         schema:
  *           type: integer
- *       - name: educationCenterId
+ *       - name: educationalCenterID
  *         in: query
  *         description: Filter comments by education center ID
  *         required: false
@@ -132,7 +132,7 @@ CommentRouter.get("/my-comments", verifyToken, myComments);
  *               star:
  *                 type: integer
  *                 example: 5
- *               educationCenterID:
+ *               educationalCenterID:
  *                 type: integer
  *                 example: 2
  *     responses:

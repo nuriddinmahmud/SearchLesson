@@ -1,4 +1,4 @@
-const { Resource, Category } = require("../models/index");
+const { Resource, Category } = require("../models/index.model.js");
 const { Op } = require("sequelize");
 const {
   resourceValidation,

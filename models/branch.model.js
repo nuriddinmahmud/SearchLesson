@@ -1,6 +1,4 @@
 const { db, DataTypes } = require("../config/database");
-const Region = require("./region.model");
-const EducationalCenter = require("./educationalCenter.model");
 
 const Branch = db.define(
   "Branch",
@@ -34,19 +32,11 @@ const Branch = db.define(
     regionID: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: {
-        model: Region,
-        key: "id",
-      },
     },
 
     centreID: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: {
-        model: EducationalCenter,
-        key: "id",
-      },
     },
   },
   { timestamps: true }

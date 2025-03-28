@@ -1,116 +1,86 @@
 const Joi = require("joi");
 
+const nameAddressPattern = /^[a-zA-Z' .-]+$/;
+const phonePattern = /^\+998\d{9}$/;
+
+const messages = {
+  name: {
+    "string.base": "Name must be a string",
+    "string.empty": "Name is required",
+    "string.min": "Name must be at least 3 characters",
+    "string.max": "Name must be at most 50 characters",
+    "string.pattern.base": "Name can only contain letters, spaces, and ['.-]",
+  },
+  address: {
+    "string.base": "Address must be a string",
+    "string.empty": "Address is required",
+    "string.pattern.base":
+      "Address can only contain letters, spaces, and ['.-]",
+  },
+  phone: {
+    "string.base": "Phone must be a string",
+    "string.empty": "Phone is required",
+    "string.pattern.base": "Phone must be in format +998XXXXXXXXX",
+  },
+};
+
 function educationCenterValidation(data) {
-  const educationCenterSchema = Joi.object({
+  const schema = Joi.object({
     name: Joi.string()
-      .custom((value, helpers) => {
-        if (/\s|['.-]/.test(value)) {
-          if (!/^[a-zA-Z' .-]+$/.test(value)) {
-            return helpers.error("string.invalidFormat");
-          }
-        } else {
-          if (!/^[a-zA-Z]+$/.test(value)) {
-            return helpers.error("string.invalidFormat");
-          }
-        }
-        return value;
-      })
+      .pattern(nameAddressPattern)
       .min(3)
       .max(50)
       .required()
-      .messages({
-        "string.min": "Name must be at least 3 characters long ❗",
-        "string.max": "Name must be at most 50 characters long ❗",
-        "string.empty": "Name is required ❗",
-        "string.invalidFormat":
-          "Invalid a name format, Only letters, spaces, and ['.-] are allowed.",
-      }),
+      .messages(messages.name),
+
     image: Joi.string().required(),
+
     address: Joi.string()
-      .custom((value, helpers) => {
-        if (/\s|['.-]/.test(value)) {
-          if (!/^[a-zA-Z' .-]+$/.test(value)) {
-            return helpers.error("string.invalidFormat");
-          }
-        } else {
-          if (!/^[a-zA-Z]+$/.test(value)) {
-            return helpers.error("string.invalidFormat");
-          }
-        }
-        return value;
-      })
+      .pattern(nameAddressPattern)
       .required()
-      .messages({
-        "string.invalidFormat":
-          "Invalid a address format, Only letters, spaces, and ['.-] are allowed.",
-      }),
+      .messages(messages.address),
+
     regionID: Joi.number().positive().required(),
+
     phone: Joi.string()
-      .min(13)
-      .max(13)
-      .pattern(/^\+998\d{9}$/)
-      .required(),
-    fields: Joi.array().required(),
-    subjects: Joi.array().required(),
+      .length(13)
+      .pattern(phonePattern)
+      .required()
+      .messages(messages.phone),
+
+    fields: Joi.array().items(Joi.number().positive()).required(),
+    subjects: Joi.array().items(Joi.number().positive()).required(),
   });
-  return educationCenterSchema.validate(data, { abortEarly: true });
+
+  return schema.validate(data, { abortEarly: false });
 }
 
 function educationCenterValidationUpdate(data) {
-  const educationCenterSchema = Joi.object({
+  const schema = Joi.object({
     name: Joi.string()
-      .custom((value, helpers) => {
-        if (/\s|['.-]/.test(value)) {
-          if (!/^[a-zA-Z' .-]+$/.test(value)) {
-            return helpers.error("string.invalidFormat");
-          }
-        } else {
-          if (!/^[a-zA-Z]+$/.test(value)) {
-            return helpers.error("string.invalidFormat");
-          }
-        }
-        return value;
-      })
+      .pattern(nameAddressPattern)
       .min(3)
       .max(50)
-      .optional()
-      .messages({
-        "string.min": "Name must be at least 3 characters long ❗",
-        "string.max": "Name must be at most 50 characters long ❗",
-        "string.empty": "Name is required ❗",
-        "string.invalidFormat":
-          "Invalid a name format, Only letters, spaces, and ['.-] are allowed.",
-      }),
-    image: Joi.string().optional(),
+      .messages(messages.name),
+
+    image: Joi.string(),
+
     address: Joi.string()
-      .custom((value, helpers) => {
-        if (/\s|['.-]/.test(value)) {
-          if (!/^[a-zA-Z' .-]+$/.test(value)) {
-            return helpers.error("string.invalidFormat");
-          }
-        } else {
-          if (!/^[a-zA-Z]+$/.test(value)) {
-            return helpers.error("string.invalidFormat");
-          }
-        }
-        return value;
-      })
-      .optional()
-      .messages({
-        "string.invalidFormat":
-          "Invalid a address format, Only letters, spaces, and ['.-] are allowed.",
-      }),
-    regionID: Joi.number().positive().optional(),
+      .pattern(nameAddressPattern)
+      .messages(messages.address),
+
+    regionID: Joi.number().positive(),
+
     phone: Joi.string()
-      .min(13)
-      .max(13)
-      .pattern(/^\+998\d{9}$/)
-      .optional(),
-    fields: Joi.array().required(),
-    subjects: Joi.array().required(),
+      .length(13)
+      .pattern(phonePattern)
+      .messages(messages.phone),
+
+    fields: Joi.array().items(Joi.number().positive()),
+    subjects: Joi.array().items(Joi.number().positive()),
   });
 
-  return educationCenterSchema.validate(data, { abortEarly: true });
+  return schema.validate(data, { abortEarly: false });
 }
 
 module.exports = {

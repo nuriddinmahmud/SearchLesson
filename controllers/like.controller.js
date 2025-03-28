@@ -1,4 +1,4 @@
-const { Like } = require("../models/index");
+const { Like } = require("../models/index.model");
 const { likeValidation } = require("../validations/like.validation");
 let winston = require("winston");
 require("winston-mongodb");

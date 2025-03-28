@@ -121,7 +121,7 @@ ReceptionRouter.post("/", verifyToken, post);
 ReceptionRouter.delete(
   "/:id",
   verifyToken,
-  checkRole(["Admin", "Ceo"]),
+  selfPolice(["Admin", "Ceo"]),
   remove
 );
 

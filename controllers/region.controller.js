@@ -1,4 +1,4 @@
-const { Region } = require("../models/index");
+const { Region } = require("../models/index.model");
 const { Op } = require("sequelize");
 const {
   regionValidation,

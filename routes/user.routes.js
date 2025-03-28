@@ -460,7 +460,7 @@ UsersRouter.get("/myCentres", verifyToken, myEducationalCenters);
  *       500:
  *         description: Internal server error
  */
-UsersRouter.get("/", verifyToken, selfPolice(["Admin"]), findAll);
+UsersRouter.get("/", verifyToken, checkRole(["Admin"]), findAll);
 
 /**
  * @swagger
@@ -555,7 +555,7 @@ UsersRouter.get("/:id", verifyToken, checkRole(["Admin", "Ceo"]), findOne);
 UsersRouter.patch(
   "/:id",
   verifyToken,
-  checkRole(["Admin", "SuperAdmin", "Ceo"]),
+  selfPolice(["Admin", "SuperAdmin", "Ceo"]),
   update
 );
 

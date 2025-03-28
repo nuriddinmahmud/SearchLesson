@@ -1,4 +1,4 @@
-const { Session } = require("../models/index");
+const { Session } = require("../models/index.model");
 let winston = require("winston");
 require("winston-mongodb");
 

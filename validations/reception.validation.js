@@ -1,21 +1,40 @@
 const Joi = require("joi");
 
+// Common validation messages
+const messages = {
+  branchID: {
+    "number.base": "Branch ID must be a number",
+    "number.positive": "Branch ID must be positive",
+    "any.required": "Branch ID is required",
+  },
+  educationCenterID: {
+    "number.base": "Education Center ID must be a number",
+    "number.positive": "Education Center ID must be positive",
+    "any.required": "Education Center ID is required",
+  },
+};
+
 function receptionValidation(data) {
-  const receptionSchema = Joi.object({
-    fieldID: Joi.number().positive().required(),
-    branchID: Joi.number().positive().required(),
-    educationCenterID: Joi.number().positive().required(),
+  const schema = Joi.object({
+    branchID: Joi.number().positive().required().messages(messages.branchID),
+    educationCenterID: Joi.number()
+      .positive()
+      .required()
+      .messages(messages.educationCenterID),
   });
-  return receptionSchema.validate(data, { abortEarly: true });
+
+  return schema.validate(data, { abortEarly: false });
 }
 
 function receptionValidationUpdate(data) {
-  const receptionSchema = Joi.object({
-    fieldID: Joi.number().positive(),
-    branchID: Joi.number().positive(),
-    educationCenterID: Joi.number().positive(),
+  const schema = Joi.object({
+    branchID: Joi.number().positive().messages(messages.branchID),
+    educationCenterID: Joi.number()
+      .positive()
+      .messages(messages.educationCenterID),
   });
-  return receptionSchema.validate(data, { abortEarly: true });
+
+  return schema.validate(data, { abortEarly: false });
 }
 
 module.exports = { receptionValidation, receptionValidationUpdate };

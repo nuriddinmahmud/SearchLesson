@@ -8,8 +8,26 @@ const subjectEdu = db.define(
       primaryKey: true,
       autoIncrement: true,
     },
+    educationalCenterId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: "EducationalCenters",
+        key: "id",
+      },
+    },
+    subjectId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: "Subjects",
+        key: "id",
+      },
+    },
   },
-  { timestamps: false }
+  {
+    timestamps: false,
+  }
 );
 
 module.exports = subjectEdu;

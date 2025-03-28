@@ -1,34 +1,32 @@
+// subjectBra.model.js
 const { DataTypes, db } = require("../config/database");
 
-const fieldEdu = db.define(
-  "fieldEdu",
+const subjectBra = db.define(
+  "subjectBra",
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    educationalCenterId: {
+    branchId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: "EducationalCenters",
+        model: "Branches",
         key: "id",
       },
     },
-    fieldId: {
+    subjectId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: "Fields",
+        model: "Subjects",
         key: "id",
       },
     },
   },
-  {
-    timestamps: false,
-    tableName: "fieldEdu", 
-  }
+  { timestamps: false }
 );
 
-module.exports = fieldEdu;
+module.exports = subjectBra;
