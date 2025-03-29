@@ -127,3 +127,6 @@
 {"level":"error","message":"User not found ❗","module":"Authorization","timestamp":"2025-03-29T09:45:51.998Z"}
 {"level":"error","message":"User not found ❗","module":"Authorization","timestamp":"2025-03-29T09:45:52.175Z"}
 {"level":"error","message":"User not found ❗","module":"Authorization","timestamp":"2025-03-29T09:45:52.375Z"}
+{"level":"error","message":"Invalid password ❗","module":"Authorization","timestamp":"2025-03-29T09:54:42.950Z"}
+{"level":"error","message":"EducationalCenter is associated to Like using an alias. You've included an alias (educationalCenter), but it does not match the alias(es) defined in your association (EducationalCenter).","module":"Like","timestamp":"2025-03-29T09:55:17.605Z"}
+{"level":"info","message":"Likes retrieved successfully","module":"Like","timestamp":"2025-03-29T09:55:24.317Z"}

@@ -1,4 +1,4 @@
-const { Like } = require("../models/index.model");
+const { Like, educationalCenter } = require("../models/index.model");
 const { likeValidation } = require("../validations/like.validation");
 let winston = require("winston");
 require("winston-mongodb");
@@ -16,6 +16,13 @@ const liked = async (req, res) => {
   try {
     const data = await Like.findAll({
       where: { userID: req.user.id },
+      include: [
+        {
+          model: educationalCenter,
+          as: "EducationalCenter", 
+          attributes: ["id", "name", "address"], 
+        },
+      ],
     });
 
     if (!data || data.length === 0) {
@@ -52,7 +59,7 @@ const post = async (req, res) => {
 
     const newLike = await Like.create({
       educationalCenterID: req.body.educationalCenterID,
-      userID: req.user.id, // Automatically from authenticated user
+      userID: req.user.id,
     });
 
     likeLogger.log("info", "Like created successfully ✅");
