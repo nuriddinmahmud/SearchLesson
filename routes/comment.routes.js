@@ -1,7 +1,6 @@
 const { Router } = require("express");
 const CommentRouter = Router();
 const {
-  getAll,
   getOne,
   post,
   update,
@@ -9,66 +8,6 @@ const {
   myComments,
 } = require("../controllers/comment.controller");
 const verifyToken = require("../middlewares/verifyToken");
-
-/**
- * @swagger
- * /api/comment:
- *   get:
- *     summary: 📋 Get all comments
- *     description: "🔍 Retrieve all comments with filtering and sorting options."
- *     tags: [💬 Comments]
- *     parameters:
- *       - name: take
- *         in: query
- *         description: 🔢 Number of comments to retrieve
- *         required: false
- *         schema:
- *           type: integer
- *       - name: from
- *         in: query
- *         description: 🏁 Starting point for retrieval
- *         required: false
- *         schema:
- *           type: integer
- *       - name: star
- *         in: query
- *         description: ⭐ Filter comments by rating (stars)
- *         required: false
- *         schema:
- *           type: integer
- *       - name: educationalCenterID
- *         in: query
- *         description: 🏫 Filter comments by education center ID
- *         required: false
- *         schema:
- *           type: integer
- *       - name: userId
- *         in: query
- *         description: 👤 Filter comments by user ID
- *         required: false
- *         schema:
- *           type: integer
- *       - name: sortBy
- *         in: query
- *         description: 🔼 Field to sort by
- *         required: false
- *         schema:
- *           type: string
- *       - name: sortOrder
- *         in: query
- *         description: ⬆️ Sorting order ("asc" or "desc")
- *         required: false
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: ✅ Successful response
- *       401:
- *         description: 🔒 Unauthorized (invalid or missing token)
- *       500:
- *         description: 🚨 Server error
- */
-CommentRouter.get("/", getAll);
 
 /**
  * @swagger

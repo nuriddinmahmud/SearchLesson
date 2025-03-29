@@ -12,7 +12,7 @@ const Like = db.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    educationCenterID: {
+    educationalCenterID: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },

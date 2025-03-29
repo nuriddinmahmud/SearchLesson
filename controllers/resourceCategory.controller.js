@@ -1,4 +1,4 @@
-const { ResourceCategory } = require("../models/index.model.js");
+const { resourceCategory } = require("../models/index.model");
 const { Op } = require("sequelize");
 const {
   resourceCategoryValidation,
@@ -34,7 +34,7 @@ const getAll = async (req, res) => {
       order = [[sortBy, validSortOrder]];
     }
 
-    const categories = await ResourceCategory.findAndCountAll({
+    const categories = await resourceCategory.findAndCountAll({
       where: whereClause,
       limit: pageSize,
       offset: (pageNumber - 1) * pageSize,
@@ -59,7 +59,7 @@ const getAll = async (req, res) => {
 const getOne = async (req, res) => {
   try {
     const { id } = req.params;
-    const category = await ResourceCategory.findByPk(id);
+    const category = await resourceCategory.findByPk(id);
 
     if (!category) {
       resourceCategoryLogger.log("error", "Resource category not found ❗");
@@ -80,17 +80,36 @@ const getOne = async (req, res) => {
 
 const post = async (req, res) => {
   try {
-    const { error, value } = resourceCategoryValidation(req.body);
-    if (error) return res.status(422).json({ error: error.details[0].message });
+    if (!resourceCategory) {
+      throw new Error("ResourceCategory model not found in database instance");
+    }
 
-    const newCategory = await ResourceCategory.create(value);
-    res.status(201).json({ data: newCategory });
+    const { error, value } = resourceCategoryValidation(req.body);
+    if (error) {
+      return res.status(422).json({
+        error: error.details[0].message,
+      });
+    }
+
+    const newCategory = await resourceCategory.create(value);
+
     resourceCategoryLogger.log(
       "info",
       "Resource category created successfully ✅"
     );
+    return res.status(201).json({
+      success: true,
+      data: newCategory,
+    });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    resourceCategoryLogger.log("error", `Creation failed: ${err.message}`);
+    return res.status(500).json({
+      success: false,
+      error:
+        process.env.NODE_ENV === "development"
+          ? err.message
+          : "Internal server error",
+    });
   }
 };
 
@@ -100,7 +119,7 @@ const update = async (req, res) => {
     const { error, value } = resourceCategoryValidationUpdate(req.body);
     if (error) return res.status(400).json({ error: error.details[0].message });
 
-    const [updatedRowCount] = await ResourceCategory.update(value, {
+    const [updatedRowCount] = await resourceCategory.update(value, {
       where: { id },
     });
     if (!updatedRowCount) {
@@ -124,7 +143,7 @@ const update = async (req, res) => {
 const remove = async (req, res) => {
   try {
     const { id } = req.params;
-    const deletedRowCount = await ResourceCategory.destroy({ where: { id } });
+    const deletedRowCount = await resourceCategory.destroy({ where: { id } });
 
     if (!deletedRowCount) {
       resourceCategoryLogger.log("error", "Resource category not found ❗");

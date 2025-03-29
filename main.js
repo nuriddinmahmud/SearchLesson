@@ -23,6 +23,11 @@ const swaggerSpec = swaggerJsDoc({
     servers: [
       {
         url: `http://localhost:${PORT}`,
+        description: "Local development server",
+      },
+      {
+        url: "https://your-production-url.com",
+        description: "Production server",
       },
     ],
     components: {
@@ -31,6 +36,7 @@ const swaggerSpec = swaggerJsDoc({
           type: "http",
           scheme: "bearer",
           bearerFormat: "JWT",
+          description: "JWT Authorization header using the Bearer scheme",
         },
       },
     },

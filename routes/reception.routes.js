@@ -134,7 +134,7 @@ const selfPolice = require("../middlewares/selfPolice");
  *           type: integer
  *           example: 5
  *           description: 👤 User ID
- *         educationCenterID:
+ *         EducationCenterID:
  *           type: integer
  *           example: 10
  *           description: 🏫 Educational Center ID
@@ -162,10 +162,10 @@ const selfPolice = require("../middlewares/selfPolice");
  *     ReceptionInput:
  *       type: object
  *       required:
- *         - educationCenterID
+ *         - EducationCenterID
  *         - branchID
  *       properties:
- *         educationCenterID:
+ *         EducationCenterID:
  *           type: integer
  *           description: 🏫 ID of the educational center
  *           example: 10
@@ -183,9 +183,6 @@ const selfPolice = require("../middlewares/selfPolice");
  *         name:
  *           type: string
  *           description: 🏛️ Center name
- *         image:
- *           type: string
- *           description: 🖼️ Center image URL
  *
  *     Branch:
  *       type: object
@@ -196,16 +193,6 @@ const selfPolice = require("../middlewares/selfPolice");
  *         name:
  *           type: string
  *           description: 🏢 Branch name
- *         address:
- *           type: string
- *           description: 📍 Physical address
- *
- *   securitySchemes:
- *     bearerAuth:
- *       type: http
- *       scheme: bearer
- *       bearerFormat: JWT
- *       description: 🔑 JWT Authorization token
  */
 
 ReceptionRouter.get("/my-courses", verifyToken, myCourses);

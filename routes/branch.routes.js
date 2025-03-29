@@ -141,7 +141,7 @@ BranchRouter.get("/:id", getOne);
  *       500:
  *         description: 🚨 Server error
  */
-BranchRouter.post("/", verifyToken, checkRole(["Ceo"]), create);
+BranchRouter.post("/", verifyToken, checkRole(["Ceo", "Admin"]), create);
 
 /**
  * @swagger
@@ -221,11 +221,6 @@ BranchRouter.delete("/:id", verifyToken, selfPolice(["Admin", "Ceo"]), remove);
 /**
  * @swagger
  * components:
- *   securitySchemes:
- *     BearerAuth:
- *       type: http
- *       scheme: bearer
- *       bearerFormat: JWT
  *   schemas:
  *     Branch:
  *       type: object

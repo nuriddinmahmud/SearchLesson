@@ -14,28 +14,35 @@ let likeLogger = logger.child({ module: "Like" });
 
 const liked = async (req, res) => {
   try {
-    const data = await Like.findAll({ where: { userId: req.userId } });
-    if (!data) {
-      res.send({ message: "Like not found ❗" });
-      likeLogger.log("error", "Like not found ❗");
-      return;
+    const data = await Like.findAll({
+      where: { userID: req.user.id },
+    });
+
+    if (!data || data.length === 0) {
+      return res.status(404).json({ message: "No likes found ❗" });
     }
-    likeLogger.log("info", "Likes!");
-    res.send(data);
+
+    likeLogger.log("info", "Likes retrieved successfully");
+    res.json(data);
   } catch (error) {
-    res.send(error.mesage);
+    likeLogger.log("error", error.message);
+    res.status(500).json({ error: error.message });
   }
 };
 
 const post = async (req, res) => {
   try {
-    const data = await Like.findOne({
-      where: { userID: req.user.id },
+    const existingLike = await Like.findOne({
+      where: {
+        userID: req.user.id,
+        educationalCenterID: req.body.educationalCenterID,
+      },
     });
-    console.log(req.body.userId, req.body.educationalCenterID);
 
-    if (data) {
-      return res.status(400).json({ message: "Like already exists ❗" });
+    if (existingLike) {
+      return res
+        .status(400)
+        .json({ message: "You already liked this center ❗" });
     }
 
     const { error } = likeValidation(req.body);
@@ -43,27 +50,38 @@ const post = async (req, res) => {
       return res.status(400).json({ message: error.details[0].message });
     }
 
-    const newData = await Like.create({ ...req.body, userID: req.user.id });
-    likeLogger.log("info", "Like created succesfully✅");
-    res.status(201).json(newData);
+    const newLike = await Like.create({
+      educationalCenterID: req.body.educationalCenterID,
+      userID: req.user.id, // Automatically from authenticated user
+    });
+
+    likeLogger.log("info", "Like created successfully ✅");
+    res.status(201).json(newLike);
   } catch (error) {
+    likeLogger.log("error", error.message);
     res.status(500).json({ error: error.message });
   }
 };
 
 const remove = async (req, res) => {
   try {
-    const data = await Like.findByPk(req.params.id);
-    if (!data) {
-      res.send({ message: "Like not found ❗" });
-      likeLogger.log("error", "Like not found ❗");
-      return;
+    const like = await Like.findOne({
+      where: {
+        id: req.params.id,
+        userID: req.user.id,
+      },
+    });
+
+    if (!like) {
+      return res.status(404).json({ message: "Like not found ❗" });
     }
-    await data.destroy();
-    likeLogger.log("info", "Like removed succesfully✅");
-    res.send(data);
+
+    await like.destroy();
+    likeLogger.log("info", "Like removed successfully ✅");
+    res.json({ message: "Like removed successfully" });
   } catch (error) {
-    res.send(error.mesage);
+    likeLogger.log("error", error.message);
+    res.status(500).json({ error: error.message });
   }
 };
 

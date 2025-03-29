@@ -22,12 +22,12 @@ const myCourses = async (req, res) => {
       include: [
         {
           model: educationalCenter,
-          attributes: ["id", "name", "image"],
+          attributes: ["id", "name"],
           as: "EducationalCenter",
         },
         {
           model: Branch,
-          attributes: ["id", "name", "address"],
+          attributes: ["id", "name"],
           as: "Branch",
         },
       ],

@@ -1,4 +1,4 @@
-const { Resource, Category } = require("../models/index.model.js");
+const { Resource, resourceCategory } = require("../models/index.model.js");
 const { Op } = require("sequelize");
 const {
   resourceValidation,
@@ -17,14 +17,15 @@ const resourceLogger = logger.child({ module: "Resource" });
 
 const getAll = async (req, res) => {
   try {
-    let { search, page, limit, categoryID, sortBy, sortOrder } = req.query;
+    let { search, page, limit, resourceCategoryID, sortBy, sortOrder } =
+      req.query;
     let whereClause = {};
 
     if (search) {
       whereClause.name = { [Op.iLike]: `%${search}%` };
     }
-    if (categoryID) {
-      whereClause.categoryID = categoryID; 
+    if (resourceCategoryID) {
+      whereClause.resourceCategoryID = resourceCategoryID;
     }
 
     const pageSize = limit ? parseInt(limit) : 10;
@@ -38,7 +39,11 @@ const getAll = async (req, res) => {
 
     const resources = await Resource.findAndCountAll({
       where: whereClause,
-      include: [{ model: Category }],
+      include: [
+        {
+          model: resourceCategory
+        },
+      ],
       limit: pageSize,
       offset: (pageNumber - 1) * pageSize,
       order: order,
@@ -54,7 +59,10 @@ const getAll = async (req, res) => {
     resourceLogger.info("Fetched all resources successfully!");
   } catch (err) {
     resourceLogger.error(`Error fetching resources: ${err.message}`);
-    res.status(400).json({ error: err.message });
+    res.status(400).json({
+      error: "Failed to fetch resources",
+      details: process.env.NODE_ENV === "development" ? err.message : undefined,
+    });
   }
 };
 
@@ -62,12 +70,16 @@ const getOne = async (req, res) => {
   try {
     const { id } = req.params;
     const resource = await Resource.findByPk(id, {
-      include: [{ model: Category }],
+      include: [
+        {
+          model: resourceCategory
+        },
+      ],
     });
 
     if (!resource) {
-      resourceLogger.error("Resource not found ❗");
-      return res.status(404).json({ message: "Resource not found ❗" });
+      resourceLogger.error(`Resource with ID ${id} not found`);
+      return res.status(404).json({ message: "Resource not found" });
     }
 
     res.status(200).json({ data: resource });

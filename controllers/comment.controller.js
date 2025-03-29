@@ -17,54 +17,6 @@ const logger = winston.createLogger({
 
 let commentLogger = logger.child({ module: "Authorization" });
 
-const getAll = async (req, res) => {
-  try {
-    let { take, from, star, educationCenterId, userId, sortBy, sortOrder } =
-      req.query;
-
-    let whereClause = {};
-
-    if (star) whereClause.star = star;
-    if (educationCenterId) whereClause.educationCenterId = educationCenterId;
-    if (userId) whereClause.userId = userId;
-
-    const limit = take ? parseInt(take) : 10;
-    const offset = from ? parseInt(from) : 0;
-
-    let order = [["id", "ASC"]];
-    if (sortBy) {
-      const validSortOrder = sortOrder === "desc" ? "DESC" : "ASC";
-      order = [[sortBy, validSortOrder]];
-    }
-
-    const data = await Comment.findAndCountAll({
-      where: whereClause,
-      limit,
-      offset,
-      order,
-      include: [
-        { model: User, attributes: ["name", "email", "phone"] },
-        { model: EducationalCenter, attributes: ["name"] },
-      ],
-    });
-
-    if (!data.rows.length) {
-      commentLogger.log("error", "Comments not found ❗");
-      return res.status(404).json({ message: "Comments not found ❗" });
-    }
-
-    res.status(200).json({
-      total: data.count,
-      pageSize: limit,
-      from: offset,
-      data: data.rows,
-    });
-    commentLogger.log("info", "Comments!");
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
 const myComments = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -158,7 +110,6 @@ const remove = async (req, res) => {
 };
 
 module.exports = {
-  getAll,
   getOne,
   post,
   update,

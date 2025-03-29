@@ -1,6 +1,4 @@
 const User = require("../models/user.model.js");
-const Regions = require("../models/region.model.js");
-const EducationalCenter = require("../models/educationalCenter.model.js");
 const {
   userValidation,
   userValidationUpdate,
@@ -148,63 +146,6 @@ async function login(req, res) {
     res.send({ accessToken, refreshToken });
   } catch (error) {
     return res.status(500).send("Internal Server Error ❗");
-  }
-}
-
-async function myEducationalCenters(req, res) {
-  try {
-    let { role, id } = req.user;
-    if (!role.includes(["Ceo"])) {
-      res.status(403).send({ message: "Unauthorization User type ❗" });
-      authLogger.log("error", "Unauthorization User type ❗");
-      return;
-    }
-
-    const allCentres = await EducationalCenter.findAll({
-      where: { userID: id },
-      attributes: [
-        "id",
-        "name",
-        "image",
-        "address",
-        "phone",
-        "createdAt",
-        "updatedAt",
-      ],
-      include: [
-        {
-          model: User,
-          attribute: [
-            "id",
-            "firstName",
-            "lastName",
-            "email",
-            "phone",
-            "role",
-            "status",
-            "createdAt",
-            "updatedAt",
-          ],
-        },
-        {
-          model: { Regions },
-          attributes: ["id", "name", "createdAt", "updatedAt"],
-        },
-      ],
-    });
-    if (!allCentres.length) {
-      res.status(200).send({
-        message:
-          "You have not created any Educational Centers yet 🫱🏿‍🫲🏻(my nig*a)",
-      });
-      authLogger.log(
-        "error",
-        "You have not created any Educational Centers yet 🫱🏿‍🫲🏻(my nig*a)"
-      );
-    }
-    res.status(200).send({ data: allCentres });
-  } catch (error) {
-    return res.status(400).send({ error_message: error.message });
   }
 }
 
@@ -459,49 +400,6 @@ async function remove(req, res) {
   }
 }
 
-async function myInfo(req, res) {
-  try {
-    const { id } = req.user;
-
-    const user = await User.findByPk(id, {
-      attributes: [
-        "id",
-        "firstName",
-        "lastName",
-        "email",
-        "phone",
-        "yearOfBirth",
-        "avatar",
-        "role",
-        "status",
-        "createdAt",
-        "updatedAt",
-      ],
-    });
-
-    if (!user) {
-      authLogger.error(`Foydalanuvchi topilmadi ID: ${id}`);
-      return res.status(404).json({
-        success: false,
-        message: "Foydalanuvchi topilmadi",
-      });
-    }
-
-    authLogger.info(`Foydalanuvchi ma'lumotlari olindi ID: ${id}`);
-    res.status(200).json({
-      success: true,
-      data: user,
-    });
-  } catch (error) {
-    authLogger.error(`Xato: ${error.message}`);
-    res.status(500).json({
-      success: false,
-      message: "Ma'lumotlarni olishda xato",
-      error: error.message,
-    });
-  }
-}
-
 module.exports = {
   register,
   verifyOtp,
@@ -515,6 +413,4 @@ module.exports = {
   sendOtpPhone,
   verifyOtpPhone,
   refreshTokenGenereate,
-  myEducationalCenters,
-  myInfo,
 };

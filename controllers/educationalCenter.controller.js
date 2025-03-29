@@ -82,24 +82,24 @@ async function getAll(req, res) {
 
     if (rows.length === 0) {
       return res.status(200).json({
-        data: [],
         meta: {
           total: 0,
           page: parseInt(page),
           limit: parseInt(limit),
           totalPages: 0,
         },
+        data: [],
       });
     }
 
     res.status(200).json({
-      data: rows,
       meta: {
         total: count,
         page: parseInt(page),
         limit: parseInt(limit),
         totalPages: Math.ceil(count / parseInt(limit)),
       },
+      data: rows,
     });
   } catch (error) {
     educationalCenterLogger.error("error", `Get all error: ${error.message}`);
