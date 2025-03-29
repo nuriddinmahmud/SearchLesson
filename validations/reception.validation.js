@@ -1,6 +1,5 @@
 const Joi = require("joi");
 
-// Common validation messages
 const messages = {
   branchID: {
     "number.base": "Branch ID must be a number",

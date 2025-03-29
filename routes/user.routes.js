@@ -22,15 +22,15 @@ const UsersRouter = express.Router();
 /**
  * @swagger
  * tags:
- *   name: Users
- *   description: API for managing users
+ *   name: 👥 Users
+ *   description: 🌟 API for managing users
  */
 /**
  * @swagger
  * /api/user/register:
  *   post:
- *     summary: Register a new user
- *     tags: [Users]
+ *     summary: 📝 Register a new user
+ *     tags: [👥 Users]
  *     requestBody:
  *       required: true
  *       content:
@@ -40,42 +40,42 @@ const UsersRouter = express.Router();
  *             properties:
  *               fullName:
  *                 type: string
- *                 description: The full name of the user
+ *                 description: 🏷️ The full name of the user
  *               yearOfBirth:
  *                 type: integer
- *                 description: The year of birth of the user
+ *                 description: 🎂 The year of birth of the user
  *               email:
  *                 type: string
- *                 description: The email of the user
+ *                 description: 📧 The email of the user
  *               password:
  *                 type: string
- *                 description: The password of the user
+ *                 description: 🔑 The password of the user
  *               phone:
  *                 type: string
- *                 description: The phone number of the user
+ *                 description: 📱 The phone number of the user
  *               role:
  *                 type: string
  *                 enum: [Admin, User, Seller, SuperAdmin]
- *                 description: The role of the user (default is "User")
+ *                 description: 🎭 The role of the user (default is "User")
  *               avatar:
  *                 type: string
- *                 description: The avatar URL of the user
+ *                 description: 🖼️ The avatar URL of the user
  *               regionID:
  *                 type: integer
- *                 description: The ID of the region the user belongs to
+ *                 description: 🌍 The ID of the region the user belongs to
  *     responses:
  *       200:
- *         description: User registered successfully
+ *         description: 🎉 User registered successfully
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/User'
  *       400:
- *         description: Bad request. Validation error
+ *         description: ❌ Bad request. Validation error
  *       405:
- *         description: Account already exists
+ *         description: ⚠️ Account already exists
  *       500:
- *         description: Internal server error
+ *         description: 🚨 Internal server error
  */
 UsersRouter.post("/register", register);
 
@@ -83,8 +83,8 @@ UsersRouter.post("/register", register);
  * @swagger
  * /api/user/send-otp-to-phone:
  *   post:
- *     summary: Send OTP to user's phone
- *     tags: [Users]
+ *     summary: 📲 Send OTP to user's phone
+ *     tags: [👥 Users]
  *     requestBody:
  *       required: true
  *       content:
@@ -94,14 +94,14 @@ UsersRouter.post("/register", register);
  *             properties:
  *               phone:
  *                 type: string
- *                 description: The phone number of the user
+ *                 description: 📱 The phone number of the user
  *     responses:
  *       200:
- *         description: OTP sent successfully
+ *         description: ✅ OTP sent successfully
  *       404:
- *         description: User not found
+ *         description: ❌ User not found
  *       500:
- *         description: Internal server error
+ *         description: 🚨 Internal server error
  */
 UsersRouter.post("/send-otp-to-phone", sendOtpPhone);
 
@@ -109,8 +109,8 @@ UsersRouter.post("/send-otp-to-phone", sendOtpPhone);
  * @swagger
  * /api/user/verify-otp-phone:
  *   post:
- *     summary: Verify OTP sent to user's phone
- *     tags: [Users]
+ *     summary: 🔍 Verify OTP sent to user's phone
+ *     tags: [👥 Users]
  *     requestBody:
  *       required: true
  *       content:
@@ -120,19 +120,19 @@ UsersRouter.post("/send-otp-to-phone", sendOtpPhone);
  *             properties:
  *               phone:
  *                 type: string
- *                 description: The phone number of the user
+ *                 description: 📱 The phone number of the user
  *               otp:
  *                 type: string
- *                 description: The OTP sent to the user's phone
+ *                 description: 🔢 The OTP sent to the user's phone
  *     responses:
  *       200:
- *         description: Account activated successfully
+ *         description: 🎉 Account activated successfully
  *       403:
- *         description: OTP is incorrect
+ *         description: ❌ OTP is incorrect
  *       404:
- *         description: User not found
+ *         description: ❌ User not found
  *       500:
- *         description: Internal server error
+ *         description: 🚨 Internal server error
  */
 UsersRouter.post("/verify-otp-phone", verifyOtpPhone);
 
@@ -140,8 +140,8 @@ UsersRouter.post("/verify-otp-phone", verifyOtpPhone);
  * @swagger
  * /api/user/verify-otp:
  *   post:
- *     summary: Verify OTP for account activation
- *     tags: [Users]
+ *     summary: 🔍 Verify OTP for account activation
+ *     tags: [👥 Users]
  *     requestBody:
  *       required: true
  *       content:
@@ -155,13 +155,13 @@ UsersRouter.post("/verify-otp-phone", verifyOtpPhone);
  *                 type: string
  *     responses:
  *       200:
- *         description: Account activated successfully
+ *         description: 🎉 Account activated successfully
  *       403:
- *         description: OTP is incorrect
+ *         description: ❌ OTP is incorrect
  *       405:
- *         description: Email is incorrect
+ *         description: ❌ Email is incorrect
  *       500:
- *         description: Internal server error
+ *         description: 🚨 Internal server error
  */
 UsersRouter.post("/verify-otp", verifyOtp);
 
@@ -169,8 +169,8 @@ UsersRouter.post("/verify-otp", verifyOtp);
  * @swagger
  * /api/user/login:
  *   post:
- *     summary: Login a user
- *     tags: [Users]
+ *     summary: 🔑 Login a user
+ *     tags: [👥 Users]
  *     requestBody:
  *       required: true
  *       content:
@@ -180,13 +180,13 @@ UsersRouter.post("/verify-otp", verifyOtp);
  *             properties:
  *               email:
  *                 type: string
- *                 description: The email of the user
+ *                 description: 📧 The email of the user
  *               password:
  *                 type: string
- *                 description: The password of the user
+ *                 description: 🔑 The password of the user
  *     responses:
  *       200:
- *         description: Logged in successfully
+ *         description: 🎉 Logged in successfully
  *         content:
  *           application/json:
  *             schema:
@@ -199,11 +199,11 @@ UsersRouter.post("/verify-otp", verifyOtp);
  *                 refresh_token:
  *                   type: string
  *       403:
- *         description: Account not activated
+ *         description: ⚠️ Account not activated
  *       422:
- *         description: Invalid email or password
+ *         description: ❌ Invalid email or password
  *       500:
- *         description: Internal server error
+ *         description: 🚨 Internal server error
  */
 UsersRouter.post("/login", login);
 
@@ -211,8 +211,8 @@ UsersRouter.post("/login", login);
  * @swagger
  * /api/user/get-access-token:
  *   post:
- *     summary: Get a new access token using a refresh token
- *     tags: [Users]
+ *     summary: 🔄 Get a new access token using a refresh token
+ *     tags: [👥 Users]
  *     requestBody:
  *       required: true
  *       content:
@@ -222,12 +222,12 @@ UsersRouter.post("/login", login);
  *             properties:
  *               refresh_token:
  *                 type: string
- *                 description: Your refresh token
+ *                 description: 🔄 Your refresh token
  *     security:
  *       - BearerAuth: []
  *     responses:
  *       200:
- *         description: New access token generated successfully
+ *         description: ✅ New access token generated successfully
  *         content:
  *           application/json:
  *             schema:
@@ -238,9 +238,9 @@ UsersRouter.post("/login", login);
  *                 access_token:
  *                   type: string
  *       404:
- *         description: User not found
+ *         description: ❌ User not found
  *       500:
- *         description: Internal server error
+ *         description: 🚨 Internal server error
  */
 UsersRouter.post("/get-access-token", getNewAccessToken);
 
@@ -248,8 +248,8 @@ UsersRouter.post("/get-access-token", getNewAccessToken);
  * @swagger
  * /api/user/promoteToAdmin/{id}:
  *   patch:
- *     summary: Promote a user to admin
- *     tags: [Users]
+ *     summary: ⬆️ Promote a user to admin
+ *     tags: [👥 Users]
  *     security:
  *       - BearerAuth: []
  *     parameters:
@@ -258,14 +258,14 @@ UsersRouter.post("/get-access-token", getNewAccessToken);
  *         schema:
  *           type: integer
  *         required: true
- *         description: The ID of the user to promote
+ *         description: 🆔 The ID of the user to promote
  *     responses:
  *       200:
- *         description: User promoted to admin successfully
+ *         description: 🎉 User promoted to admin successfully
  *       400:
- *         description: Bad request
+ *         description: ❌ Bad request
  *       500:
- *         description: Internal server error
+ *         description: 🚨 Internal server error
  */
 UsersRouter.patch("/promoteToAdmin/:id", promoteToAdmin);
 
@@ -273,15 +273,15 @@ UsersRouter.patch("/promoteToAdmin/:id", promoteToAdmin);
  * @swagger
  * /api/user/myCentres:
  *   get:
- *     summary: Get educational centers of the logged-in user
- *     description: Returns a list of educational centers belonging to the authenticated CEO.
+ *     summary: 🏫 Get educational centers of the logged-in user
+ *     description: 📚 Returns a list of educational centers belonging to the authenticated CEO.
  *     tags:
- *      - Users
+ *      - 👥 Users
  *     security:
  *       - BearerAuth: []
  *     responses:
  *       200:
- *         description: Successfully retrieved educational centers.
+ *         description: ✅ Successfully retrieved educational centers.
  *         content:
  *           application/json:
  *             schema:
@@ -367,7 +367,7 @@ UsersRouter.patch("/promoteToAdmin/:id", promoteToAdmin);
  *                             format: date-time
  *                             example: "2024-01-05T10:30:00.000Z"
  *       403:
- *         description: Unauthorized user type
+ *         description: ⛔ Unauthorized user type
  *         content:
  *           application/json:
  *             schema:
@@ -377,7 +377,7 @@ UsersRouter.patch("/promoteToAdmin/:id", promoteToAdmin);
  *                   type: string
  *                   example: "Unauthorization User type ❗"
  *       400:
- *         description: Bad request or unexpected error
+ *         description: ❌ Bad request or unexpected error
  *         content:
  *           application/json:
  *             schema:
@@ -393,8 +393,8 @@ UsersRouter.get("/myCentres", verifyToken, myEducationalCenters);
  * @swagger
  * /api/user:
  *   get:
- *     summary: Get all users with filters, sorting, and pagination
- *     tags: [Users]
+ *     summary: 🔍 Get all users with filters, sorting, and pagination
+ *     tags: [👥 Users]
  *     security:
  *       - BearerAuth: []
  *     parameters:
@@ -402,44 +402,44 @@ UsersRouter.get("/myCentres", verifyToken, myEducationalCenters);
  *         name: search
  *         schema:
  *           type: string
- *         description: Search by full name or email
+ *         description: 🔎 Search by full name or email
  *       - in: query
  *         name: role
  *         schema:
  *           type: string
  *           enum: [Admin, User, Ceo, SuperAdmin]
- *         description: Filter by user role
+ *         description: 🎭 Filter by user role
  *       - in: query
  *         name: status
  *         schema:
  *           type: string
  *           enum: [Active, Inactive]
- *         description: Filter by user status
+ *         description: 🟢🔴 Filter by user status
  *       - in: query
  *         name: page
  *         schema:
  *           type: integer
- *         description: Page number for pagination
+ *         description: 📄 Page number for pagination
  *       - in: query
  *         name: limit
  *         schema:
  *           type: integer
- *         description: Number of results per page
+ *         description: 📊 Number of results per page
  *       - in: query
  *         name: sortBy
  *         schema:
  *           type: string
  *           enum: [fullName, email, createdAt]
- *         description: Field to sort by (e.g., fullName, email, createdAt)
+ *         description: 🔼🔽 Field to sort by (e.g., fullName, email, createdAt)
  *       - in: query
  *         name: sortOrder
  *         schema:
  *           type: string
  *           enum: [asc, desc]
- *         description: Sorting order (asc or desc)
+ *         description: ⬆️⬇️ Sorting order (asc or desc)
  *     responses:
  *       200:
- *         description: A list of users with pagination
+ *         description: ✅ A list of users with pagination
  *         content:
  *           application/json:
  *             schema:
@@ -456,9 +456,9 @@ UsersRouter.get("/myCentres", verifyToken, myEducationalCenters);
  *                   items:
  *                     $ref: '#/components/schemas/User'
  *       403:
- *         description: Unauthorized access
+ *         description: ⛔ Unauthorized access
  *       500:
- *         description: Internal server error
+ *         description: 🚨 Internal server error
  */
 UsersRouter.get("/", verifyToken, checkRole(["Admin"]), findAll);
 
@@ -466,8 +466,8 @@ UsersRouter.get("/", verifyToken, checkRole(["Admin"]), findAll);
  * @swagger
  * /api/user/{id}:
  *   get:
- *     summary: Get a user by ID
- *     tags: [Users]
+ *     summary: 👤 Get a user by ID
+ *     tags: [👥 Users]
  *     security:
  *       - BearerAuth: []
  *     parameters:
@@ -476,27 +476,52 @@ UsersRouter.get("/", verifyToken, checkRole(["Admin"]), findAll);
  *         schema:
  *           type: integer
  *         required: true
- *         description: The ID of the user
+ *         description: 🆔 The ID of the user
  *     responses:
  *       200:
- *         description: User found
+ *         description: ✅ User found
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/User'
  *       404:
- *         description: User not found
+ *         description: ❌ User not found
  *       500:
- *         description: Internal server error
+ *         description: 🚨 Internal server error
  */
 UsersRouter.get("/:id", verifyToken, checkRole(["Admin", "Ceo"]), findOne);
 
 /**
  * @swagger
+ * /api/user/myinfo:
+ *   get:
+ *     summary: 👤 Get my user profile
+ *     description: 📋 Retrieve authenticated user's profile information
+ *     tags: [👥 Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: ✅ Successfully retrieved user profile
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserProfile'
+ *       401:
+ *         description: 🔒 Unauthorized - Invalid or missing token
+ *       404:
+ *         description: ❌ User not found
+ *       500:
+ *         description: 🚨 Internal server error
+ */
+UsersRouter.get("/myinfo", verifyToken);
+
+/**
+ * @swagger
  * /api/user/{id}:
  *   patch:
- *     summary: Update a user by ID (Admin or SuperAdmin only)
- *     tags: [Users]
+ *     summary: ✏️ Update a user by ID (Admin or SuperAdmin only)
+ *     tags: [👥 Users]
  *     security:
  *       - BearerAuth: []
  *     parameters:
@@ -505,7 +530,7 @@ UsersRouter.get("/:id", verifyToken, checkRole(["Admin", "Ceo"]), findOne);
  *         schema:
  *           type: integer
  *         required: true
- *         description: The ID of the user
+ *         description: 🆔 The ID of the user
  *     requestBody:
  *       required: true
  *       content:
@@ -515,42 +540,42 @@ UsersRouter.get("/:id", verifyToken, checkRole(["Admin", "Ceo"]), findOne);
  *             properties:
  *               fullName:
  *                 type: string
- *                 description: The updated full name of the user
+ *                 description: 🏷️ The updated full name of the user
  *               yearOfBirth:
  *                 type: integer
- *                 description: The updated year of birth of the user
+ *                 description: 🎂 The updated year of birth of the user
  *               email:
  *                 type: string
- *                 description: The updated email of the user
+ *                 description: 📧 The updated email of the user
  *               password:
  *                 type: string
- *                 description: The updated password of the user
+ *                 description: 🔑 The updated password of the user
  *               phone:
  *                 type: string
- *                 description: The updated phone number of the user
+ *                 description: 📱 The updated phone number of the user
  *               role:
  *                 type: string
  *                 enum: [Admin, User, Seller, SuperAdmin]
- *                 description: The updated role of the user
+ *                 description: 🎭 The updated role of the user
  *               avatar:
  *                 type: string
- *                 description: The updated avatar URL of the user
+ *                 description: 🖼️ The updated avatar URL of the user
  *               regionID:
  *                 type: integer
- *                 description: The updated ID of the region the user belongs to
+ *                 description: 🌍 The updated ID of the region the user belongs to
  *     responses:
  *       200:
- *         description: User updated successfully
+ *         description: ✅ User updated successfully
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/User'
  *       403:
- *         description: Only SuperAdmin can update users
+ *         description: ⛔ Only SuperAdmin can update users
  *       404:
- *         description: User not found
+ *         description: ❌ User not found
  *       500:
- *         description: Internal server error
+ *         description: 🚨 Internal server error
  */
 UsersRouter.patch(
   "/:id",
@@ -563,8 +588,8 @@ UsersRouter.patch(
  * @swagger
  * /api/user/{id}:
  *   delete:
- *     summary: Delete a user by ID (Admin only)
- *     tags: [Users]
+ *     summary: 🗑️ Delete a user by ID (Admin only)
+ *     tags: [👥 Users]
  *     security:
  *       - BearerAuth: []
  *     parameters:
@@ -573,16 +598,16 @@ UsersRouter.patch(
  *         schema:
  *           type: integer
  *         required: true
- *         description: The ID of the user
+ *         description: 🆔 The ID of the user
  *     responses:
  *       200:
- *         description: User deleted successfully
+ *         description: ✅ User deleted successfully
  *       403:
- *         description: Nobody can destroy admin
+ *         description: ⛔ Nobody can destroy admin
  *       404:
- *         description: User not found
+ *         description: ❌ User not found
  *       500:
- *         description: Internal server error
+ *         description: 🚨 Internal server error
  */
 UsersRouter.delete("/:id", verifyToken, checkRole(["Admin", "Ceo"]), remove);
 
@@ -595,44 +620,50 @@ UsersRouter.delete("/:id", verifyToken, checkRole(["Admin", "Ceo"]), remove);
  *       properties:
  *         id:
  *           type: integer
- *           description: The auto-generated ID of the user
+ *           description: 🆔 The auto-generated ID of the user
+ *         firstName:
+ *           type: string
+ *           description: 👨‍💼 User's first name
+ *         lastName:
+ *           type: string
+ *           description: 👨‍💼 User's last name
  *         fullName:
  *           type: string
- *           description: The full name of the user
+ *           description: 🏷️ The full name of the user
  *         yearOfBirth:
  *           type: integer
- *           description: The year of birth of the user
+ *           description: 🎂 The year of birth of the user
  *         email:
  *           type: string
- *           description: The email of the user
+ *           description: 📧 The email of the user
  *         password:
  *           type: string
- *           description: The password of the user
+ *           description: 🔑 The password of the user
  *         phone:
  *           type: string
- *           description: The phone number of the user
+ *           description: 📱 The phone number of the user
  *         role:
  *           type: string
- *           enum: [Admin, User, Seller, SuperAdmin]
- *           description: The role of the user
+ *           enum: [Admin, User, Seller, SuperAdmin, Ceo]
+ *           description: 🎭 The role of the user
  *         avatar:
  *           type: string
- *           description: The avatar URL of the user
+ *           description: 🖼️ The avatar URL of the user
  *         status:
  *           type: string
  *           enum: [Active, Inactive]
- *           description: The status of the user
+ *           description: 🟢🔴 The status of the user
  *         regionID:
  *           type: integer
- *           description: The ID of the region the user belongs to
+ *           description: 🌍 The ID of the region the user belongs to
  *         createdAt:
  *           type: string
  *           format: date-time
- *           description: The timestamp when the user was created
+ *           description: ⏰ The timestamp when the user was created
  *         updatedAt:
  *           type: string
  *           format: date-time
- *           description: The timestamp when the user was last updated
+ *           description: ⏳ The timestamp when the user was last updated
  *         Region:
  *           type: object
  *           properties:
@@ -642,11 +673,12 @@ UsersRouter.delete("/:id", verifyToken, checkRole(["Admin", "Ceo"]), remove);
  *               type: string
  *       example:
  *         id: 1
+ *         firstName: "John"
+ *         lastName: "Doe"
  *         fullName: "John Doe"
  *         yearOfBirth: 1990
  *         email: "john.doe@example.com"
- *         password: "hashedPassword"
- *         phone: "1234567890"
+ *         phone: "+998901234567"
  *         role: "User"
  *         avatar: "http://example.com/avatar.jpg"
  *         status: "Active"
@@ -656,11 +688,37 @@ UsersRouter.delete("/:id", verifyToken, checkRole(["Admin", "Ceo"]), remove);
  *         Region:
  *           id: 1
  *           name: "Tashkent"
+ *
+ *     MyInfoResponse:
+ *       type: object
+ *       properties:
+ *         success:
+ *           type: boolean
+ *           example: true
+ *           description: ✅ Request status
+ *         data:
+ *           $ref: '#/components/schemas/User'
+ *       example:
+ *         success: true
+ *         data:
+ *           id: 1
+ *           firstName: "John"
+ *           lastName: "Doe"
+ *           email: "john@example.com"
+ *           phone: "+998901234567"
+ *           yearOfBirth: 1990
+ *           avatar: "avatar.jpg"
+ *           role: "User"
+ *           status: "Active"
+ *           createdAt: "2023-01-01T00:00:00.000Z"
+ *           updatedAt: "2023-01-10T00:00:00.000Z"
+ *
  *   securitySchemes:
  *     BearerAuth:
  *       type: http
  *       scheme: bearer
  *       bearerFormat: JWT
+ *       description: 🔑 JWT Authorization token
  */
 
 module.exports = UsersRouter;

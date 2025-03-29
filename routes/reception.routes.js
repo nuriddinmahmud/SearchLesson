@@ -1,45 +1,55 @@
 const { Router } = require("express");
 const ReceptionRouter = Router();
 const {
-  post,
-  remove,
   myCourses,
+  registerToBranch,
+  cancelRegistration,
 } = require("../controllers/reception.controller");
 const verifyToken = require("../middlewares/verifyToken");
-const checkRole = require("../middlewares/rolePolice");
 const selfPolice = require("../middlewares/selfPolice");
 
 /**
  * @swagger
  * tags:
- *   name: Receptions
- *   description: Reception management
+ *   name: 🎓 Reception
+ *   description: 📝 Course registration management system
  */
 /**
  * @swagger
  * /api/reception/my-courses:
  *   get:
- *     summary: Get my courses
- *     tags: [Receptions]
+ *     summary: 📚 Get my registered courses
+ *     tags: [🎓 Reception]
  *     security:
  *       - BearerAuth: []
  *     responses:
  *       200:
- *         description: List of user courses
+ *         description: ✅ Successfully retrieved user's courses
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Reception'
  *       404:
- *         description: No courses found
+ *         description: ❌ No courses found for this user
  *       401:
- *         description: Unauthorized
+ *         description: 🔒 Unauthorized access
+ *       500:
+ *         description: 🚨 Internal server error
  */
-ReceptionRouter.get("/my-courses", verifyToken, myCourses);
-
 /**
  * @swagger
  * /api/reception:
  *   post:
- *     summary: Register for a course
- *     tags:
- *       - Receptions
+ *     summary: ✏️ Register for a course
+ *     tags: [🎓 Reception]
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -47,61 +57,38 @@ ReceptionRouter.get("/my-courses", verifyToken, myCourses);
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               fieldID:
- *                 type: integer
- *                 description: ID of the field
- *                 example: 1
- *               branchID:
- *                 type: integer
- *                 description: ID of the branch
- *                 example: 2
- *               educationCenterID:
- *                 type: integer
- *                 description: ID of the education center
- *                 example: 10
+ *             $ref: '#/components/schemas/ReceptionInput'
  *     responses:
  *       201:
- *         description: Successfully registered
+ *         description: 🎉 Successfully registered to branch
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
  *                 message:
  *                   type: string
- *                   example: "You registered successfully ✅"
- *                 newData:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: integer
- *                       example: 1
- *                     fieldID:
- *                       type: integer
- *                       example: 1
- *                     branchID:
- *                       type: integer
- *                       example: 2
- *                     educationCenterID:
- *                       type: integer
- *                       example: 10
+ *                   example: "Successfully registered to branch"
+ *                 data:
+ *                   $ref: '#/components/schemas/Reception'
  *       400:
- *         description: Validation error
+ *         description: ❌ Bad request (missing or invalid parameters)
+ *       404:
+ *         description: 🔍 Branch not found in specified educational center
  *       409:
- *         description: User is already registered for this course
- *       401:
- *         description: Unauthorized
+ *         description: ⚠️ Already registered to this branch
+ *       500:
+ *         description: 🚨 Internal server error
  */
-ReceptionRouter.post("/", verifyToken, post);
-
 /**
  * @swagger
  * /api/reception/{id}:
  *   delete:
- *     summary: Delete a reception
- *     tags: [Receptions]
+ *     summary: 🗑️ Cancel a registration
+ *     tags: [🎓 Reception]
  *     security:
  *       - BearerAuth: []
  *     parameters:
@@ -110,19 +97,124 @@ ReceptionRouter.post("/", verifyToken, post);
  *         required: true
  *         schema:
  *           type: integer
+ *         description: 🆔 Reception record ID
  *     responses:
  *       200:
- *         description: Reception deleted
- *       404:
- *         description: Reception not found
+ *         description: ✅ Successfully canceled registration
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Registration canceled successfully"
  *       401:
- *         description: Unauthorized
+ *         description: 🔒 Unauthorized access
+ *       404:
+ *         description: 🔍 Registration not found or no permission
+ *       500:
+ *         description: 🚨 Internal server error
  */
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Reception:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           example: 1
+ *           description: 🆔 Unique identifier
+ *         userID:
+ *           type: integer
+ *           example: 5
+ *           description: 👤 User ID
+ *         educationCenterID:
+ *           type: integer
+ *           example: 10
+ *           description: 🏫 Educational Center ID
+ *         branchID:
+ *           type: integer
+ *           example: 2
+ *           description: 🏢 Branch ID
+ *         status:
+ *           type: string
+ *           example: "Pending"
+ *           description: 📊 Registration status
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           description: 📅 Creation date
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           description: 🔄 Last update date
+ *         EducationalCenter:
+ *           $ref: '#/components/schemas/EducationalCenter'
+ *         Branch:
+ *           $ref: '#/components/schemas/Branch'
+ *
+ *     ReceptionInput:
+ *       type: object
+ *       required:
+ *         - educationCenterID
+ *         - branchID
+ *       properties:
+ *         educationCenterID:
+ *           type: integer
+ *           description: 🏫 ID of the educational center
+ *           example: 10
+ *         branchID:
+ *           type: integer
+ *           description: 🏢 ID of the branch
+ *           example: 2
+ *
+ *     EducationalCenter:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: 🆔 Unique ID
+ *         name:
+ *           type: string
+ *           description: 🏛️ Center name
+ *         image:
+ *           type: string
+ *           description: 🖼️ Center image URL
+ *
+ *     Branch:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: 🆔 Unique ID
+ *         name:
+ *           type: string
+ *           description: 🏢 Branch name
+ *         address:
+ *           type: string
+ *           description: 📍 Physical address
+ *
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ *       description: 🔑 JWT Authorization token
+ */
+
+ReceptionRouter.get("/my-courses", verifyToken, myCourses);
+ReceptionRouter.post("/", verifyToken, registerToBranch);
 ReceptionRouter.delete(
   "/:id",
   verifyToken,
   selfPolice(["Admin", "Ceo"]),
-  remove
+  cancelRegistration
 );
 
 module.exports = ReceptionRouter;

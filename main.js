@@ -71,12 +71,12 @@ app.use("/api", mainRouter);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 /**
- *
  * @swagger
  * /upload:
  *   post:
- *     summary: Upload an image
- *     description: Uploads an image file and returns its URL.
+ *     summary: 📤 Upload an image
+ *     description: "🖼️ Uploads an image file and returns its URL"
+ *     tags: [🖼️ Images]
  *     requestBody:
  *       content:
  *         multipart/form-data:
@@ -86,10 +86,10 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
  *               image:
  *                 type: string
  *                 format: binary
- *                 description: The image file to upload.
+ *                 description: "📁 The image file to upload"
  *     responses:
  *       200:
- *         description: Image uploaded successfully.
+ *         description: "✅ Image uploaded successfully"
  *         content:
  *           application/json:
  *             schema:
@@ -97,19 +97,18 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
  *               properties:
  *                 url:
  *                   type: string
- *                   description: The URL of the uploaded image.
+ *                   description: "🔗 The URL of the uploaded image"
  *                   example: "http://localhost:2000/image/filename.jpg"
  *       400:
- *         description: Bad request. No file uploaded or invalid file type.
+ *         description: "❌ Bad request - No file uploaded or invalid file type"
  *       500:
- *         description: Internal server error.
+ *         description: "🚨 Internal server error"
  */
-
 app.post("/upload", upload.single("image"), (req, res) => {
   if (!req.file) {
     return res
       .status(400)
-      .send({ message: "No file uploaded or invalid file type!" });
+      .send({ message: "❌ No file uploaded or invalid file type!" });
   }
   res
     .status(200)

@@ -72,7 +72,7 @@ educationalCenter.hasMany(Branch, {
 });
 Branch.belongsTo(educationalCenter, {
   foreignKey: "educationalCenterID",
-  as: "center",
+  as: "EducationalCenter",
 });
 
 Branch.belongsToMany(Subject, {

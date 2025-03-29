@@ -14,36 +14,36 @@ const selfPolice = require("../middlewares/selfPolice");
 /**
  * @swagger
  * tags:
- *   name: Resource Categories
- *   description: Resource category management API
+ *   name: 📁 Resource Categories
+ *   description: 🗂️ Resource category management API
  */
 /**
  * @swagger
  * /api/resourceCategory:
  *   get:
- *     summary: Get all resource categories
- *     tags: [Resource Categories]
+ *     summary: 📋 Get all resource categories
+ *     tags: [📁 Resource Categories]
  *     parameters:
  *       - in: query
  *         name: search
  *         schema:
  *           type: string
- *         description: Search query for categories
+ *         description: 🔍 Search query for categories
  *       - in: query
  *         name: page
  *         schema:
  *           type: integer
- *         description: Page number
+ *         description: 📄 Page number
  *       - in: query
  *         name: limit
  *         schema:
  *           type: integer
- *         description: Number of items per page
+ *         description: 📊 Number of items per page
  *     responses:
  *       200:
- *         description: List of resource categories
+ *         description: ✅ List of resource categories
  *       400:
- *         description: Bad request
+ *         description: ❌ Bad request
  */
 ResourceCategoryRouter.get("/", getAll);
 
@@ -51,22 +51,22 @@ ResourceCategoryRouter.get("/", getAll);
  * @swagger
  * /api/resourceCategory/{id}:
  *   get:
- *     summary: Get a single resource category by ID
- *     tags: [Resource Categories]
+ *     summary: 🔍 Get a single resource category by ID
+ *     tags: [📁 Resource Categories]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: integer
- *         description: Resource category ID
+ *         description: 🆔 Resource category ID
  *     responses:
  *       200:
- *         description: Resource category data
+ *         description: ✅ Resource category data
  *       404:
- *         description: Resource category not found
+ *         description: ❌ Resource category not found
  *       400:
- *         description: Invalid ID
+ *         description: ❌ Invalid ID
  */
 ResourceCategoryRouter.get("/:id", getOne);
 
@@ -74,8 +74,8 @@ ResourceCategoryRouter.get("/:id", getOne);
  * @swagger
  * /api/resourceCategory:
  *   post:
- *     summary: Create a new resource category
- *     tags: [Resource Categories]
+ *     summary: ✨ Create a new resource category
+ *     tags: [📁 Resource Categories]
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -88,16 +88,18 @@ ResourceCategoryRouter.get("/:id", getOne);
  *               name:
  *                 type: string
  *                 example: "Education"
+ *                 description: 🏷️ Category name
  *               image:
  *                 type: string
  *                 example: "image_url"
+ *                 description: 🖼️ Category image URL
  *     responses:
  *       201:
- *         description: Resource category created successfully
+ *         description: ✅ Resource category created successfully
  *       400:
- *         description: Invalid input
+ *         description: ❌ Invalid input
  *       401:
- *         description: Unauthorized
+ *         description: 🔒 Unauthorized
  */
 ResourceCategoryRouter.post("/", verifyToken, checkRole(["Admin"]), post);
 
@@ -105,8 +107,8 @@ ResourceCategoryRouter.post("/", verifyToken, checkRole(["Admin"]), post);
  * @swagger
  * /api/resourceCategory/{id}:
  *   patch:
- *     summary: Update a resource category
- *     tags: [Resource Categories]
+ *     summary: ✏️ Update a resource category
+ *     tags: [📁 Resource Categories]
  *     security:
  *       - BearerAuth: []
  *     parameters:
@@ -115,7 +117,7 @@ ResourceCategoryRouter.post("/", verifyToken, checkRole(["Admin"]), post);
  *         required: true
  *         schema:
  *           type: integer
- *         description: Resource category ID
+ *         description: 🆔 Resource category ID
  *     requestBody:
  *       required: true
  *       content:
@@ -126,18 +128,20 @@ ResourceCategoryRouter.post("/", verifyToken, checkRole(["Admin"]), post);
  *               name:
  *                 type: string
  *                 example: "Updated Category Name"
+ *                 description: 🏷️ New category name
  *               image:
  *                 type: string
  *                 example: "updated_image_url"
+ *                 description: 🖼️ New category image URL
  *     responses:
  *       200:
- *         description: Resource category updated successfully
+ *         description: ✅ Resource category updated successfully
  *       400:
- *         description: Invalid input
+ *         description: ❌ Invalid input
  *       404:
- *         description: Resource category not found
+ *         description: ❌ Resource category not found
  *       401:
- *         description: Unauthorized
+ *         description: 🔒 Unauthorized
  */
 ResourceCategoryRouter.patch(
   "/:id",
@@ -150,8 +154,8 @@ ResourceCategoryRouter.patch(
  * @swagger
  * /api/resourceCategory/{id}:
  *   delete:
- *     summary: Delete a resource category
- *     tags: [Resource Categories]
+ *     summary: 🗑️ Delete a resource category
+ *     tags: [📁 Resource Categories]
  *     security:
  *       - BearerAuth: []
  *     parameters:
@@ -160,14 +164,14 @@ ResourceCategoryRouter.patch(
  *         required: true
  *         schema:
  *           type: integer
- *         description: Resource category ID
+ *         description: 🆔 Resource category ID
  *     responses:
  *       200:
- *         description: Resource category deleted successfully
+ *         description: ✅ Resource category deleted successfully
  *       404:
- *         description: Resource category not found
+ *         description: ❌ Resource category not found
  *       401:
- *         description: Unauthorized
+ *         description: 🔒 Unauthorized
  */
 ResourceCategoryRouter.delete(
   "/:id",

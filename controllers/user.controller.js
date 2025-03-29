@@ -315,7 +315,7 @@ async function verifyOtpPhone(req, res) {
 async function findAll(req, res) {
   try {
     console.log();
-    
+
     if (req.user.role !== "Admin") {
       res.status(403).send({ message: "You are not allowed ❗" });
       authLogger.log("error", "You are not allowed ❗");
@@ -459,6 +459,49 @@ async function remove(req, res) {
   }
 }
 
+async function myInfo(req, res) {
+  try {
+    const { id } = req.user;
+
+    const user = await User.findByPk(id, {
+      attributes: [
+        "id",
+        "firstName",
+        "lastName",
+        "email",
+        "phone",
+        "yearOfBirth",
+        "avatar",
+        "role",
+        "status",
+        "createdAt",
+        "updatedAt",
+      ],
+    });
+
+    if (!user) {
+      authLogger.error(`Foydalanuvchi topilmadi ID: ${id}`);
+      return res.status(404).json({
+        success: false,
+        message: "Foydalanuvchi topilmadi",
+      });
+    }
+
+    authLogger.info(`Foydalanuvchi ma'lumotlari olindi ID: ${id}`);
+    res.status(200).json({
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    authLogger.error(`Xato: ${error.message}`);
+    res.status(500).json({
+      success: false,
+      message: "Ma'lumotlarni olishda xato",
+      error: error.message,
+    });
+  }
+}
+
 module.exports = {
   register,
   verifyOtp,
@@ -473,4 +516,5 @@ module.exports = {
   verifyOtpPhone,
   refreshTokenGenereate,
   myEducationalCenters,
+  myInfo,
 };

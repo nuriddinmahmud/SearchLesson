@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const router = Router();
+const BranchRouter = Router();
 const {
   getAll,
   getOne,
@@ -14,102 +14,103 @@ const selfPolice = require("../middlewares/selfPolice");
 /**
  * @swagger
  * tags:
- *   name: Branches
- *   description: Branch management
+ *   name: 🏢 Branches
+ *   description: 🌿 Branch management endpoints
  */
-
 /**
  * @swagger
- * /api/branches:
+ * /api/branch:
  *   get:
- *     summary: Get all branches
- *     tags: [Branches]
+ *     summary: 📋 Get all branches
+ *     tags: [🏢 Branches]
  *     parameters:
  *       - in: query
- *         name: educationalCenterId
- *         schema:
- *           type: integer
- *         description: Filter by educational center ID
+ *         name: name
+ *         schema: { type: string }
+ *         description: 🔍 Filter by branch name
+ *       - in: query
+ *         name: regionId
+ *         schema: { type: integer }
+ *         description: 🌍 Filter by region ID
+ *       - in: query
+ *         name: centerId
+ *         schema: { type: integer }
+ *         description: 🏛️ Filter by educational center ID
  *       - in: query
  *         name: page
- *         schema:
- *           type: integer
- *           default: 1
- *         description: Page number
+ *         schema: { type: integer, default: 1 }
+ *         description: 📄 Page number
  *       - in: query
  *         name: limit
- *         schema:
- *           type: integer
- *           default: 10
- *         description: Items per page
+ *         schema: { type: integer, default: 10 }
+ *         description: 📊 Items per page
+ *       - in: query
+ *         name: sortBy
+ *         schema: { type: string, default: "createdAt" }
+ *         description: 🔼 Sort field
+ *       - in: query
+ *         name: order
+ *         schema: { type: string, default: "DESC", enum: [ASC, DESC] }
+ *         description: ⬆️ Sort order
  *     responses:
  *       200:
- *         description: List of branches
+ *         description: ✅ Success
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 success:
- *                   type: boolean
+ *                 success: { type: boolean }
  *                 data:
  *                   type: array
- *                   items:
- *                     $ref: '#/components/schemas/Branch'
+ *                   items: { $ref: '#/components/schemas/BranchWithDetails' }
  *                 meta:
  *                   type: object
  *                   properties:
- *                     total:
- *                       type: integer
- *                     page:
- *                       type: integer
- *                     limit:
- *                       type: integer
- *                     totalPages:
- *                       type: integer
+ *                     total: { type: integer }
+ *                     page: { type: integer }
+ *                     limit: { type: integer }
+ *                     totalPages: { type: integer }
  *       500:
- *         description: Internal server error
+ *         description: 🚨 Server error
  */
-router.get("/", getAll);
+BranchRouter.get("/", getAll);
 
 /**
  * @swagger
  * /api/branch/{id}:
  *   get:
- *     summary: Get a branch by ID
- *     tags: [Branches]
+ *     summary: 🔍 Get branch details
+ *     tags: [🏢 Branches]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         schema:
- *           type: integer
- *         description: Branch ID
+ *         schema: { type: integer }
+ *         description: 🆔 Branch ID
  *     responses:
  *       200:
- *         description: Branch details
+ *         description: ✅ Branch details
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 success:
- *                   type: boolean
- *                 data:
- *                   $ref: '#/components/schemas/BranchWithDetails'
+ *                 success: { type: boolean }
+ *                 data: { $ref: '#/components/schemas/BranchWithDetails' }
  *       404:
- *         description: Branch not found
+ *         description: ❌ Branch not found
  *       500:
- *         description: Internal server error
+ *         description: 🚨 Server error
  */
-router.get("/:id", getOne);
+BranchRouter.get("/:id", getOne);
 
 /**
  * @swagger
  * /api/branch:
  *   post:
- *     summary: Create a new branch
- *     tags: [Branches]
+ *     summary: ✨ Create new branch
+ *     tags: [🏢 Branches]
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -120,44 +121,42 @@ router.get("/:id", getOne);
  *             $ref: '#/components/schemas/CreateBranchInput'
  *     responses:
  *       201:
- *         description: Branch created successfully
+ *         description: ✅ Branch created successfully
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 success:
- *                   type: boolean
- *                 message:
- *                   type: string
- *                 data:
- *                   $ref: '#/components/schemas/Branch'
+ *                 success: { type: boolean }
+ *                 message: { type: string }
+ *                 data: { $ref: '#/components/schemas/BranchWithDetails' }
  *       400:
- *         description: Validation error
+ *         description: ❌ Validation error
  *       403:
- *         description: Forbidden
+ *         description: ⛔ Forbidden
  *       404:
- *         description: Educational center not found
+ *         description: ❌ Resource not found
+ *       422:
+ *         description: ❌ Validation error
  *       500:
- *         description: Internal server error
+ *         description: 🚨 Server error
  */
-router.post("/", verifyToken, checkRole(["Admin", "Ceo"]), create);
+BranchRouter.post("/", verifyToken, checkRole(["Ceo"]), create);
 
 /**
  * @swagger
  * /api/branch/{id}:
  *   patch:
- *     summary: Update a branch
- *     tags: [Branches]
+ *     summary: ✏️ Update branch
+ *     tags: [🏢 Branches]
  *     security:
  *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         schema:
- *           type: integer
- *         description: Branch ID
+ *         schema: { type: integer }
+ *         description: 🆔 Branch ID
  *     requestBody:
  *       required: true
  *       content:
@@ -166,161 +165,123 @@ router.post("/", verifyToken, checkRole(["Admin", "Ceo"]), create);
  *             $ref: '#/components/schemas/UpdateBranchInput'
  *     responses:
  *       200:
- *         description: Branch updated successfully
+ *         description: ✅ Branch updated
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 success:
- *                   type: boolean
- *                 message:
- *                   type: string
- *                 data:
- *                   $ref: '#/components/schemas/Branch'
+ *                 success: { type: boolean }
+ *                 message: { type: string }
+ *                 data: { $ref: '#/components/schemas/Branch' }
  *       400:
- *         description: Validation error
+ *         description: ❌ Validation error
  *       403:
- *         description: Forbidden
+ *         description: ⛔ Forbidden
  *       404:
- *         description: Branch not found
+ *         description: ❌ Branch not found
  *       500:
- *         description: Internal server error
+ *         description: 🚨 Server error
  */
-router.patch("/:id", verifyToken, selfPolice(["Admin", "Ceo"]), update);
+BranchRouter.patch("/:id", verifyToken, selfPolice(["Admin", "Ceo"]), update);
 
 /**
  * @swagger
  * /api/branch/{id}:
  *   delete:
- *     summary: Delete a branch
- *     tags: [Branches]
+ *     summary: 🗑️ Delete branch
+ *     tags: [🏢 Branches]
  *     security:
  *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         schema:
- *           type: integer
- *         description: Branch ID
+ *         schema: { type: integer }
+ *         description: 🆔 Branch ID
  *     responses:
  *       200:
- *         description: Branch deleted successfully
+ *         description: ✅ Branch deleted
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 success:
- *                   type: boolean
- *                 message:
- *                   type: string
+ *                 success: { type: boolean }
+ *                 message: { type: string }
  *       403:
- *         description: Forbidden
+ *         description: ⛔ Forbidden
  *       404:
- *         description: Branch not found
+ *         description: ❌ Branch not found
  *       500:
- *         description: Internal server error
+ *         description: 🚨 Server error
  */
-router.delete("/:id", verifyToken, selfPolice(["Admin", "Ceo"]), remove);
+BranchRouter.delete("/:id", verifyToken, selfPolice(["Admin", "Ceo"]), remove);
 
 /**
  * @swagger
  * components:
+ *   securitySchemes:
+ *     BearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
  *   schemas:
  *     Branch:
  *       type: object
  *       properties:
- *         id:
- *           type: integer
- *         name:
- *           type: string
- *         phone:
- *           type: string
- *         address:
- *           type: string
- *         image:
- *           type: string
- *         educationalCenterId:
- *           type: integer
- *         centerID:
- *           type: integer
- *           description: Alias for educationalCenterId
- *         regionId:
- *           type: integer
- *         createdAt:
- *           type: string
- *           format: date-time
- *         updatedAt:
- *           type: string
- *           format: date-time
- *         fields:
- *           type: array
- *           items:
- *             type: integer
- *           example: [1, 2, 3]
- *         subjects:
- *           type: array
- *           items:
- *             type: integer
- *           example: [4, 5, 6]
+ *         id: { type: integer, description: 🆔 ID }
+ *         name: { type: string, description: 🏷️ Name }
+ *         phone: { type: string, description: 📞 Phone }
+ *         address: { type: string, description: 🏠 Address }
+ *         image: { type: string, description: 🖼️ Image URL }
+ *         regionID: { type: integer, description: 🌍 Region ID }
+ *         educationalCenterID: { type: integer, description: 🏛️ Center ID }
+ *         createdAt: { type: string, format: date-time, description: ⏰ Created at }
+ *         updatedAt: { type: string, format: date-time, description: ⏳ Updated at }
  *
  *     BranchWithDetails:
  *       allOf:
  *         - $ref: '#/components/schemas/Branch'
  *         - type: object
  *           properties:
- *             center:
- *               $ref: '#/components/schemas/EducationalCenter'
- *             Region:
- *               $ref: '#/components/schemas/Region'
- *             Fields:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Field'
+ *             EducationalCenter: { $ref: '#/components/schemas/EducationalCenter' }
+ *             Region: { $ref: '#/components/schemas/Region' }
  *             Subjects:
  *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Subject'
+ *               items: { $ref: '#/components/schemas/Subject' }
+ *               description: 📚 Subjects
+ *             Fields:
+ *               type: array
+ *               items: { $ref: '#/components/schemas/Field' }
+ *               description: 🔬 Fields
  *
  *     EducationalCenter:
  *       type: object
  *       properties:
- *         id:
- *           type: integer
- *         name:
- *           type: string
- *         image:
- *           type: string
+ *         id: { type: integer }
+ *         name: { type: string }
+ *         phone: { type: string }
  *
  *     Region:
  *       type: object
  *       properties:
- *         id:
- *           type: integer
- *         name:
- *           type: string
- *
- *     Field:
- *       type: object
- *       properties:
- *         id:
- *           type: integer
- *         name:
- *           type: string
- *         image:
- *           type: string
+ *         id: { type: integer }
+ *         name: { type: string }
  *
  *     Subject:
  *       type: object
  *       properties:
- *         id:
- *           type: integer
- *         name:
- *           type: string
- *         image:
- *           type: string
+ *         id: { type: integer }
+ *         name: { type: string }
+ *         image: { type: string }
+ *
+ *     Field:
+ *       type: object
+ *       properties:
+ *         id: { type: integer }
+ *         name: { type: string }
+ *         image: { type: string }
  *
  *     CreateBranchInput:
  *       type: object
@@ -328,73 +289,35 @@ router.delete("/:id", verifyToken, selfPolice(["Admin", "Ceo"]), remove);
  *         - name
  *         - phone
  *         - address
- *         - educationalCenterId
+ *         - image
+ *         - regionID
+ *         - educationalCenterID
  *       properties:
- *         name:
- *           type: string
- *           example: "Main Branch"
- *         phone:
- *           type: string
- *           example: "+998901234567"
- *         address:
- *           type: string
- *           example: "123 Education Street"
- *         image:
- *           type: string
- *           example: "https://example.com/branch.jpg"
- *         educationalCenterId:
- *           type: integer
- *           example: 1
- *         centerID:
- *           type: integer
- *           description: Alias for educationalCenterId
- *           example: 1
- *         regionId:
- *           type: integer
- *           example: 1
- *         fields:
- *           type: array
- *           items:
- *             type: integer
- *           example: [1, 2]
+ *         name: { type: string }
+ *         phone: { type: string }
+ *         address: { type: string }
+ *         image: { type: string }
+ *         regionID: { type: integer }
+ *         educationalCenterID: { type: integer }
  *         subjects:
  *           type: array
- *           items:
- *             type: integer
- *           example: [3, 4]
+ *           items: { type: integer }
+ *           description: 📚 Subject IDs
+ *         fields:
+ *           type: array
+ *           items: { type: integer }
+ *           description: 🔬 Field IDs
  *
  *     UpdateBranchInput:
  *       type: object
  *       properties:
- *         name:
- *           type: string
- *           example: "Updated Branch Name"
- *         phone:
- *           type: string
- *           example: "+998907654321"
- *         address:
- *           type: string
- *           example: "456 Knowledge Avenue"
- *         image:
- *           type: string
- *           example: "https://example.com/new-branch.jpg"
- *         centerID:
- *           type: integer
- *           description: Alias for educationalCenterId
- *           example: 1
- *         regionId:
- *           type: integer
- *           example: 2
- *         fields:
- *           type: array
- *           items:
- *             type: integer
- *           example: [1, 3]
- *         subjects:
- *           type: array
- *           items:
- *             type: integer
- *           example: [2, 4]
+ *         name: { type: string }
+ *         phone: { type: string }
+ *         address: { type: string }
+ *         image: { type: string }
+ *         regionID: { type: integer }
+ *         educationalCenterID: { type: integer }
+ *         subjects: { type: array, items: { type: integer } }
+ *         fields: { type: array, items: { type: integer } }
  */
-
-module.exports = router;
+module.exports = BranchRouter;

@@ -14,59 +14,59 @@ const verifyToken = require("../middlewares/verifyToken");
  * @swagger
  * /api/comment:
  *   get:
- *     summary: Get all comments
- *     description: "Retrieve all comments with filtering and sorting options."
- *     tags: [Comments]
+ *     summary: 📋 Get all comments
+ *     description: "🔍 Retrieve all comments with filtering and sorting options."
+ *     tags: [💬 Comments]
  *     parameters:
  *       - name: take
  *         in: query
- *         description: Number of comments to retrieve
+ *         description: 🔢 Number of comments to retrieve
  *         required: false
  *         schema:
  *           type: integer
  *       - name: from
  *         in: query
- *         description: Starting point for retrieval
+ *         description: 🏁 Starting point for retrieval
  *         required: false
  *         schema:
  *           type: integer
  *       - name: star
  *         in: query
- *         description: Filter comments by rating (stars)
+ *         description: ⭐ Filter comments by rating (stars)
  *         required: false
  *         schema:
  *           type: integer
  *       - name: educationalCenterID
  *         in: query
- *         description: Filter comments by education center ID
+ *         description: 🏫 Filter comments by education center ID
  *         required: false
  *         schema:
  *           type: integer
  *       - name: userId
  *         in: query
- *         description: Filter comments by user ID
+ *         description: 👤 Filter comments by user ID
  *         required: false
  *         schema:
  *           type: integer
  *       - name: sortBy
  *         in: query
- *         description: Field to sort by
+ *         description: 🔼 Field to sort by
  *         required: false
  *         schema:
  *           type: string
  *       - name: sortOrder
  *         in: query
- *         description: Sorting order ("asc" or "desc")
+ *         description: ⬆️ Sorting order ("asc" or "desc")
  *         required: false
  *         schema:
  *           type: string
  *     responses:
  *       200:
- *         description: Successful response
+ *         description: ✅ Successful response
  *       401:
- *         description: Unauthorized (invalid or missing token)
+ *         description: 🔒 Unauthorized (invalid or missing token)
  *       500:
- *         description: Server error
+ *         description: 🚨 Server error
  */
 CommentRouter.get("/", getAll);
 
@@ -74,19 +74,20 @@ CommentRouter.get("/", getAll);
  * @swagger
  * /api/comment/{id}:
  *   get:
- *     summary: Berilgan `id` ga ega izohni olish
- *     tags: [Comments]
+ *     summary: 🔍 Get comment by ID
+ *     tags: [💬 Comments]
  *     parameters:
  *       - name: id
  *         in: path
  *         required: true
  *         schema:
  *           type: integer
+ *         description: 🆔 Comment ID
  *     responses:
  *       200:
- *         description: Izoh topildi
+ *         description: ✅ Comment found
  *       404:
- *         description: Izoh topilmadi
+ *         description: ❌ Comment not found
  */
 CommentRouter.get("/:id", getOne);
 
@@ -94,19 +95,19 @@ CommentRouter.get("/:id", getOne);
  * @swagger
  * /api/comment/my-comments:
  *   get:
- *     summary: Foydalanuvchining shaxsiy izohlarini olish
+ *     summary: 📝 Get user's personal comments
  *     security:
  *       - BearerAuth: []
- *     tags: [Comments]
+ *     tags: [💬 Comments]
  *     responses:
  *       200:
- *         description: Foydalanuvchiga tegishli kommentlar
+ *         description: ✅ User's comments retrieved
  *       404:
- *         description: Foydalanuvchining kommentlari topilmadi
+ *         description: ❌ User comments not found
  *       401:
- *         description: Ruxsat yo‘q (Token noto‘g‘ri yoki yo‘q)
+ *         description: 🔒 Unauthorized (Invalid or missing token)
  *       500:
- *         description: Server xatosi
+ *         description: 🚨 Server error
  */
 CommentRouter.get("/my-comments", verifyToken, myComments);
 
@@ -114,11 +115,11 @@ CommentRouter.get("/my-comments", verifyToken, myComments);
  * @swagger
  * /api/comment:
  *   post:
- *     summary: Yangi izoh qo‘shish
- *     description: "Foydalanuvchi tomonidan yangi izoh qo‘shish"
+ *     summary: ✍️ Add new comment
+ *     description: "💬 Add new comment by user"
  *     security:
  *       - BearerAuth: []
- *     tags: [Comments]
+ *     tags: [💬 Comments]
  *     requestBody:
  *       required: true
  *       content:
@@ -128,22 +129,25 @@ CommentRouter.get("/my-comments", verifyToken, myComments);
  *             properties:
  *               description:
  *                 type: string
+ *                 description: 📝 Comment text
  *                 example: "Bu joy juda zo‘r!"
  *               star:
  *                 type: integer
+ *                 description: ⭐ Rating (1-5 stars)
  *                 example: 5
  *               educationalCenterID:
  *                 type: integer
+ *                 description: 🏫 Education center ID
  *                 example: 2
  *     responses:
  *       201:
- *         description: Izoh muvaffaqiyatli yaratildi
+ *         description: ✅ Comment created successfully
  *       400:
- *         description: Xato ma’lumotlar
+ *         description: ❌ Invalid data
  *       401:
- *         description: Ruxsat yo‘q
+ *         description: 🔒 Unauthorized
  *       500:
- *         description: Server xatosi
+ *         description: 🚨 Server error
  */
 CommentRouter.post("/", verifyToken, post);
 
@@ -151,16 +155,17 @@ CommentRouter.post("/", verifyToken, post);
  * @swagger
  * /api/comment/{id}:
  *   patch:
- *     summary: Izohni yangilash
+ *     summary: ✏️ Update comment
  *     security:
  *       - BearerAuth: []
- *     tags: [Comments]
+ *     tags: [💬 Comments]
  *     parameters:
  *       - name: id
  *         in: path
  *         required: true
  *         schema:
  *           type: integer
+ *         description: 🆔 Comment ID
  *     requestBody:
  *       required: true
  *       content:
@@ -170,19 +175,21 @@ CommentRouter.post("/", verifyToken, post);
  *             properties:
  *               description:
  *                 type: string
+ *                 description: 📝 Updated comment text
  *               star:
  *                 type: integer
+ *                 description: ⭐ Updated rating
  *     responses:
  *       200:
- *         description: Izoh muvaffaqiyatli yangilandi
+ *         description: ✅ Comment updated successfully
  *       400:
- *         description: Xato ma’lumotlar
+ *         description: ❌ Invalid data
  *       401:
- *         description: Ruxsat yo‘q
+ *         description: 🔒 Unauthorized
  *       404:
- *         description: Izoh topilmadi
+ *         description: ❌ Comment not found
  *       500:
- *         description: Server xatosi
+ *         description: 🚨 Server error
  */
 CommentRouter.patch("/:id", verifyToken, update);
 
@@ -190,25 +197,26 @@ CommentRouter.patch("/:id", verifyToken, update);
  * @swagger
  * /api/comment/{id}:
  *   delete:
- *     summary: Izohni o‘chirish
+ *     summary: 🗑️ Delete comment
  *     security:
  *       - BearerAuth: []
- *     tags: [Comments]
+ *     tags: [💬 Comments]
  *     parameters:
  *       - name: id
  *         in: path
  *         required: true
  *         schema:
  *           type: integer
+ *         description: 🆔 Comment ID
  *     responses:
  *       200:
- *         description: Izoh muvaffaqiyatli o‘chirildi
+ *         description: ✅ Comment deleted successfully
  *       401:
- *         description: Ruxsat yo‘q
+ *         description: 🔒 Unauthorized
  *       404:
- *         description: Izoh topilmadi
+ *         description: ❌ Comment not found
  *       500:
- *         description: Server xatosi
+ *         description: 🚨 Server error
  */
 CommentRouter.delete("/:id", verifyToken, remove);
 

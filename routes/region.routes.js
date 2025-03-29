@@ -15,40 +15,40 @@ const selfPolice = require("../middlewares/selfPolice");
  * @swagger
  * /api/region:
  *   get:
- *     summary: Get all regions
- *     tags: [Regions]
+ *     summary: 🌍 Get all regions
+ *     tags: [📍 Regions]
  *     parameters:
  *       - in: query
  *         name: search
  *         schema:
  *           type: string
- *         description: Search by region name
+ *         description: 🔍 Search by region name
  *       - in: query
  *         name: page
  *         schema:
  *           type: integer
- *         description: Page number for pagination
+ *         description: 📄 Page number for pagination
  *       - in: query
  *         name: limit
  *         schema:
  *           type: integer
- *         description: Number of results per page
+ *         description: 📊 Number of results per page
  *       - in: query
  *         name: sortBy
  *         schema:
  *           type: string
- *         description: Field to sort by
+ *         description: 🔼 Field to sort by
  *       - in: query
  *         name: sortOrder
  *         schema:
  *           type: string
  *           enum: [asc, desc]
- *         description: Sort order (asc or desc)
+ *         description: ⬆️⬇️ Sort order (asc or desc)
  *     responses:
  *       200:
- *         description: List of regions
+ *         description: ✅ List of regions
  *       400:
- *         description: Bad request
+ *         description: ❌ Bad request
  */
 RegionRouter.get("/", getAll);
 
@@ -56,20 +56,20 @@ RegionRouter.get("/", getAll);
  * @swagger
  * /api/region/{id}:
  *   get:
- *     summary: Get a single region by ID
- *     tags: [Regions]
+ *     summary: 🔍 Get a single region by ID
+ *     tags: [📍 Regions]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: integer
- *         description: Region ID
+ *         description: 🆔 Region ID
  *     responses:
  *       200:
- *         description: Region data
+ *         description: ✅ Region data
  *       404:
- *         description: Region not found
+ *         description: ❌ Region not found
  */
 RegionRouter.get("/:id", getOne);
 
@@ -77,8 +77,8 @@ RegionRouter.get("/:id", getOne);
  * @swagger
  * /api/region:
  *   post:
- *     summary: Create a new region
- *     tags: [Regions]
+ *     summary: ✨ Create a new region
+ *     tags: [📍 Regions]
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -91,12 +91,12 @@ RegionRouter.get("/:id", getOne);
  *             properties:
  *               name:
  *                 type: string
- *                 description: Region name
+ *                 description: 🏷️ Region name
  *     responses:
  *       201:
- *         description: Successfully created
+ *         description: ✅ Successfully created
  *       400:
- *         description: Validation error
+ *         description: ❌ Validation error
  */
 RegionRouter.post("/", verifyToken, checkRole(["Admin"]), post);
 
@@ -104,8 +104,8 @@ RegionRouter.post("/", verifyToken, checkRole(["Admin"]), post);
  * @swagger
  * /api/region/{id}:
  *   patch:
- *     summary: Update region details
- *     tags: [Regions]
+ *     summary: ✏️ Update region details
+ *     tags: [📍 Regions]
  *     security:
  *       - BearerAuth: []
  *     parameters:
@@ -114,7 +114,7 @@ RegionRouter.post("/", verifyToken, checkRole(["Admin"]), post);
  *         required: true
  *         schema:
  *           type: integer
- *         description: Region ID
+ *         description: 🆔 Region ID
  *     requestBody:
  *       required: true
  *       content:
@@ -124,14 +124,14 @@ RegionRouter.post("/", verifyToken, checkRole(["Admin"]), post);
  *             properties:
  *               name:
  *                 type: string
- *                 description: Region name
+ *                 description: 🏷️ Region name
  *     responses:
  *       200:
- *         description: Successfully updated
+ *         description: ✅ Successfully updated
  *       400:
- *         description: Validation error
+ *         description: ❌ Validation error
  *       404:
- *         description: Region not found
+ *         description: ❌ Region not found
  */
 RegionRouter.patch(
   "/:id",
@@ -144,8 +144,8 @@ RegionRouter.patch(
  * @swagger
  * /api/region/{id}:
  *   delete:
- *     summary: Delete a region
- *     tags: [Regions]
+ *     summary: 🗑️ Delete a region
+ *     tags: [📍 Regions]
  *     security:
  *       - BearerAuth: []
  *     parameters:
@@ -154,12 +154,12 @@ RegionRouter.patch(
  *         required: true
  *         schema:
  *           type: integer
- *         description: Region ID
+ *         description: 🆔 Region ID
  *     responses:
  *       200:
- *         description: Successfully deleted
+ *         description: ✅ Successfully deleted
  *       404:
- *         description: Region not found
+ *         description: ❌ Region not found
  */
 RegionRouter.delete("/:id", verifyToken, selfPolice(["Admin"]), remove);
 

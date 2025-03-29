@@ -10,8 +10,8 @@ const { Op } = require("sequelize");
 const subjectEdu = require("../models/subjectEdu.model");
 const fieldEdu = require("../models/fieldEdu.model");
 const {
-  educationCenterValidationUpdate,
   educationCenterValidation,
+  educationCenterValidationUpdate,
 } = require("../validations/educationalCenter.validation");
 const winston = require("winston");
 
@@ -23,6 +23,7 @@ const logger = winston.createLogger({
   ),
   transports: [new winston.transports.File({ filename: "loggers.log" })],
 });
+
 const educationalCenterLogger = logger.child({ module: "EducationalCenter" });
 
 async function getAll(req, res) {
@@ -34,8 +35,6 @@ async function getAll(req, res) {
       order = "ASC",
       sortBy = "id",
       regionId,
-      subjectId,
-      fieldId,
     } = req.query;
 
     const where = {};
@@ -83,7 +82,6 @@ async function getAll(req, res) {
 
     if (rows.length === 0) {
       return res.status(200).json({
-        success: true,
         data: [],
         meta: {
           total: 0,
@@ -95,7 +93,6 @@ async function getAll(req, res) {
     }
 
     res.status(200).json({
-      success: true,
       data: rows,
       meta: {
         total: count,
@@ -105,21 +102,10 @@ async function getAll(req, res) {
       },
     });
   } catch (error) {
-    console.error("Detailed Error:", {
-      message: error.message,
-      stack: error.stack,
-      name: error.name,
-      original: error.original,
-    });
-
+    educationalCenterLogger.error("error", `Get all error: ${error.message}`);
     res.status(500).json({
-      success: false,
       message: "Failed to fetch educational centers",
-      ...(process.env.NODE_ENV === "development" && {
-        error: error.message,
-        errorType: error.name,
-        stack: error.stack,
-      }),
+      error: error.message,
     });
   }
 }
@@ -129,8 +115,8 @@ async function getOne(req, res) {
     const center = await educationalCenter.findByPk(req.params.id, {
       attributes: ["id", "name", "image", "address", "phone"],
       include: [
-        { model: Subject, through: { attributes: [] } },
-        { model: Field, through: { attributes: [] } },
+        { model: Subject, as: "Subjects", through: { attributes: [] } },
+        { model: Field, as: "Fields", through: { attributes: [] } },
         { model: Region, attributes: ["name"] },
         { model: Comment, attributes: ["description", "star"] },
         { model: Branch, attributes: ["name", "phone"] },
@@ -185,8 +171,8 @@ async function create(req, res) {
       });
     }
 
-    const regionExists = await Region.findByPk(regionID);
-    if (!regionExists) {
+    const region = await Region.findByPk(regionID);
+    if (!region) {
       educationalCenterLogger.error(`Region not found: ${regionID}`);
       return res.status(404).json({
         success: false,
@@ -201,26 +187,24 @@ async function create(req, res) {
     });
 
     if (subjects.length > 0) {
-      const existingSubjects = await Subject.findAll({
+      const subject = await Subject.findAll({
         where: { id: subjects },
       });
 
-      if (existingSubjects.length !== subjects.length) {
+      if (subject.length !== subjects.length) {
         const missingSubjects = subjects.filter(
-          (id) => !existingSubjects.some((s) => s.id === id)
+          (id) => !subject.some((s) => s.id === id)
         );
         educationalCenterLogger.error(
           `Missing subjects: ${missingSubjects.join(", ")}`
         );
-        return res.status(404).json({
-          success: false,
-          message: "One or more subjects not found",
-          missingSubjects,
-        });
+        return res
+          .status(404)
+          .json({ message: "One or more subjects not found" });
       }
 
       await subjectEdu.bulkCreate(
-        existingSubjects.map((subject) => ({
+        subject.map((subject) => ({
           educationalCenterId: newEducationalCenter.id,
           subjectId: subject.id,
         }))

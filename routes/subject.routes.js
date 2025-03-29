@@ -10,60 +10,58 @@ const {
 const verifyToken = require("../middlewares/verifyToken");
 const checkRole = require("../middlewares/rolePolice");
 const selfPolice = require("../middlewares/selfPolice");
+
 /**
  * @swagger
  * tags:
- *   name: Subjects
- *   description: Subject management API
+ *   name: 📚 Subjects
+ *   description: 🎓 Subject management API
  */
-
 /**
  * @swagger
  * /api/subject:
  *   get:
- *     summary: Get all Subjects
- *     tags: [Subjects]
- *     security:
- *       - BearerAuth: []
+ *     summary: 📋 Get all Subjects
+ *     tags: [📚 Subjects]
  *     parameters:
  *       - in: query
  *         name: search
  *         schema:
  *           type: string
- *         description: Search by Subject name
+ *         description: 🔍 Search by Subject name
  *       - in: query
  *         name: page
  *         schema:
  *           type: integer
- *         description: Page number for pagination
+ *         description: 📄 Page number for pagination
  *       - in: query
  *         name: limit
  *         schema:
  *           type: integer
- *         description: Number of results per page
+ *         description: 📊 Number of results per page
  *       - in: query
  *         name: sortBy
  *         schema:
  *           type: string
- *         description: Field to sort by
+ *         description: 🔼 Field to sort by
  *       - in: query
  *         name: sortOrder
  *         schema:
  *           type: string
  *           enum: [asc, desc]
- *         description: Sort order (asc or desc)
+ *         description: ⬆️⬇️ Sort order (asc or desc)
  *       - in: query
  *         name: type
  *         schema:
  *           type: string
- *         description: Filter by Subject type
+ *         description: 🏷️ Filter by Subject type
  *     responses:
  *       200:
- *         description: List of Subjects
+ *         description: ✅ List of Subjects
  *       400:
- *         description: Bad request
+ *         description: ❌ Bad request
  *       404:
- *         description: No Subjects found
+ *         description: ❌ No Subjects found
  */
 SubjectRouter.get("/", getAll);
 
@@ -71,20 +69,20 @@ SubjectRouter.get("/", getAll);
  * @swagger
  * /api/subject/{id}:
  *   get:
- *     summary: Get a Subject by ID
- *     tags: [Subjects]
+ *     summary: 🔍 Get a Subject by ID
+ *     tags: [📚 Subjects]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: integer
- *         description: The Subject ID
+ *         description: 🆔 The Subject ID
  *     responses:
  *       200:
- *         description: Subject data
+ *         description: ✅ Subject data
  *       404:
- *         description: Subject not found
+ *         description: ❌ Subject not found
  */
 SubjectRouter.get("/:id", getOne);
 
@@ -92,8 +90,8 @@ SubjectRouter.get("/:id", getOne);
  * @swagger
  * /api/subject:
  *   post:
- *     summary: Create a new Subject
- *     tags: [Subjects]
+ *     summary: ✨ Create a new Subject
+ *     tags: [📚 Subjects]
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -105,13 +103,15 @@ SubjectRouter.get("/:id", getOne);
  *             properties:
  *               name:
  *                 type: string
+ *                 description: 🏷️ Subject name
  *               image:
  *                 type: string
+ *                 description: 🖼️ Subject image URL
  *     responses:
  *       201:
- *         description: Subject created
+ *         description: ✅ Subject created
  *       400:
- *         description: Validation error
+ *         description: ❌ Validation error
  */
 SubjectRouter.post("/", verifyToken, checkRole(["Admin"]), post);
 
@@ -119,8 +119,8 @@ SubjectRouter.post("/", verifyToken, checkRole(["Admin"]), post);
  * @swagger
  * /api/subject/{id}:
  *   patch:
- *     summary: Update a Subject
- *     tags: [Subjects]
+ *     summary: ✏️ Update a Subject
+ *     tags: [📚 Subjects]
  *     security:
  *       - BearerAuth: []
  *     parameters:
@@ -129,7 +129,7 @@ SubjectRouter.post("/", verifyToken, checkRole(["Admin"]), post);
  *         required: true
  *         schema:
  *           type: integer
- *         description: The Subject ID
+ *         description: 🆔 The Subject ID
  *     requestBody:
  *       required: true
  *       content:
@@ -139,24 +139,26 @@ SubjectRouter.post("/", verifyToken, checkRole(["Admin"]), post);
  *             properties:
  *               name:
  *                 type: string
+ *                 description: 🏷️ New subject name
  *               image:
  *                 type: string
+ *                 description: 🖼️ New subject image URL
  *     responses:
  *       200:
- *         description: Subject updated
+ *         description: ✅ Subject updated
  *       400:
- *         description: Validation error
+ *         description: ❌ Validation error
  *       404:
- *         description: Subject not found
+ *         description: ❌ Subject not found
  */
-SubjectRouter.patch("/:id", selfPolice(["Admin"]), update);
+SubjectRouter.patch("/:id", selfPolice(["SuperAdmin", "Admin"]), update);
 
 /**
  * @swagger
  * /api/subject/{id}:
  *   delete:
- *     summary: Delete a Subject
- *     tags: [Subjects]
+ *     summary: 🗑️ Delete a Subject
+ *     tags: [📚 Subjects]
  *     security:
  *       - BearerAuth: []
  *     parameters:
@@ -165,12 +167,12 @@ SubjectRouter.patch("/:id", selfPolice(["Admin"]), update);
  *         required: true
  *         schema:
  *           type: integer
- *         description: The Subject ID
+ *         description: 🆔 The Subject ID
  *     responses:
  *       200:
- *         description: Subject deleted
+ *         description: ✅ Subject deleted
  *       404:
- *         description: Subject not found
+ *         description: ❌ Subject not found
  */
 SubjectRouter.delete("/:id", selfPolice(["Admin"]), remove);
 

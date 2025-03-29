@@ -10,51 +10,52 @@ const {
 
 const verifyToken = require("../middlewares/verifyToken");
 const selfPolice = require("../middlewares/selfPolice");
+const checkRole = require("../middlewares/rolePolice");
 
 /**
  * @swagger
  * tags:
- *   name: Educational Centers
- *   description: Management of educational centers
+ *   name: 🏫 Educational Centers
+ *   description: 🎓 Management of educational centers
  */
 /**
  * @swagger
  * /api/educationalCenter:
  *   get:
- *     summary: Get all educational centers
- *     tags: [Educational Centers]
+ *     summary: 📋 Get all educational centers
+ *     tags: [🏫 Educational Centers]
  *     parameters:
  *       - in: query
  *         name: search
  *         schema:
  *           type: string
- *         description: Search by name
+ *         description: 🔍 Search by name
  *       - in: query
  *         name: sortBy
  *         schema:
  *           type: string
- *         description: Field to sort by
+ *         description: 🔼 Field to sort by
  *       - in: query
  *         name: order
  *         schema:
  *           type: string
  *           enum: [ASC, DESC]
- *         description: Sorting order
+ *         description: ⬆️ Sorting order
  *       - in: query
  *         name: page
  *         schema:
  *           type: integer
- *         description: Page number
+ *         description: 📄 Page number
  *       - in: query
  *         name: limit
  *         schema:
  *           type: integer
- *         description: Results per page
+ *         description: 📊 Results per page
  *     responses:
  *       200:
- *         description: List of educational centers
+ *         description: ✅ List of educational centers
  *       500:
- *         description: Internal server error
+ *         description: 🚨 Internal server error
  */
 CenterRouter.get("/", getAll);
 
@@ -62,22 +63,22 @@ CenterRouter.get("/", getAll);
  * @swagger
  * /api/educationalCenter/{id}:
  *   get:
- *     summary: Get an educational center by ID
- *     tags: [Educational Centers]
+ *     summary: 🔍 Get an educational center by ID
+ *     tags: [🏫 Educational Centers]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: integer
- *         description: Educational center ID
+ *         description: 🆔 Educational center ID
  *     responses:
  *       200:
- *         description: Center details
+ *         description: ✅ Center details
  *       404:
- *         description: Not found
+ *         description: ❌ Not found
  *       500:
- *         description: Internal server error
+ *         description: 🚨 Internal server error
  */
 CenterRouter.get("/:id", getOne);
 
@@ -85,8 +86,8 @@ CenterRouter.get("/:id", getOne);
  * @swagger
  * /api/educationalCenter:
  *   post:
- *     summary: Create a new educational center
- *     tags: [Educational Centers]
+ *     summary: ✨ Create a new educational center
+ *     tags: [🏫 Educational Centers]
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -99,38 +100,45 @@ CenterRouter.get("/:id", getOne);
  *             properties:
  *               name:
  *                 type: string
+ *                 description: 🏷️ Center name
  *               image:
  *                 type: string
+ *                 description: 🖼️ Center image URL
  *               address:
  *                 type: string
+ *                 description: 🏠 Center address
  *               phone:
  *                 type: string
+ *                 description: 📞 Contact phone
  *               regionID:
  *                 type: integer
+ *                 description: 🌍 Region ID
  *               fields:
  *                 type: array
  *                 items:
  *                   type: integer
+ *                 description: 📚 Available fields
  *               subjects:
  *                 type: array
  *                 items:
  *                   type: integer
+ *                 description: 📝 Offered subjects
  *     responses:
  *       201:
- *         description: Created successfully
+ *         description: ✅ Created successfully
  *       403:
- *         description: Not permitted
+ *         description: ⛔ Not permitted
  *       500:
- *         description: Internal server error
+ *         description: 🚨 Internal server error
  */
-CenterRouter.post("/", verifyToken,  create);
+CenterRouter.post("/", verifyToken, checkRole(["Ceo"]), create);
 
 /**
  * @swagger
  * /api/educationalCenter/{id}:
  *   patch:
- *     summary: Update an educational center
- *     tags: [Educational Centers]
+ *     summary: ✏️ Update an educational center
+ *     tags: [🏫 Educational Centers]
  *     security:
  *       - BearerAuth: []
  *     parameters:
@@ -139,7 +147,7 @@ CenterRouter.post("/", verifyToken,  create);
  *         required: true
  *         schema:
  *           type: integer
- *         description: Educational center ID
+ *         description: 🆔 Educational center ID
  *     requestBody:
  *       required: true
  *       content:
@@ -149,30 +157,34 @@ CenterRouter.post("/", verifyToken,  create);
  *             properties:
  *               name:
  *                 type: string
+ *                 description: 🏷️ Updated name
  *               image:
  *                 type: string
+ *                 description: 🖼️ Updated image URL
  *               address:
  *                 type: string
+ *                 description: 🏠 Updated address
  *               phone:
  *                 type: string
+ *                 description: 📞 Updated phone
  *     responses:
  *       200:
- *         description: Successfully updated
+ *         description: ✅ Successfully updated
  *       403:
- *         description: Not permitted
+ *         description: ⛔ Not permitted
  *       404:
- *         description: Not found
+ *         description: ❌ Not found
  *       500:
- *         description: Internal server error
+ *         description: 🚨 Internal server error
  */
-CenterRouter.patch("/:id", verifyToken, selfPolice(["Ceo"]), update);
+CenterRouter.patch("/:id", verifyToken, selfPolice(["Ceo", "Admin"]), update);
 
 /**
  * @swagger
  * /api/educationalCenter/{id}:
  *   delete:
- *     summary: Delete an educational center
- *     tags: [Educational Centers]
+ *     summary: 🗑️ Delete an educational center
+ *     tags: [🏫 Educational Centers]
  *     security:
  *       - BearerAuth: []
  *     parameters:
@@ -181,18 +193,18 @@ CenterRouter.patch("/:id", verifyToken, selfPolice(["Ceo"]), update);
  *         required: true
  *         schema:
  *           type: integer
- *         description: Educational center ID
+ *         description: 🆔 Educational center ID
  *     responses:
  *       200:
- *         description: Successfully deleted
+ *         description: ✅ Successfully deleted
  *       403:
- *         description: Not permitted
+ *         description: ⛔ Not permitted
  *       404:
- *         description: Not found
+ *         description: ❌ Not found
  *       500:
- *         description: Internal server error
+ *         description: 🚨 Internal server error
  */
-CenterRouter.delete("/:id", verifyToken, selfPolice(["Ceo"]), remove);
+CenterRouter.delete("/:id", verifyToken, selfPolice(["Ceo", "Admin"]), remove);
 
 /**
  * @swagger
@@ -203,23 +215,31 @@ CenterRouter.delete("/:id", verifyToken, selfPolice(["Ceo"]), remove);
  *       properties:
  *         id:
  *           type: integer
+ *           description: 🆔 Unique identifier
  *         name:
  *           type: string
+ *           description: 🏷️ Center name
  *         image:
  *           type: string
+ *           description: 🖼️ Image URL
  *         address:
  *           type: string
+ *           description: 🏠 Physical address
  *         phone:
  *           type: string
+ *           description: 📞 Contact number
  *         regionID:
  *           type: integer
+ *           description: 🌍 Region ID
  *         fields:
  *           type: array
  *           items:
  *             type: integer
+ *           description: 📚 Available fields
  *         subjects:
  *           type: array
  *           items:
  *             type: integer
+ *           description: 📝 Offered subjects
  */
 module.exports = CenterRouter;

@@ -34,9 +34,10 @@ const Branch = db.define(
       allowNull: false,
     },
 
-    centreID: {
+    educationalCenterID: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      field: "centreID",
     },
   },
   { timestamps: true }

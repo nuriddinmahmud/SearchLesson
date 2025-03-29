@@ -15,47 +15,47 @@ const checkRole = require("../middlewares/rolePolice");
  * @swagger
  * /api/resource:
  *   get:
- *     summary: Get all resources with filters, sorting, and pagination
- *     tags: [Resources]
+ *     summary: 📋 Get all resources with filters, sorting, and pagination
+ *     tags: [📚 Resources]
  *     parameters:
  *       - in: query
  *         name: search
  *         schema:
  *           type: string
- *         description: Search by resource name
+ *         description: 🔍 Search by resource name
  *       - in: query
  *         name: categoryID
  *         schema:
  *           type: integer
- *         description: Filter by category ID
+ *         description: 🏷️ Filter by category ID
  *       - in: query
  *         name: page
  *         schema:
  *           type: integer
- *         description: Page number for pagination
+ *         description: 📄 Page number for pagination
  *       - in: query
  *         name: limit
  *         schema:
  *           type: integer
- *         description: Number of results per page
+ *         description: 📊 Number of results per page
  *       - in: query
  *         name: sortBy
  *         schema:
  *           type: string
- *         description: Field to sort by (e.g., name, createdAt)
+ *         description: 🔼 Field to sort by (e.g., name, createdAt)
  *       - in: query
  *         name: sortOrder
  *         schema:
  *           type: string
  *           enum: [asc, desc]
- *         description: Sorting order (asc or desc)
+ *         description: ⬆️⬇️ Sorting order (asc or desc)
  *     responses:
  *       200:
- *         description: A list of resources with pagination
+ *         description: ✅ A list of resources with pagination
  *       400:
- *         description: Bad request
+ *         description: ❌ Bad request
  *       500:
- *         description: Internal server error
+ *         description: 🚨 Internal server error
  */
 ResourceRouter.get("/", getAll);
 
@@ -63,20 +63,20 @@ ResourceRouter.get("/", getAll);
  * @swagger
  * /api/resource/{id}:
  *   get:
- *     summary: Get a single resource by ID
- *     tags: [Resources]
+ *     summary: 🔍 Get a single resource by ID
+ *     tags: [📚 Resources]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: integer
- *         description: Resource ID
+ *         description: 🆔 Resource ID
  *     responses:
  *       200:
- *         description: The resource data
+ *         description: ✅ The resource data
  *       404:
- *         description: Resource not found
+ *         description: ❌ Resource not found
  */
 ResourceRouter.get("/:id", getOne);
 
@@ -84,8 +84,8 @@ ResourceRouter.get("/:id", getOne);
  * @swagger
  * /api/resource:
  *   post:
- *     summary: Create a new resource
- *     tags: [Resources]
+ *     summary: ✨ Create a new resource
+ *     tags: [📚 Resources]
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -98,34 +98,34 @@ ResourceRouter.get("/:id", getOne);
  *             properties:
  *               name:
  *                 type: string
+ *                 description: 🏷️ Resource name
  *               description:
  *                 type: string
+ *                 description: 📝 Resource description
  *               media:
  *                 type: string
  *                 format: binary
+ *                 description: 🎬 Resource media file
  *               image:
  *                 type: string
+ *                 description: 🖼️ Resource image URL
  *               categoryID:
  *                 type: integer
+ *                 description: 📂 Category ID
  *     responses:
  *       201:
- *         description: Resource created
+ *         description: ✅ Resource created
  *       400:
- *         description: Validation error
+ *         description: ❌ Validation error
  */
-ResourceRouter.post(
-  "/",
-  verifyToken,
-  checkRole(["SuperAdmin", "Admin", "User"]),
-  post
-);
+ResourceRouter.post("/", verifyToken, checkRole(["Admin", "User"]), post);
 
 /**
  * @swagger
  * /api/resource/{id}:
  *   patch:
- *     summary: Update a resource
- *     tags: [Resources]
+ *     summary: ✏️ Update a resource
+ *     tags: [📚 Resources]
  *     security:
  *       - BearerAuth: []
  *     parameters:
@@ -134,7 +134,7 @@ ResourceRouter.post(
  *         required: true
  *         schema:
  *           type: integer
- *         description: Resource ID
+ *         description: 🆔 Resource ID
  *     requestBody:
  *       required: true
  *       content:
@@ -144,20 +144,25 @@ ResourceRouter.post(
  *             properties:
  *               name:
  *                 type: string
+ *                 description: 🏷️ Updated resource name
  *               description:
  *                 type: string
+ *                 description: 📝 Updated description
  *               media:
  *                 type: string
  *                 format: binary
+ *                 description: 🎬 Updated media file
  *               image:
  *                 type: string
+ *                 description: 🖼️ Updated image URL
  *               categoryID:
  *                 type: integer
+ *                 description: 📂 Updated category ID
  *     responses:
  *       200:
- *         description: Resource updated
+ *         description: ✅ Resource updated
  *       404:
- *         description: Resource not found
+ *         description: ❌ Resource not found
  */
 ResourceRouter.patch(
   "/:id",
@@ -170,8 +175,8 @@ ResourceRouter.patch(
  * @swagger
  * /api/resource/{id}:
  *   delete:
- *     summary: Delete a resource
- *     tags: [Resources]
+ *     summary: 🗑️ Delete a resource
+ *     tags: [📚 Resources]
  *     security:
  *       - BearerAuth: []
  *     parameters:
@@ -180,17 +185,17 @@ ResourceRouter.patch(
  *         required: true
  *         schema:
  *           type: integer
- *         description: Resource ID
+ *         description: 🆔 Resource ID
  *     responses:
  *       200:
- *         description: Resource deleted
+ *         description: ✅ Resource deleted
  *       404:
- *         description: Resource not found
+ *         description: ❌ Resource not found
  */
 ResourceRouter.delete(
   "/:id",
   verifyToken,
-  selfPolice(["SuperAdmin", "Admin", "User"]),
+  selfPolice(["Admin", "User"]),
   remove
 );
 

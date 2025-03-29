@@ -14,42 +14,36 @@ const selfPolice = require("../middlewares/selfPolice");
 /**
  * @swagger
  * tags:
- *   name: Fields
- *   description: Field management
+ *   name: 📚 Fields
+ *   description: 🏛️ Field management
  */
-
 /**
  * @swagger
  * /api/field:
  *   get:
- *     summary: Get all fields
- *     tags: [Fields]
+ *     summary: 📋 Get all fields
+ *     tags: [📚 Fields]
  *     parameters:
  *       - in: query
  *         name: search
  *         schema:
  *           type: string
- *         description: Search by field name
+ *         description: 🔍 Search by field name
  *       - in: query
  *         name: page
  *         schema:
  *           type: integer
- *         description: Page number for pagination
+ *         description: 📄 Page number for pagination
  *       - in: query
  *         name: limit
  *         schema:
  *           type: integer
- *         description: Number of results per page
- *       - in: query
- *         name: courseID
- *         schema:
- *           type: integer
- *         description: Filter by course ID
+ *         description: 📊 Number of results per page
  *     responses:
  *       200:
- *         description: List of fields
+ *         description: ✅ List of fields
  *       400:
- *         description: Bad request
+ *         description: ❌ Bad request
  */
 FieldRouter.get("/", getAll);
 
@@ -57,20 +51,20 @@ FieldRouter.get("/", getAll);
  * @swagger
  * /api/field/{id}:
  *   get:
- *     summary: Get a single field by ID
- *     tags: [Fields]
+ *     summary: 🔍 Get a single field by ID
+ *     tags: [📚 Fields]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: integer
- *         description: Field ID
+ *         description: 🆔 Field ID
  *     responses:
  *       200:
- *         description: Field data
+ *         description: ✅ Field data
  *       404:
- *         description: Field not found
+ *         description: ❌ Field not found
  */
 FieldRouter.get("/:id", getOne);
 
@@ -78,8 +72,8 @@ FieldRouter.get("/:id", getOne);
  * @swagger
  * /api/field:
  *   post:
- *     summary: Create a new field
- *     tags: [Fields]
+ *     summary: ✨ Create a new field
+ *     tags: [📚 Fields]
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -92,15 +86,15 @@ FieldRouter.get("/:id", getOne);
  *             properties:
  *               name:
  *                 type: string
- *                 description: Field name
+ *                 description: 🏷️ Field name
  *               image:
  *                 type: string
- *                 description: Image URL of the field
+ *                 description: 🖼️ Image URL of the field
  *     responses:
  *       201:
- *         description: Successfully created
+ *         description: ✅ Successfully created
  *       400:
- *         description: Validation error
+ *         description: ❌ Validation error
  */
 FieldRouter.post("/", verifyToken, checkRole(["Admin", "Ceo"]), post);
 
@@ -108,8 +102,8 @@ FieldRouter.post("/", verifyToken, checkRole(["Admin", "Ceo"]), post);
  * @swagger
  * /api/field/{id}:
  *   patch:
- *     summary: Update field details
- *     tags: [Fields]
+ *     summary: ✏️ Update field details
+ *     tags: [📚 Fields]
  *     security:
  *       - BearerAuth: []
  *     parameters:
@@ -118,7 +112,7 @@ FieldRouter.post("/", verifyToken, checkRole(["Admin", "Ceo"]), post);
  *         required: true
  *         schema:
  *           type: integer
- *         description: Field ID
+ *         description: 🆔 Field ID
  *     requestBody:
  *       required: true
  *       content:
@@ -128,29 +122,26 @@ FieldRouter.post("/", verifyToken, checkRole(["Admin", "Ceo"]), post);
  *             properties:
  *               name:
  *                 type: string
- *                 description: Field name
+ *                 description: 🏷️ Field name
  *               image:
  *                 type: string
- *                 description: Image URL of the field
- *               courseID:
- *                 type: integer
- *                 description: Associated course ID
+ *                 description: 🖼️ Image URL of the field
  *     responses:
  *       200:
- *         description: Successfully updated
+ *         description: ✅ Successfully updated
  *       400:
- *         description: Validation error
+ *         description: ❌ Validation error
  *       404:
- *         description: Field not found
+ *         description: ❌ Field not found
  */
-FieldRouter.patch("/:id", verifyToken, selfPolice(["Admin", "Ceo"]), update);
+FieldRouter.patch("/:id", verifyToken, selfPolice(["Admin", "Ceo", "SuperAdmin"]), update);
 
 /**
  * @swagger
  * /api/field/{id}:
  *   delete:
- *     summary: Delete a field
- *     tags: [Fields]
+ *     summary: 🗑️ Delete a field
+ *     tags: [📚 Fields]
  *     security:
  *       - BearerAuth: []
  *     parameters:
@@ -159,12 +150,12 @@ FieldRouter.patch("/:id", verifyToken, selfPolice(["Admin", "Ceo"]), update);
  *         required: true
  *         schema:
  *           type: integer
- *         description: Field ID
+ *         description: 🆔 Field ID
  *     responses:
  *       200:
- *         description: Successfully deleted
+ *         description: ✅ Successfully deleted
  *       404:
- *         description: Field not found
+ *         description: ❌ Field not found
  */
 FieldRouter.delete("/:id", verifyToken, selfPolice(["Admin", "Ceo"]), remove);
 
