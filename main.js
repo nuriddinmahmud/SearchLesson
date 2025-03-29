@@ -8,7 +8,10 @@ const { db } = require("./config/database.js");
 const multer = require("multer");
 const path = require("path");
 const app = express();
+const cors = require("cors");
 dotenv.config();
+
+app.use(cors());
 const PORT = process.env.PORT;
 
 const swaggerSpec = swaggerJsDoc({
@@ -22,7 +25,7 @@ const swaggerSpec = swaggerJsDoc({
     },
     servers: [
       {
-        url: `http://localhost:${PORT}`,
+        url: `http://18.159.61.156:${PORT}`,
         description: "Local development server",
       },
       {
@@ -118,7 +121,7 @@ app.post("/upload", upload.single("image"), (req, res) => {
   }
   res
     .status(200)
-    .send({ url: `http://localhost:${PORT}/image/${req.file.filename}` });
+    .send({ url: `http://18.159.61.156:${PORT}/image/${req.file.filename}` });
 });
 
 async function Course() {
@@ -129,7 +132,7 @@ async function Course() {
     // console.log("DB synced");
     app.listen(PORT, () =>
       console.log(
-        `Server started on port ${PORT} ✅ , follow the path "http://localhost:7000/api-docs 🗿 "`
+        `Server started on port ${PORT} ✅ , follow the path "http://18.159.61.156:7000/api-docs 🗿 "`
       )
     );
   } catch (error) {
