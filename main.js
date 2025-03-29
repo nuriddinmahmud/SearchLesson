@@ -1,6 +1,5 @@
 const express = require("express");
 const dotenv = require("dotenv");
-const cors = require("cors");
 const mainRouter = require("./routes/index.js");
 const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
@@ -11,7 +10,6 @@ const app = express();
 const cors = require("cors");
 dotenv.config();
 
-app.use(cors());
 const PORT = process.env.PORT;
 
 const swaggerSpec = swaggerJsDoc({
@@ -67,13 +65,8 @@ const upload = multer({ storage: storage });
 
 app.use(express.json());
 
-app.use(
-  cors({
-    origin: "*",
-    methods: ["GET", "POST", "PATCH", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+
+app.use(cors());
 
 app.use("/image", express.static("uploads"));
 app.use("/api", mainRouter);
